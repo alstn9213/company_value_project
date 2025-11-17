@@ -1,0 +1,12 @@
+package com.companyvalue.companyvalue.repository;
+
+import com.companyvalue.companyvalue.domain.Company;
+import com.companyvalue.companyvalue.domain.FinancialStatement;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface FinancialStatementRepository extends JpaRepository<FinancialStatement, Long> {
+    // 특정 기업의 가장 최근 재무제표 조회 (연도, 분기 내림차순)
+    Optional<FinancialStatement> findTopByCompanyOrderByYearDescQuarterDesc(Company company);
+}
