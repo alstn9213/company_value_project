@@ -1,6 +1,8 @@
 package com.companyvalue.companyvalue.controller;
 
+import com.companyvalue.companyvalue.repository.CompanyRepository;
 import com.companyvalue.companyvalue.service.DataFetchService;
+import com.companyvalue.companyvalue.service.FinancialDataService;
 import com.companyvalue.companyvalue.service.MacroDataService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ public class TestController {
 
     private final DataFetchService dataFetchService;
     private final MacroDataService macroDataService;
+    private final FinancialDataService financialDataService;
+    private final CompanyRepository companyRepository;
 
     // 테스트 1: http://localhost:8080/test/company?symbol=AAPL
     @GetMapping("/test/company")
@@ -33,5 +37,19 @@ public class TestController {
     public String updateMacro() {
         macroDataService.updateMacroEconomicData();
         return "Macro Data Updated! Check DB.";
+    }
+
+    @GetMapping("/test/financial/update")
+    public String updateFinancials(@RequestParam String ticker) {
+        // 편의상 테스트할 때 기업이 없으면 자동 생성 (실제론 미리 있어야 함)
+        if (companyRepository.findByTicker(ticker).isEmpty()) {
+            // Company Entity에도 Builder가 있다고 가정
+        /* companyRepository.save(Company.builder()
+            .ticker(ticker).name(ticker).build());
+        */
+        }
+
+        financialDataService.updateCompanyFinancials(ticker);
+        return ticker + " financials updated!";
     }
 }

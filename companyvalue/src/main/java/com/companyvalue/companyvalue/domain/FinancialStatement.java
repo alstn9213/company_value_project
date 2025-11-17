@@ -1,15 +1,15 @@
 package com.companyvalue.companyvalue.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FinancialStatement {
 
     @Id
@@ -38,4 +38,6 @@ public class FinancialStatement {
     // --- 투자 적극성 평가를 위한 필드 ---
     private BigDecimal researchAndDevelopment; // R&D 비용
     private BigDecimal capitalExpenditure;     // CapEx (자본지출)
+
+
 }
