@@ -2,12 +2,13 @@ package com.companyvalue.companyvalue.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class CompanyScore extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +29,20 @@ public class CompanyScore extends BaseTime {
 
     private String grade; // 등급 (S, A, B, F 등)
 
-    // 생성자 및 비즈니스 로직(점수 업데이트 메서드) 등...
+    public void updateScore(Integer totalScore, Integer stabilityScore, Integer profitabilityScore,
+                            Integer valuationScore, Integer investmentScore, String grade) {
+        this.totalScore = totalScore;
+        this.stabilityScore = stabilityScore;
+        this.profitabilityScore = profitabilityScore;
+        this.valuationScore = valuationScore;
+        this.investmentScore = investmentScore;
+        this.grade = grade;
+    }
+
+    @Builder
+    public CompanyScore(Company company, Integer totalScore, String grade) {
+        this.company = company;
+        this.totalScore = totalScore;
+        this.grade = grade;
+    }
 }

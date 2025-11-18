@@ -31,8 +31,31 @@ public class DataFetchService {
     // ==========================================
     // 1. Alpha Vantage 호출 (기업 정보)
     // ==========================================
+    /**
+     * 재무제표 데이터 가져오기 (INCOME_STATEMENT, BALANCE_SHEET, CASH_FLOW)
+     */
     public JsonNode getCompanyFinancials(String function, String symbol) {
-        // 요청 URL 만들기: base-url + ?function=...&symbol=...&apikey=...
+        return callAlphaVantage(function, symbol);
+    }
+
+    /**
+     * 기업 개요 및 투자 지표 가져오기 (PER, PBR, 배당수익률 등)
+     * Function: OVERVIEW
+     */
+    public JsonNode getCompanyOverview(String symbol) {
+        return callAlphaVantage("OVERVIEW", symbol);
+    }
+
+    /**
+     * 실시간 주가 정보 가져오기
+     * Function: GLOBAL_QUOTE
+     */
+    public JsonNode getStockPrice(String symbol) {
+        return callAlphaVantage("GLOBAL_QUOTE", symbol);
+    }
+
+    // 공통 호출 메서드 추출
+    private JsonNode callAlphaVantage(String function, String symbol) {
         String response = webClient.get()
                 .uri(alphaBaseUrl, uriBuilder -> uriBuilder
                         .queryParam("function", function)
@@ -40,8 +63,8 @@ public class DataFetchService {
                         .queryParam("apikey", alphaKey)
                         .build())
                 .retrieve()
-                .bodyToMono(String.class) // 결과(JSON)를 String으로 받음
-                .block(); // (중요) 결과를 받을 때까지 기다림 (동기 처리)
+                .bodyToMono(String.class)
+                .block();
 
         return parseJson(response);
     }
