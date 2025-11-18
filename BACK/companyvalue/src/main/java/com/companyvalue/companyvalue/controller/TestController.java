@@ -47,7 +47,7 @@ public class TestController {
                 companyRepository.save(Company.builder()
                 .ticker(ticker).name(ticker).build());
         }
-        
+
         financialDataService.updateCompanyFinancials(ticker);
         return ticker + " financials updated!";
     }
