@@ -23,11 +23,15 @@ public class MacroDataService {
     public void updateMacroEconomicData() {
         log.info("거시 경제 정보 업데이트 시작...");
         //  각 지표별 최신 값 가져오기 (FRED API 호출)
-        // DGS10: 10년물 국채, DGS2: 2년물 국채, DFF: 기준금리, CPIAUCSL: 소비자물가지수, UNRATE: 실업률
+        // DGS10: 10년물 국채,
         Double us10y = fetchLatestValue("DGS10");
+//        DGS2: 2년물 국채,
         Double us2y = fetchLatestValue("DGS2");
+//        DFF: 기준금리,
         Double fedFunds = fetchLatestValue("DFF");
+//        CPIAUCSL: 소비자물가지수,
         Double cpi = fetchLatestValue("CPIAUCSL");
+//        UNRATE: 실업률
         Double unemployment = fetchLatestValue("UNRATE");
 
         LocalDate today = LocalDate.now();

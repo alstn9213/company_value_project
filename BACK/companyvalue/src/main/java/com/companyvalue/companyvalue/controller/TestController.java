@@ -1,5 +1,6 @@
 package com.companyvalue.companyvalue.controller;
 
+import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.repository.CompanyRepository;
 import com.companyvalue.companyvalue.service.DataFetchService;
 import com.companyvalue.companyvalue.service.FinancialDataService;
@@ -43,12 +44,10 @@ public class TestController {
     public String updateFinancials(@RequestParam String ticker) {
         // 편의상 테스트할 때 기업이 없으면 자동 생성 (실제론 미리 있어야 함)
         if (companyRepository.findByTicker(ticker).isEmpty()) {
-            // Company Entity에도 Builder가 있다고 가정
-        /* companyRepository.save(Company.builder()
-            .ticker(ticker).name(ticker).build());
-        */
+                companyRepository.save(Company.builder()
+                .ticker(ticker).name(ticker).build());
         }
-
+        
         financialDataService.updateCompanyFinancials(ticker);
         return ticker + " financials updated!";
     }

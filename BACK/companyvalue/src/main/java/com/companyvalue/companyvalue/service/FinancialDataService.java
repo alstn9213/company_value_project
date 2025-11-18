@@ -26,11 +26,11 @@ public class FinancialDataService {
 
     @Transactional
     public void updateCompanyFinancials(String ticker) {
-        log.info("Updating financials for ticker: {}", ticker);
+        log.info("재무정보 최신화 중: {}", ticker);
 
         // 1. 기업 정보 조회 (DB에 없으면 에러 발생)
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("Company not found: " + ticker));
+                .orElseThrow(() -> new RuntimeException("회사를 찾을 수 없습니다.: " + ticker));
 
         // 2. Alpha Vantage API 호출 (3가지 재무제표)
         JsonNode incomeStatement = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
@@ -58,7 +58,7 @@ public class FinancialDataService {
             }
         }
 
-        log.info("Finished updating financials for {}", ticker);
+        log.info("재무정보 최신화 완료 {}", ticker);
     }
 
     private void processReports(JsonNode reports, Map<String, FinancialDataMap> map, String type) {
