@@ -1,5 +1,3 @@
-https://alstn9213.github.io/company_value_project/
-
 <div align="center">
 
 # 📈 기업 가치 평가 & 거시 경제 분석 플랫폼

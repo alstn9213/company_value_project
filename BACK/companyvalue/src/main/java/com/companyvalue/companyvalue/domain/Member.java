@@ -1,14 +1,13 @@
 package com.companyvalue.companyvalue.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Member extends BaseTime {
 
     @Id
@@ -25,10 +24,11 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private String nickname;
 
-    @Builder
-    public Member(String email, String password, String nickname) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    public String getRoleKey() {
+        return this.role.getKey();
     }
 }

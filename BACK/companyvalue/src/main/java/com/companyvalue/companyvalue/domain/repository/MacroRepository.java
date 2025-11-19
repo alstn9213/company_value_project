@@ -1,4 +1,4 @@
-package com.companyvalue.companyvalue.repository;
+package com.companyvalue.companyvalue.domain.repository;
 
 import com.companyvalue.companyvalue.domain.MacroEconomicData;
 import org.springframework.data.jpa.repository.JpaRepository;

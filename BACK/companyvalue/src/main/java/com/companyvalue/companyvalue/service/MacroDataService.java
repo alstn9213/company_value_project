@@ -1,7 +1,7 @@
 package com.companyvalue.companyvalue.service;
 
 import com.companyvalue.companyvalue.domain.MacroEconomicData;
-import com.companyvalue.companyvalue.repository.MacroRepository;
+import com.companyvalue.companyvalue.domain.repository.MacroRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

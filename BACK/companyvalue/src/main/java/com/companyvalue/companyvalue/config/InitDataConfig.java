@@ -1,7 +1,7 @@
 package com.companyvalue.companyvalue.config;
 
 import com.companyvalue.companyvalue.domain.Company;
-import com.companyvalue.companyvalue.repository.CompanyRepository;
+import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

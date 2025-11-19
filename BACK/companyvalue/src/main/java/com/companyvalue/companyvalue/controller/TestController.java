@@ -1,7 +1,7 @@
 package com.companyvalue.companyvalue.controller;
 
 import com.companyvalue.companyvalue.domain.Company;
-import com.companyvalue.companyvalue.repository.CompanyRepository;
+import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import com.companyvalue.companyvalue.service.DataFetchService;
 import com.companyvalue.companyvalue.service.FinancialDataService;
 import com.companyvalue.companyvalue.service.MacroDataService;

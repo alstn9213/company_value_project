@@ -2,8 +2,8 @@ package com.companyvalue.companyvalue.service;
 
 import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.FinancialStatement;
-import com.companyvalue.companyvalue.repository.CompanyRepository;
-import com.companyvalue.companyvalue.repository.FinancialStatementRepository;
+import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
+import com.companyvalue.companyvalue.domain.repository.FinancialStatementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -60,7 +60,6 @@ public class SchedulingService {
                 financialDataService.updateCompanyFinancials(ticker);
 
                 // 3. API Rate Limit 방지 (무료 키: 분당 5회 제한 -> 15초 대기)
-                // 유료 키 사용 시 주석 처리하거나 시간을 줄이세요.
                 Thread.sleep(15000);
 
                 // 4. 업데이트된 최신 재무제표 조회

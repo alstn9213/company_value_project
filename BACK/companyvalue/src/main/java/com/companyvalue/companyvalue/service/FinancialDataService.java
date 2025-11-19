@@ -2,8 +2,8 @@ package com.companyvalue.companyvalue.service;
 
 import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.FinancialStatement;
-import com.companyvalue.companyvalue.repository.CompanyRepository;
-import com.companyvalue.companyvalue.repository.FinancialStatementRepository;
+import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
+import com.companyvalue.companyvalue.domain.repository.FinancialStatementRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
