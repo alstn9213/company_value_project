@@ -3,7 +3,7 @@
 # 📈 기업 가치 평가 & 거시 경제 분석 플랫폼
 <a href="https://alstn9213.github.io/company_value_project/">
     <img src="https://img.shields.io/badge/Project_Page-Click_Here-blue?style=for-the-badge&logo=github&logoColor=white" alt="Project Page"/>
-</a>
+</a> <br/>
 <img src="https://img.shields.io/badge/Java-17-orange?logo=java" />
 <img src="https://img.shields.io/badge/Spring%20Boot-3.0-green?logo=springboot" />
 <img src="https://img.shields.io/badge/MariaDB-10.6-blue?logo=mariadb" />
