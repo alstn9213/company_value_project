@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/Auth/LoginPage'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 import HomePage from './pages/Home/Homepage';
+import SignupPage from './pages/Auth/SignupPage';
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         {/* 공개 라우트 */}
         <Route path='/login' element={<LoginPage />}/>
+        <Route path="/signup" element={<SignupPage />} />
 
         {/* 보호된 라우트 (로그인 필요) */}
         <Route element={<ProtectedRoute />}>
