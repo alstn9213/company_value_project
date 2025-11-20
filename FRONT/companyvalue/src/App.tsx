@@ -5,6 +5,8 @@ import ProtectedRoute from './components/layout/ProtectedRoute'
 import HomePage from './pages/Home/Homepage';
 import SignupPage from './pages/Auth/SignupPage';
 import MainLayout from './components/layout/MainLayout';
+import CompanyListPage from './pages/CompanyList/CompantListPage';
+import CompanyDetailPage from './pages/CompanyDetail/CompanyDetailPage';
 
 function App() {
 
@@ -22,13 +24,9 @@ function App() {
             {/* 1. 대시보드 */}
             <Route path='/' element={<HomePage />}/>
 
-            {/* 2. 기업 찾기 (추후 구현 예정) */}
-            <Route path='/companies' element={
-              <div className="text-slate-300 p-10 text-center">
-                <h2 className="text-2xl font-bold mb-4">🏢 기업 찾기</h2>
-                <p>준비 중입니다. 곧 기업 목록과 검색 기능이 추가됩니다.</p>
-              </div>
-            } />
+            {/* 2. 기업 찾기 */}
+            <Route path='/companies' element={<CompanyListPage />} />
+
             {/* 3. 관심 종목 (추후 구현 예정) */}
             <Route path='/watchlist' element={
               <div className="text-slate-300 p-10 text-center">
@@ -37,13 +35,8 @@ function App() {
               </div>
             } />
 
-             {/* 4. 기업 상세 (추후 구현 예정) */}
-            <Route path='/company/:ticker' element={
-              <div className="text-slate-300 p-10 text-center">
-                <h2 className="text-2xl font-bold mb-4">📊 기업 상세 분석</h2>
-                <p>선택한 기업의 재무 점수와 차트를 보여줍니다.</p>
-              </div>
-            } />
+             {/* 4. 기업 상세 */}
+            <Route path='/company/:ticker' element={<CompanyDetailPage />} />
             </Route>
         </Route>
 
