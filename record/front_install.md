@@ -1,9 +1,9 @@
 # npm install 목록
 
-* npm install axios @tanstack/react-query zustand react-router-dom recharts lucide-react clsx tailwind-merge dayjs
+- npm install axios @tanstack/react-query zustand react-router-dom recharts lucide-react clsx tailwind-merge dayjs
 
 각 패키지의 용도 설명
-axios: 백엔드(/api/**)와 HTTP 통신을 위해 사용합니다. (Interceptor로 JWT 토큰 자동 처리)
+axios: 백엔드(/api/\*\*)와 HTTP 통신을 위해 사용합니다. (Interceptor로 JWT 토큰 자동 처리)
 
 @tanstack/react-query: 서버 데이터(거시 경제 지표, 기업 정보) 캐싱 및 로딩 상태 관리를 위해 필수적입니다.
 
@@ -19,33 +19,36 @@ clsx, tailwind-merge: Tailwind CSS 사용 시 조건부 스타일링(동적 클�
 
 dayjs: 거시 경제 지표의 날짜(recordedDate) 포맷팅을 위해 moment.js보다 가벼운 라이브러리를 추천합니다.
 
-
 ## 스타일링 설정 (Tailwind CSS)
 
-1. 패키지 설치
-npm install -D tailwindcss postcss autoprefixer
+- 패키지 설치
+   npm install -D @tailwindcss/postcss
 
-2. 설정 파일(tailwind.config.js) 생성
-npx tailwindcss init -p
-
-3. 설치 후 추가 작업: tailwind.config.js 파일을 열어 아래와 같이 content 경로를 수정해야 스타일이 적용됩니다.
+- 루트 프로젝트에 tailwind.config.js 파일 생성
 
 ```js
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       // 백엔드 index.html에 있던 컬러 테마 이식
       colors: {
-        dark: '#0f172a', 
-        card: 'rgba(30, 41, 59, 0.7)',
-      }
+        dark: "#0f172a",
+        card: "rgba(30, 41, 59, 0.7)",
+      },
     },
   },
   plugins: [],
+};
+```
+
+- 루트 프로젝트에 postcss.config.js 파일 생성
+```js
+export default {
+  plugins: {
+    '@tailwindcss/postcss': {}, 
+    autoprefixer: {},
+  },
 }
 ```
