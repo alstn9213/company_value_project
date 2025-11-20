@@ -1,13 +1,13 @@
 package com.companyvalue.companyvalue.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Watchlist extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +22,4 @@ public class Watchlist extends BaseTime {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    // 생성자...
 }
