@@ -4,6 +4,8 @@ import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.FinancialStatement;
 import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import com.companyvalue.companyvalue.domain.repository.FinancialStatementRepository;
+import com.companyvalue.companyvalue.dto.FinancialDataDto;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,6 +23,7 @@ public class SchedulingService {
     private final ScoringService scoringService;
     private final MacroDataService macroDataService;
     private final FinancialStatementRepository financialStatementRepository;
+    private final DataFetchService dataFetchService;
 
     // ==========================================
     // 1. 거시 경제 지표 자동 업데이트 (매일 아침 8시)
@@ -56,18 +59,25 @@ public class SchedulingService {
             log.info("--- Processing: {} ---", ticker);
 
             try {
-                // 2. 재무제표 API 호출 및 업데이트
-                financialDataService.updateCompanyFinancials(ticker);
+                // 외부 API 호출(재무제표 3종)
+                FinancialDataDto rawData = financialDataService.fetchRawFinancialData(ticker);
 
-                // 3. API Rate Limit 방지 (무료 키: 분당 5회 제한 -> 15초 대기)
-                Thread.sleep(15000);
+                // 재무제표 DB 저장
+                // 아주 짧은 시간 동안만 커넥션 사용
+                financialDataService.saveFinancialData(ticker, rawData);
 
-                // 4. 업데이트된 최신 재무제표 조회
+                // API Rate Limit 방지(Alpha Vantage 무료 키 제한 고려)
+                Thread.sleep(12000);
+
+                // 외부 API 호출 (기업 Overview: PER, PBR 등)
+                JsonNode overview = dataFetchService.getCompanyOverview(ticker);
+
+                // 점수 계산 및 저장
+                // 저장된 재무제표를 다시 조회해서 사용
                 FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
                         .orElseThrow(() -> new RuntimeException("재무제표 없음: " + ticker));
 
-                // 5. 점수 계산 및 저장
-                scoringService.calculateAndSaveScore(fs);
+                scoringService.calculateAndSaveScore(fs, overview);
 
                 log.info("--- Completed: {} ---", ticker);
 

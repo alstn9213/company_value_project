@@ -4,6 +4,7 @@ import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.FinancialStatement;
 import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import com.companyvalue.companyvalue.domain.repository.FinancialStatementRepository;
+import com.companyvalue.companyvalue.dto.FinancialDataDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,41 +25,51 @@ public class FinancialDataService {
     private final CompanyRepository companyRepository;
     private final FinancialStatementRepository financialStatementRepository;
 
+    /*
+    * 외부 API 호출
+    * DB 커넥션을 점유하지 않고 네트워크 통신만 수행한다. (Transaction 없음)
+    * */
+    public FinancialDataDto fetchRawFinancialData(String ticker) {
+        log.info("재무 데이터 수집 시작(Network I/O: {}", ticker);
+
+        JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
+        JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", ticker);
+        JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", ticker);
+
+        return new FinancialDataDto(income, balance, cash);
+    }
+
+    /*
+    * 데이터 파싱 및 DB 저장
+    * 데이터가 준비된 상태에서 빠르게 DB 작업을 수행한다.(Transaction 있음)
+    * */
     @Transactional
-    public void updateCompanyFinancials(String ticker) {
-        log.info("재무정보 최신화 중: {}", ticker);
+    public void saveFinancialData(String ticker, FinancialDataDto rawData) {
+        log.info("재무 데이터 저장 시작(DB I/O): {}", ticker);
+        if(!rawData.hasAllData()) {
+            log.warn("재무 데이터 불충분으로 저장 건너뜀: {}", ticker);
+            return;
+        }
 
-        // 1. 기업 정보 조회 (DB에 없으면 에러 발생)
+        // 1. 기업 정보 조회
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("회사를 찾을 수 없습니다.: " + ticker));
+                .orElseThrow(() -> new RuntimeException("회상를 찾을 수 없습니다.: " + ticker));
 
-        // 2. Alpha Vantage API 호출 (3가지 재무제표)
-        JsonNode incomeStatement = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
-        JsonNode balanceSheet = dataFetchService.getCompanyFinancials("BALANCE_SHEET", ticker);
-        JsonNode cashFlow = dataFetchService.getCompanyFinancials("CASH_FLOW", ticker);
-
-        // 3. 데이터 파싱 및 병합 (날짜 기준)
-        // Key: fiscalDateEnding ("2023-12-31"), Value: 병합된 DTO 정보
+        // 2. 데이터 파싱 및 병합
         Map<String, FinancialDataMap> mergedData = new HashMap<>();
 
-        // 3-1. 손익계산서 파싱
-        processReports(incomeStatement.get("quarterlyReports"), mergedData, "INCOME");
-        // 3-2. 대차대조표 파싱
-        processReports(balanceSheet.get("quarterlyReports"), mergedData, "BALANCE");
-        // 3-3. 현금흐름표 파싱
-        processReports(cashFlow.get("quarterlyReports"), mergedData, "CASH");
+        processReports(rawData.incomeStatement().get("quarterlyReports"), mergedData, "INCOME");
+        processReports(rawData.balanceSheet().get("quarterlyReports"), mergedData, "BALANCE");
+        processReports(rawData.cashFlow().get("quarterlyReports"), mergedData, "CASH");
 
-        // 4. Entity 변환 및 저장
+        // 3. Entity 변환 및 저장
         for (String date : mergedData.keySet()) {
             FinancialDataMap data = mergedData.get(date);
-
-            // 3가지 데이터가 모두 있는 경우에만 저장 (데이터 무결성 위해)
             if (data.hasAllData()) {
                 saveFinancialStatement(company, date, data);
             }
         }
-
-        log.info("재무정보 최신화 완료 {}", ticker);
+        log.info("재무 데이터 저장 완료: {}", ticker);
     }
 
     private void processReports(JsonNode reports, Map<String, FinancialDataMap> map, String type) {

@@ -21,15 +21,14 @@ public class ScoringService {
 
     private final CompanyScoreRepository companyScoreRepository;
     private final MacroRepository macroRepository;
-    private final DataFetchService dataFetchService;
 
     /**
      * 기업의 재무제표와 현재 시장 상황을 기반으로 점수를 계산하고 저장합니다.
      */
     @Transactional
-    public void calculateAndSaveScore(FinancialStatement fs) {
+    public void calculateAndSaveScore(FinancialStatement fs, JsonNode overview) {
         String ticker = fs.getCompany().getTicker();
-        log.info("회사 점수 계산 시작: {}", fs.getCompany().getTicker());
+        log.info("회사 점수 계산 시작(DB I/O): {}", fs.getCompany().getTicker());
 
         //  1. 최신 거시 경제 지표 가져오기
         MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
@@ -41,17 +40,11 @@ public class ScoringService {
             return;
         }
 
-        //  기업 가치 지표(PER, PBR) API 실시간 조회
-        // 주의: 트랜잭션 안에서 외부 API 호출은 성능상 좋지 않으나, 로직 단순화를 위해 여기서 호출합니다.
-        // 실무에서는 데이터를 미리 수집해두는 것이 좋습니다.
-        JsonNode overview = dataFetchService.getCompanyOverview(ticker);
-
-
       // 3. 각 항목별 점수 계산
         int stability = calculateStability(fs);       // 40점 만점
         int profitability = calculateProfitability(fs); // 30점 만점
         int valuation = calculateValuation(overview); // 20점 만점
-        int investment = calculateInvestment(fs);     // 10점 만점 (미래 투자)
+        int investment = calculateInvestment(fs);     // 10점 만점
 
         int totalScore = stability + profitability + valuation + investment;
 

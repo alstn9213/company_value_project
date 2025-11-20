@@ -2,6 +2,7 @@ package com.companyvalue.companyvalue.controller;
 
 import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
+import com.companyvalue.companyvalue.dto.FinancialDataDto;
 import com.companyvalue.companyvalue.service.DataFetchService;
 import com.companyvalue.companyvalue.service.FinancialDataService;
 import com.companyvalue.companyvalue.service.MacroDataService;
@@ -48,7 +49,11 @@ public class TestController {
                 .ticker(ticker).name(ticker).build());
         }
 
-        financialDataService.updateCompanyFinancials(ticker);
-        return ticker + " financials updated!";
+        // 1. 데이터 수집
+        FinancialDataDto rawData = financialDataService.fetchRawFinancialData(ticker);
+        // 2. 데이터 저장
+        financialDataService.saveFinancialData(ticker, rawData);
+
+        return ticker + " financials updated (Fetch -> Save 분리 완료)!";
     }
 }
