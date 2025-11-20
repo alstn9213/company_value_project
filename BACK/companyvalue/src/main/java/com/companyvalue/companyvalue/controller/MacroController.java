@@ -31,7 +31,7 @@ public class MacroController {
     @GetMapping("/history")
     public ResponseEntity<List<MainResponseDto.MacroDataResponse>> getMacroHistory() {
         // DB 에서 최신순 30개를 가져와서 -> 날짜 오름차순(과거 -> 현재)로 정렬하여 반환
-        List<MainResponseDto.MacroDataResponse> history = macroRepository.findTop30ByOrderByRecordDedDateDesc()
+        List<MainResponseDto.MacroDataResponse> history = macroRepository.findTop30ByOrderByRecordedDateDesc()
                 .stream()
                 .map(MainResponseDto.MacroDataResponse::from)
                 .sorted(Comparator.comparing(MainResponseDto.MacroDataResponse::date))

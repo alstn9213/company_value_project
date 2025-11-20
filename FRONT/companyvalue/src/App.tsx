@@ -2,6 +2,7 @@ import './App.css'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/Auth/LoginPage'
 import ProtectedRoute from './components/layout/ProtectedRoute'
+import HomePage from './pages/Home/Homepage';
 
 function App() {
 
@@ -13,7 +14,7 @@ function App() {
 
         {/* 보호된 라우트 (로그인 필요) */}
         <Route element={<ProtectedRoute />}>
-          <Route path='/' element={<div>메인 대시보드(Home)</div>}/>
+          <Route path='/' element={<HomePage />}/>
           <Route path='/watchlist' element={<div>관심 종목(Watchlist)</div>}/>
           <Route path='/company/:ticker' element={<div>기업 상세(Detail)</div>}/>
         </Route>
