@@ -24,14 +24,14 @@ public class AuthService {
 
     @Transactional
     public  void signup(AuthDto.SignUpRequest request) {
-        if(memberRepository.existsByEmail(request.getEmail())) {
+        if(memberRepository.existsByEmail(request.email())) {
             throw new RuntimeException("이미 가입돼 있는 유저입니다.");
         }
 
         Member member = Member.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .nickname(request.getNickname())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .nickname(request.nickname())
                 .role(Role.USER)
                 .build();
 
@@ -42,23 +42,23 @@ public class AuthService {
     public AuthDto.TokenResponse login(AuthDto.LoginRequest request) {
         // 1. ID/PW를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+                new UsernamePasswordAuthenticationToken(request.email(), request.password());
 
         // 2. 실제 검증 (사용자 비밀번호 체크)
         // authenticate 메서드가 실행될 때 CustomUserDetailsService 의 loadUserByUsername 메서드가 실행됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new RuntimeException("유저 정보 없음"));
 
         String accessToken = jwtTokenProvider.createToken(authentication, member.getNickname());
 
-        return AuthDto.TokenResponse.builder()
-                .accessToken(accessToken)
-                .tokenType("Bearer")
-                .expiresIn(1800000L) // 30분
-                .nickname(member.getNickname())
-                .build();
+        return new AuthDto.TokenResponse(
+                accessToken,
+                "Bearer",
+                1800000L, // 30분
+                member.getNickname()
+        );
     }
 }

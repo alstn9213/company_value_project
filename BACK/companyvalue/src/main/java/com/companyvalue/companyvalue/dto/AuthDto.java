@@ -1,39 +1,31 @@
 package com.companyvalue.companyvalue.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 public class AuthDto {
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class SignUpRequest {
-        private String email;
-        private String password;
-        private String nickname;
+    // 회원가입 요청
+    public record SignUpRequest(
+            String email,
+            String password,
+            String nickname
+    ) {
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class LoginRequest {
-        private String email;
-        private String password;
+    // 로그인 요청
+    public record LoginRequest(
+            String email,
+            String password
+    ) {
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class TokenResponse {
-        private String accessToken;
-        private String tokenType; // "Bearer"
-        private Long expiresIn; // 만료 시간
-        private String nickname; // 프론트엔드 표시용
+    public record TokenResponse(
+            String accessToken,
+            String tokenType,
+            Long expiresIn,
+            String nickname // 프론트엔드 표시용
+    ) {
+        // 필요하다면 팩토리 메서드를 추가하여 유연하게 생성 가능
+        public static TokenResponse of(String accessToken, String nickname, Long expiresIn) {
+            return new TokenResponse(accessToken, "Bearer", expiresIn, nickname);
+        }
     }
 }
