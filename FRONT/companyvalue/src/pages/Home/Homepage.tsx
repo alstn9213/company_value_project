@@ -99,14 +99,14 @@ const HomePage = () => {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={history} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis 
-                dataKey="date" 
-                stroke="#94a3b8" 
-                tick={{ fill: '#94a3b8' }} 
+              <XAxis
+                dataKey="date"
+                stroke="#94a3b8"
+                tick={{ fill: '#94a3b8' }}
                 tickFormatter={(val) => val.substring(5)} // 'MM-DD' 형태로 자르기
               />
               <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8' }} domain={['auto', 'auto']} />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ backgroundColor: '#1e293b', borderColor: '#475569', color: '#f1f5f9' }}
                 itemStyle={{ color: '#f1f5f9' }}
               />
@@ -114,40 +114,43 @@ const HomePage = () => {
 
               {/* 장단기 금리차 역전 구간 강조 (빨간 배경) */}
               {recessionStart && recessionEnd && (
-                <ReferenceArea 
-                  x1={recessionStart} 
-                  x2={recessionEnd} 
-                  strokeOpacity={0.3} 
-                  fill="red" 
-                  fillOpacity={0.1} 
+                <ReferenceArea
+                  x1={recessionStart}
+                  x2={recessionEnd}
+                  strokeOpacity={0.3}
+                  fill="red"
+                  fillOpacity={0.1}
                   label="금리 역전 구간"
                 />
               )}
 
               {/* 명세서 요구사항 색상: 10년물(Blue), 2년물(Green), 인플레이션(Red) */}
-              <Line 
-                type="monotone" 
-                dataKey="us10y" 
-                name="10년물 국채" 
+              <Line
+                type="monotone"
+                dataKey="us10y"
+                name="10년물 국채"
                 stroke="#60a5fa" // Blue-400
-                strokeWidth={2} 
-                dot={false} 
+                strokeWidth={2}
+                dot={false}
+                connectNulls={true}
               />
-              <Line 
-                type="monotone" 
-                dataKey="us2y" 
-                name="2년물 국채" 
+              <Line
+                type="monotone"
+                dataKey="us2y"
+                name="2년물 국채"
                 stroke="#34d399" // Emerald-400
-                strokeWidth={2} 
-                dot={false} 
+                strokeWidth={2}
+                dot={false}
+                connectNulls={true}
               />
-              <Line 
-                type="monotone" 
-                dataKey="inflation" 
-                name="인플레이션" 
+              <Line
+                type="monotone"
+                dataKey="inflation"
+                name="인플레이션"
                 stroke="#f87171" // Red-400
-                strokeWidth={2} 
-                dot={false} 
+                strokeWidth={2}
+                dot={false}
+                connectNulls={true}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -158,17 +161,17 @@ const HomePage = () => {
 };
 
 // 내부용 통계 카드 컴포넌트
-const StatCard = ({ 
-  title, 
-  value, 
-  subValue, 
-  icon, 
-  trend = "neutral" 
-}: { 
-  title: string; 
-  value: string; 
-  subValue: string; 
-  icon: React.ReactNode; 
+const StatCard = ({
+  title,
+  value,
+  subValue,
+  icon,
+  trend = "neutral"
+}: {
+  title: string;
+  value: string;
+  subValue: string;
+  icon: React.ReactNode;
   trend?: "safe" | "danger" | "high" | "neutral";
 }) => {
   

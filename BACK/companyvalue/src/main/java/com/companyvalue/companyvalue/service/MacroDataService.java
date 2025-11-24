@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -17,6 +21,51 @@ public class MacroDataService {
 
     private final MacroRepository macroRepository;
     private final DataFetchService dataFetchService;
+
+    // 과거 데이터 일괄 초기화 메서드
+    @Transactional
+    public void initHistoricalMacroData() {
+        log.info("거시 경제 과거 데이터 수집 시작");
+
+        // 날짜별 지표 값을 담을 임시 저장소 (Key: 날짜, Value: 지표별 값 Map)
+        Map<LocalDate, Map<String, Double>> historyMap = new HashMap<>();
+
+        // 1. 각 지표별 전체 데이터 파싱하여 Map에 병합
+        collectHistory(historyMap, "DGS10", "us10y");
+        collectHistory(historyMap, "DGS2", "us2y");
+        collectHistory(historyMap, "DFF", "fedFunds");
+        collectHistory(historyMap, "CPIAUCSL", "cpi");
+        collectHistory(historyMap, "UNRATE", "unemployment");
+
+        // 2. Map을 Entity로 변환하여 저장
+        List<MacroEconomicData> dataList = new ArrayList<>();
+
+        for (LocalDate date : historyMap.keySet()) {
+            Map<String, Double> values = historyMap.get(date);
+
+            // 이미 해당 날짜 데이터가 DB에 있는지 확인 (중복 방지)
+            MacroEconomicData macroData = macroRepository.findByRecordedDate(date)
+                    .orElseGet(() -> MacroEconomicData.builder()
+                            .recordedDate(date)
+                            .build());
+
+            // 데이터 업데이트 (값이 없으면 기존 값 유지하거나 null)
+            // getOrDefault를 사용하여 null 처리를 안전하게 합니다.
+            macroData.updateData(
+                    values.getOrDefault("fedFunds", macroData.getFedFundsRate()),
+                    values.getOrDefault("us10y", macroData.getUs10yTreasuryYield()),
+                    values.getOrDefault("us2y", macroData.getUs2yTreasuryYield()),
+                    values.getOrDefault("cpi", macroData.getInflationRate()),
+                    values.getOrDefault("unemployment", macroData.getUnemploymentRate())
+            );
+
+            dataList.add(macroData);
+        }
+
+        // 3. 일괄 저장
+        macroRepository.saveAll(dataList);
+        log.info("거시 경제 과거 데이터 초기화 완료: 총 {}건", dataList.size());
+    }
 
 
     @Transactional
@@ -76,5 +125,29 @@ public class MacroDataService {
         }
         // 에러가 나거나 값이 없으면 null 반환 (나중에 null 체크 필요할 수 있음)
         return null;
+    }
+
+    // API 응답(observations)을 순회하며 Map에 값을 채우는 헬퍼 메서드
+    private void collectHistory(Map<LocalDate, Map<String, Double>> historyMap, String seriesId, String keyName) {
+        try {
+            JsonNode rootNode = dataFetchService.getMacroIndicator(seriesId);
+            JsonNode observations = rootNode.get("observations");
+
+            if (observations != null && observations.isArray()) {
+                for (JsonNode node : observations) {
+                    String valueStr = node.get("value").asText();
+                    if (".".equals(valueStr)) continue; // "."은 데이터 없음
+
+                    LocalDate date = LocalDate.parse(node.get("date").asText());
+                    Double value = Double.parseDouble(valueStr);
+
+                    // 해당 날짜의 맵을 가져오거나 생성
+                    historyMap.putIfAbsent(date, new HashMap<>());
+                    historyMap.get(date).put(keyName, value);
+                }
+            }
+        } catch (Exception e) {
+            log.error("과거 기록을 처리하던 중 오류 발생 {}: {}", seriesId, e.getMessage());
+        }
     }
 }

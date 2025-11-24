@@ -1,5 +1,6 @@
 package com.companyvalue.companyvalue.controller;
 
+import com.companyvalue.companyvalue.service.MacroDataService;
 import com.companyvalue.companyvalue.service.SchedulingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleTestController {
 
     private final SchedulingService schedulingService;
+    private final MacroDataService macroDataService;
+
+    @GetMapping("/test/macro/init")
+    public String initMacroHistory() {
+        macroDataService.initHistoricalMacroData();
+        return "거시 경제 과거 데이터 초기화가 완료되었습니다. (로그 확인)";
+    }
 
     // http://localhost:8080/test/schedule/run 으로 접속하면 즉시 실행
     @GetMapping("/test/schedule/run")

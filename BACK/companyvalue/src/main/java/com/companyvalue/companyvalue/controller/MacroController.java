@@ -27,14 +27,13 @@ public class MacroController {
                 .orElse(ResponseEntity.noContent().build());
     }
 
-    // 2. 차트용 과거 데이터 (최근 30일)
+    // 2. 차트용 과거 데이터 (최근 10년)
     @GetMapping("/history")
     public ResponseEntity<List<MainResponseDto.MacroDataResponse>> getMacroHistory() {
-        // DB 에서 최신순 30개를 가져와서 -> 날짜 오름차순(과거 -> 현재)로 정렬하여 반환
-        List<MainResponseDto.MacroDataResponse> history = macroRepository.findTop30ByOrderByRecordedDateDesc()
+        List<MainResponseDto.MacroDataResponse> history = macroRepository.findTop3650ByOrderByRecordedDateDesc()
                 .stream()
                 .map(MainResponseDto.MacroDataResponse::from)
-                .sorted(Comparator.comparing(MainResponseDto.MacroDataResponse::date))
+                .sorted(Comparator.comparing(MainResponseDto.MacroDataResponse::date)) // 날짜 오름차순(과거 -> 현재)로 정렬하여 반환
                 .toList();
 
         return ResponseEntity.ok(history);
