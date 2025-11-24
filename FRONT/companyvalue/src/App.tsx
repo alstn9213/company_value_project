@@ -7,6 +7,7 @@ import SignupPage from './pages/Auth/SignupPage';
 import MainLayout from './components/layout/MainLayout';
 import CompanyListPage from './pages/CompanyList/CompantListPage';
 import CompanyDetailPage from './pages/CompanyDetail/CompanyDetailPage';
+import WatchlistPage from './pages/Watchlist/WatchlistPage';
 
 function App() {
 
@@ -27,13 +28,8 @@ function App() {
             {/* 2. 기업 찾기 */}
             <Route path='/companies' element={<CompanyListPage />} />
 
-            {/* 3. 관심 종목 (추후 구현 예정) */}
-            <Route path='/watchlist' element={
-              <div className="text-slate-300 p-10 text-center">
-                <h2 className="text-2xl font-bold mb-4">⭐ 관심 종목</h2>
-                <p>내가 찜한 기업들을 모아보는 페이지입니다.</p>
-              </div>
-            } />
+            {/* 3. 관심 종목  */}
+            <Route path='/watchlist' element={<WatchlistPage />} />
 
              {/* 4. 기업 상세 */}
             <Route path='/company/:ticker' element={<CompanyDetailPage />} />
