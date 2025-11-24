@@ -54,9 +54,18 @@ public class SchedulingService {
         // 1. DB에 있는 모든 기업 가져오기
         List<Company> companies = companyRepository.findAll();
 
-        for (Company company : companies) {
+        for(Company company : companies) {
             String ticker = company.getTicker();
             log.info("--- Processing: {} ---", ticker);
+
+            boolean alreadyExists = financialStatementRepository
+                    .findTopByCompanyOrderByYearDescQuarterDesc(company)
+                    .isPresent();
+
+            if(alreadyExists) {
+                log.info(">>> [Skip] 이미 데이터가 존재합니다. 다음 기업으로 넘어갑니다: {}", ticker);
+                continue;
+            }
 
             try {
                 // 외부 API 호출(재무제표 3종)
