@@ -8,6 +8,7 @@ import com.companyvalue.companyvalue.dto.FinancialDataDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,8 +30,9 @@ public class SchedulingService {
     // 1. 거시 경제 지표 자동 업데이트 (매일 아침 8시)
     // ==========================================
     @Scheduled(cron = "0 0 8 * * *")
+    @CacheEvict(value = {"macro_latest", "macro_history"}, allEntries = true) // 이 메서드가 실행될 때 캐시 전체 삭제
     public void updateMacroData() {
-        log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 시작");
+        log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 시작 (캐시 초기화 포함)");
         try {
             macroDataService.updateMacroEconomicData();
             log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 완료");
@@ -43,8 +45,9 @@ public class SchedulingService {
     // 2. 기업 재무 정보 및 점수 자동 업데이트 (매주 일요일 새벽 2시)
     // ==========================================
     @Scheduled(cron = "0 0 2 * * SUN")
+    @CacheEvict(value = "company_score", allEntries = true) // 모든 기업 점수 캐시 삭제
     public void updateFinancialsAndScores() {
-        log.info(">>> [Scheduler] 기업 재무/점수 일괄 업데이트 시작");
+        log.info(">>> [Scheduler] 기업 재무/점수 일괄 업데이트 시작 (캐시 초기화 포함)");
         executeAllCompaniesUpdate();
         log.info(">>> [Scheduler] 기업 재무/점수 일괄 업데이트 종료");
     }

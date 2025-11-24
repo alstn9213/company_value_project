@@ -53,7 +53,7 @@ public class FinancialDataService {
 
         // 1. 기업 정보 조회
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new RuntimeException("회상를 찾을 수 없습니다.: " + ticker));
+                .orElseThrow(() -> new RuntimeException("회사를 찾을 수 없습니다.: " + ticker));
 
         // 2. 데이터 파싱 및 병합
         Map<String, FinancialDataMap> mergedData = new HashMap<>();

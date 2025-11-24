@@ -195,7 +195,7 @@ public class ScoringService {
         // 장단기 금리차 역전 (10년물 < 2년물) 시 경기 침체 신호로 간주
         if (macro.getUs10yTreasuryYield() != null && macro.getUs2yTreasuryYield() != null) {
             if (macro.getUs10yTreasuryYield() < macro.getUs2yTreasuryYield()) {
-                log.info("Penalty applied: Inverted Yield Curve");
+                log.info("페널티가 적용되었습니다.: 장단기 금리차 역전");
                 return 10;
             }
         }
@@ -230,7 +230,7 @@ public class ScoringService {
         boolean isAggressive = investRatio >= 10.0;
 
         if (isHighDebt && isAggressive) {
-            log.info("Penalty applied: Risky Investment in High Interest Era");
+            log.info("페널티가 적용되었습니다.: 고금리 시기에 공격적인 투자");
             return 15;
         }
 
@@ -251,9 +251,9 @@ public class ScoringService {
         CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
                 .orElseGet(() -> CompanyScore.builder()
                         .company(fs.getCompany())
-                        .build()); // CompanyScore에 @Builder 적용 가정
+                        .build());
 
-        score.updateScore(total, stab, prof, val, inv, grade); // CompanyScore에 update 메서드 추가 필요
+        score.updateScore(total, stab, prof, val, inv, grade);
         companyScoreRepository.save(score);
     }
 
