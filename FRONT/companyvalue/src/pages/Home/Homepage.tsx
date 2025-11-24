@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { macroApi } from "../../api/macroApi";
 import { TrendingDown, TrendingUp, Activity, DollarSign, Percent } from "lucide-react";
+import DashboardGuide from "../../components/dashboard/DashboardGuide";
 
 const HomePage = () => {
   // 1. 데이터 페칭(React Query)
@@ -195,6 +196,7 @@ const StatCard = ({
       <div className="text-xs text-slate-500">
         {subValue}
       </div>
+      <DashboardGuide />
     </div>
   );
 };
