@@ -2,17 +2,16 @@ package com.companyvalue.companyvalue.service;
 
 import com.companyvalue.companyvalue.domain.MacroEconomicData;
 import com.companyvalue.companyvalue.domain.repository.MacroRepository;
+import com.companyvalue.companyvalue.dto.MainResponseDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -96,6 +95,24 @@ public class MacroDataService {
         macroRepository.save(macroData);
 
         log.info("거시 경제 정보 최신화 완료: {}", today);
+    }
+
+    // 1. 최신 지표 조회 (DTO만 캐싱)
+    @Cacheable(value = "macro_latest", key = "'latest'", unless = "#result == null")
+    public MainResponseDto.MacroDataResponse getLatestData() {
+        return macroRepository.findTopByOrderByRecordedDateDesc()
+                .map(MainResponseDto.MacroDataResponse::from)
+                .orElse(null);
+    }
+
+    // 2. 과거 데이터 조회 (DTO 리스트만 캐싱)
+    @Cacheable(value = "macro_history", key = "'history'", unless = "#result == null")
+    public List<MainResponseDto.MacroDataResponse> getHistoryData() {
+        return macroRepository.findTop3650ByOrderByRecordedDateDesc()
+                .stream()
+                .map(MainResponseDto.MacroDataResponse::from)
+                .sorted(Comparator.comparing(MainResponseDto.MacroDataResponse::date))
+                .toList();
     }
 
     /**

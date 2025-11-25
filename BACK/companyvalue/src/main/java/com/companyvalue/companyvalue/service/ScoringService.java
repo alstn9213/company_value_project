@@ -1,13 +1,17 @@
 package com.companyvalue.companyvalue.service;
 
+import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.CompanyScore;
 import com.companyvalue.companyvalue.domain.FinancialStatement;
 import com.companyvalue.companyvalue.domain.MacroEconomicData;
+import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import com.companyvalue.companyvalue.domain.repository.CompanyScoreRepository;
 import com.companyvalue.companyvalue.domain.repository.MacroRepository;
+import com.companyvalue.companyvalue.dto.MainResponseDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,7 @@ public class ScoringService {
 
     private final CompanyScoreRepository companyScoreRepository;
     private final MacroRepository macroRepository;
+    private final CompanyRepository companyRepository;
 
     /**
      * 기업의 재무제표와 현재 시장 상황을 기반으로 점수를 계산하고 저장합니다.
@@ -267,5 +272,16 @@ public class ScoringService {
             }
         }
         return 0.0;
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "company_score", key = "#ticker", unless = "#result == null")
+    public MainResponseDto.ScoreResult getScoreByTicker(String ticker) {
+        Company company = companyRepository.findByTicker(ticker)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다."));
+
+        return companyScoreRepository.findByCompany(company)
+                .map(MainResponseDto.ScoreResult::from)
+                .orElse(null);
     }
 }

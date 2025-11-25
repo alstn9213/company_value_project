@@ -29,7 +29,7 @@ public class DataFetchService {
     private String fredKey;
 
     // ==========================================
-    // 1. Alpha Vantage 호출 (기업 정보)
+    // 1. Alpha Vantage API 호출 (기업 정보)
     // ==========================================
     /**
      * 재무제표 데이터 가져오기 (INCOME_STATEMENT, BALANCE_SHEET, CASH_FLOW)
@@ -70,7 +70,7 @@ public class DataFetchService {
     }
 
     // ==========================================
-    // 2. FRED 호출 (거시 경제 정보)
+    // 2. FRED API 호출 (거시 경제 정보)
     // ==========================================
     public JsonNode getMacroIndicator(String seriesId) {
         // 요청 URL 만들기: base-url + ?series_id=...&api_key=...&file_type=json

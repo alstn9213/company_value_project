@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # 1. MariaDB
+  mariadb:
+    image: mariadb:10.6
+    container_name: company_mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+      - TZ=Asia/Seoul                 # 타임존 (한국 시간)
+    ports:
+      - "3310:3306"                   # 내 컴퓨터 3310 포트 <-> 도커 내부 3306 연결
+    volumes:
+      - ./db_data:/var/lib/mysql      # DB 데이터를 프로젝트 폴더 내 db_data에 저장 (삭제 방지)
+    restart: always
+
+  # 2. Redis
+  redis:
+    image: redis:alpine
+    container_name: company_redis
+    ports:
+      - "6379:6379"                   # 기본 포트 사용
+    restart: always
+
+  # 3. Spring Boot
+  backend:
+    container_name: company_backend
+    build: ./BACK/companyvalue      # Dockerfile이 있는 경로 지정
+    ports:
+      - "8080:8080"                 # 웹 브라우저 접속용 포트
+    environment:
+      # ★ 중요: 도커 내부에서는 'localhost' 대신 '서비스 이름'으로 통신합니다.
+      # application.properties의 설정을 여기서 덮어씌웁니다.
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://company_mariadb:3306/value
+      - SPRING_DATA_REDIS_HOST=company_redis
+    depends_on:
+      - mariadb                     # DB가 먼저 켜진 뒤에 앱이 켜지도록 순서 보장
+      - redis
+    restart: always

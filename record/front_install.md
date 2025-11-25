@@ -47,7 +47,7 @@ export default {
 ```js
 export default {
   plugins: {
-    '@tailwindcss/postcss': {}, 
+    '@tailwindcss/postcss': {},
     autoprefixer: {},
   },
 }
