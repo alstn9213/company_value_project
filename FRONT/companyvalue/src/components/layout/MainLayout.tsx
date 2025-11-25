@@ -1,4 +1,4 @@
-import { LayoutDashboard, LogOut, Search, Star, TrendingUp } from "lucide-react";
+import { LayoutDashboard, LogOut, Search, Star, TrendingUp, UserCircle } from "lucide-react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 
@@ -66,26 +66,45 @@ const MainLayout = () => {
             );
           })}
         </nav>
-
-        {/* Logout Button (Bottom) */}
-        <div className="p-4 border-t border-slate-800">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
-          >
-            <LogOut size={18} />
-            <span className="text-sm font-medium">로그아웃</span>
-          </button>
-        </div>
       </aside>
 
       {/* Main Content Area (우측 컨텐츠) */}
-      <main className="flex-1 ml-64 bg-[#0f172a] min-h-screen relative">
-        {/* Background Glow Effect (Optional Aesthetics) */}
+      <main className="flex-1 ml-64 bg-[#0f172a] min-h-screen relative flex flex-col">
+       {/* Background Glow Effect */}
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-blue-900/10 to-transparent pointer-events-none" />
+        {/* ★ Top Header */}
+        <header className="sticky top-0 z-20 flex justify-end items-center px-8 py-4 backdrop-blur-md bg-[#0f172a]/80 border-b border-slate-800/50">
+          <div className="flex items-center gap-6">
+
+            {/* User Info */}
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:block">
+                <p className="text-xs text-slate-500">Welcome back,</p>
+                <p className="text-sm font-bold text-emerald-400">
+                  {user?.nickname || 'User'}
+                </p>
+              </div>
+              <div className="bg-slate-800 p-2 rounded-full text-slate-400">
+                <UserCircle size={24} />
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="h-8 w-[1px] bg-slate-700"></div>
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 text-sm font-medium"
+            >
+              <LogOut size={18} />
+              <span>로그아웃</span>
+            </button>
+          </div>
+        </header>
         
-        <div className="relative z-0 p-8">
-          {/* 실제 페이지 컴포넌트가 렌더링되는 위치 */}
+        {/* Page Content */}
+        <div className="relative z-0 p-8 flex-1">
           <Outlet />
         </div>
       </main>
