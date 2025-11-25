@@ -2,6 +2,7 @@ package com.companyvalue.companyvalue.config;
 
 import com.companyvalue.companyvalue.security.JwtAuthenticationFilter;
 import com.companyvalue.companyvalue.security.JwtTokenProvider;
+import com.companyvalue.companyvalue.service.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,6 +46,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // REST API 이므로 CSRF 보안 미사용
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 연결
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)) // 예외 처리 설정: 인증 실패 시 401 핸들러 호출
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 이므로 세션 미사용
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 메서드는 인증 없이 모두 허용

@@ -25,9 +25,8 @@ axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if(error.response && error.response.status === 401) {
-      // 토큰 만료 또는 인증 실패 시 스토어 비우기 및 이동
-      useAuthStore.getState().logout;
-      window.location.href = '/login'; // 강제 리다이렉트
+      useAuthStore.getState().logout; // 토큰 만료 또는 인증 실패 시 스토어 비우기 및 이동
+      window.location.href = '/login'; // 로그인 페이지로 강제 이동 (강제 리다이렉트)
     }
     return Promise.reject(error);
   }

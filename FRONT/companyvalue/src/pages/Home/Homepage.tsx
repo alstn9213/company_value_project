@@ -157,6 +157,7 @@ const HomePage = () => {
           </ResponsiveContainer>
         </div>
       </div>
+      <DashboardGuide />
     </div>
   );
 };
@@ -196,7 +197,6 @@ const StatCard = ({
       <div className="text-xs text-slate-500">
         {subValue}
       </div>
-      <DashboardGuide />
     </div>
   );
 };
