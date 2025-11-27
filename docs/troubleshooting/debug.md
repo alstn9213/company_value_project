@@ -56,7 +56,7 @@ logging.level.com.companyvalue=DEBUG
 ### Step 2: 올바른 빌드/배포 파이프라인 정립
 자바 코드가 수정될 때마다 다음 순서를 반드시 준수해야 함을 확인.
 1.  **기존 컨테이너 종료:** `docker-compose down`
-2.  **소스 코드 빌드 (JAR 생성):** `cd BACK/companyvalue` -> `./gradlew clean build -x test` (Windows: `.\gradlew`)
+2.  **소스 코드 빌드 (JAR 생성):** `cd BACK/companyvalue` -> `./gradlew clean build -x test`
 3.  **Docker 이미지 빌드 및 실행:** `cd ../..`  -> `docker-compose up -d --build backend`
 
 ### Step 3: 코드 레벨 버그 수정

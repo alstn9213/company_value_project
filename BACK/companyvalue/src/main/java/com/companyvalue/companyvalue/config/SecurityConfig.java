@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**", "/test/**", "/").permitAll() // 로그인, 회원가입 등 공개 API 허용
                         .requestMatchers(HttpMethod.GET, "/api/macro/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/companies/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/scores/**").permitAll()
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
