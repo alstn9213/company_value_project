@@ -23,11 +23,12 @@ export interface ScoreResult {
   ticker: string;
   name: string;
   totalScore: number;
-  grade: string; // S, A, B, F ...
+  grade: string;
   stabilityScore: number;
   profitabilityScore: number;
   valuationScore: number;
   investmentScore: number;
+  isOpportunity: boolean;
 }
 
 export interface FinancialDetail {

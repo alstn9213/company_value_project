@@ -6,7 +6,7 @@ import {
   getGradeColor,
   getScoreColor,
 } from "../../utils/formatters";
-import { AlertTriangle, ArrowLeft, Building2, Star, TrendingUp } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Building2, Sparkles, Star, TrendingUp } from "lucide-react";
 import ScoreRadarChart from "../../components/charts/ScoreRadarChart";
 import { watchlistApi } from "../../api/watchlistApi";
 
@@ -107,6 +107,13 @@ const CompanyDetailPage = () => {
           >
             {score.grade}
           </div>
+          {/* ★ Opportunity 뱃지 추가 ★ */}
+          {score.isOpportunity && (
+            <div className="mt-3 flex items-center gap-1 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400 text-blue-300 text-xs font-bold animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+              <Sparkles size={12} className="text-blue-300 fill-blue-300" />
+              <span>저점 매수 기회</span>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -36,7 +36,8 @@ public class MainResponseDto {
             Integer stabilityScore,
             Integer profitabilityScore,
             Integer valuationScore,
-            Integer investmentScore
+            Integer investmentScore,
+            Boolean isOpportunity
     ) {
         public static ScoreResult from(CompanyScore score) {
             return new ScoreResult(
@@ -47,7 +48,8 @@ public class MainResponseDto {
                     score.getStabilityScore(),
                     score.getProfitabilityScore(),
                     score.getValuationScore(),
-                    score.getInvestmentScore()
+                    score.getInvestmentScore(),
+                    score.getIsOpportunity() != null && score.getIsOpportunity() // null safe 처리
             );
     }
 }

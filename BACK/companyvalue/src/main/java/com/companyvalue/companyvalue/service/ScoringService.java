@@ -32,46 +32,40 @@ public class ScoringService {
      */
     @Transactional
     public void calculateAndSaveScore(FinancialStatement fs, JsonNode overview) {
-        String ticker = fs.getCompany().getTicker();
-        log.info("회사 점수 계산 시작(DB I/O): {}", fs.getCompany().getTicker());
-
-        //  1. 최신 거시 경제 지표 가져오기
         MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
                 .orElseThrow(() -> new RuntimeException("거시 경제 데이터가 없습니다."));
 
-      // 2. 과락 체크 - 하나라도 걸리면 0점 처리
+        // 재무 정보로 불량 기업 과락 체크
         if(isDisqualified(fs)) {
-            saveScore(fs, 0, 0, 0, 0, 0, "F (과락)");
+            saveScore(fs, 0, 0, 0, 0, 0, "F (과락)", false);
             return;
         }
-
-      // 3. 각 항목별 점수 계산
+        // 점수 계산
         int stability = calculateStability(fs);       // 40점 만점
         int profitability = calculateProfitability(fs); // 30점 만점
         int valuation = calculateValuation(overview); // 20점 만점
         int investment = calculateInvestment(fs);     // 10점 만점
-
         int totalScore = stability + profitability + valuation + investment;
-
-        // 4. 동적 페널티 및 보너스 적용
-        // 4-1. 거시 경제 악화 페널티 (-10)
+        // 페널티 및 점수 보정
         int macroPenalty = applyMacroPenalty(macro);
-
-        // 4-2. 고금리 시기 위험 투자 페널티 (-15)
         int riskyPenalty = applyRiskyInvestmentPenalty(fs, macro);
-
         totalScore = totalScore - macroPenalty - riskyPenalty;
-
-        // 5. 점수 보정 (0 ~ 100 범위 유지)
-        totalScore = Math.max(0, Math.min(100, totalScore));
-
-        // 6. 등급 산정
+        totalScore = Math.max(0, Math.min(100, totalScore)); // 점수를 0 ~ 100 범위로 유지
         String grade = calculateGrade(totalScore);
 
-        // 7. 결과 저장
-        saveScore(fs, totalScore, stability, profitability, valuation, investment, grade);
+        // 경기 침체일 때 저점 매수를 위해 저평가된 기업을 판단
+        boolean isOpportunity = (macroPenalty > 0) && (valuation >= 20);
 
-        log.info("계산 완료 총점: {}, 등급: {}", totalScore, grade);
+        saveScore(
+                fs,
+                totalScore,
+                stability,
+                profitability,
+                valuation,
+                investment,
+                grade,
+                isOpportunity
+        );
     }
 
     // --- [1] 안정성 평가 (40점 만점) ---
@@ -79,7 +73,6 @@ public class ScoringService {
     private int calculateStability(FinancialStatement fs) {
         BigDecimal totalLiabilities = fs.getTotalLiabilities();
         BigDecimal totalEquity = fs.getTotalEquity();
-
         int score = 0;
 
         // 1. 부채비율 계산 (부채 / 자본 * 100)
@@ -131,29 +124,21 @@ public class ScoringService {
     }
 
     // --- [3] 가치 평가 (20점 만점) ---
-    // API에서 가져온 PER, PBR 데이터를 사용
     private int calculateValuation(JsonNode overview) {
         int score = 0;
         try {
             double per = parseDouble(overview, "PERatio");
             double pbr = parseDouble(overview, "PriceToBookRatio");
 
-            // PER 평가 (낮을수록 저평가)
-            // 기술주(나스닥) 위주라면 기준을 조금 높게 잡아도 됩니다.
-            if (per > 0 && per < 15) score += 10;
-            else if (per >= 15 && per < 25) score += 7;
-            else if (per >= 25 && per < 40) score += 3;
-            // PER이 0 이하(적자)거나 너무 높으면 0점
+            if (0 < per && per < 15) score += 10;
+            else if (15 <= per && per < 25) score += 7;
+            else if (25<= per && per < 40) score += 3;
 
-            // PBR 평가 (낮을수록 저평가)
-            if (pbr > 0 && pbr < 1.5) score += 10;
-            else if (pbr >= 1.5 && pbr < 3.0) score += 7;
-            else if (pbr >= 3.0 && pbr < 5.0) score += 3;
-
+            if (0 < pbr && pbr < 1.5) score += 10;
+            else if (1.5 <= pbr && pbr < 3.0) score += 7;
+            else if (3.0 <= pbr && pbr < 5.0) score += 3;
         } catch (Exception e) {
-            log.warn("가치 평가 실패: {}", e.getMessage());
-            // 데이터가 없거나 에러 시 기본 점수 부여 혹은 0점
-            return 5;
+            return 0;
         }
         return score;
     }
@@ -168,8 +153,6 @@ public class ScoringService {
         BigDecimal capex = fs.getCapitalExpenditure() != null ? fs.getCapitalExpenditure() : BigDecimal.ZERO;
         BigDecimal investmentSum = rnd.add(capex);
         double ratio = investmentSum.divide(revenue, 4, RoundingMode.HALF_UP).doubleValue() * 100;
-
-        // 매출의 15% 이상 투자 시 만점
         if (ratio >= 15) return 10;
         else if (ratio >= 10) return 7;
         else if (ratio >= 5) return 3;
@@ -195,7 +178,7 @@ public class ScoringService {
         return false;
     }
 
-    // --- [페널티 1] 거시 경제 악화 (-10점) ---
+    // --- [페널티 1] 경기 침체시 기업의 재무 상태에 따라 페널티를 차등 적용 ---
     private int applyMacroPenalty(MacroEconomicData macro) {
         // 장단기 금리차 역전 (10년물 < 2년물) 시 경기 침체 신호로 간주
         if (macro.getUs10yTreasuryYield() != null && macro.getUs2yTreasuryYield() != null) {
@@ -210,12 +193,9 @@ public class ScoringService {
     // --- [페널티 2] 고금리 시기 위험 투자 (-15점) ---
     private int applyRiskyInvestmentPenalty(FinancialStatement fs, MacroEconomicData macro) {
         if (macro.getUs10yTreasuryYield() == null) return 0;
-
         // 1. 고금리 기준: 10년물 국채 금리 4.0% 이상
         boolean isHighInterest = macro.getUs10yTreasuryYield() >= 4.0;
-
         if (!isHighInterest) return 0;
-
         // 2. 부채비율 높음 (200% 이상 가정)
         BigDecimal equity = fs.getTotalEquity();
         if (equity.compareTo(BigDecimal.ZERO) == 0) return 0;
@@ -235,14 +215,11 @@ public class ScoringService {
         boolean isAggressive = investRatio >= 10.0;
 
         if (isHighDebt && isAggressive) {
-            log.info("페널티가 적용되었습니다.: 고금리 시기에 공격적인 투자");
             return 15;
         }
-
         return 0;
     }
 
-    // 등급 계산 헬퍼
     private String calculateGrade(int score) {
         if(score >= 90) return "S";
         if(score >= 80) return "A";
@@ -251,18 +228,34 @@ public class ScoringService {
         return "D";
     }
 
-    // DB 저장 로직
-    private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade) {
+    private void saveScore(
+            FinancialStatement fs,
+            int total,
+            int stab,
+            int prof,
+            int val,
+            int inv,
+            String grade,
+            boolean isOpportunity
+    ) {
         CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
                 .orElseGet(() -> CompanyScore.builder()
                         .company(fs.getCompany())
                         .build());
 
-        score.updateScore(total, stab, prof, val, inv, grade);
+        score.updateScore(
+                total,
+                stab,
+                prof,
+                val,
+                inv,
+                grade,
+                isOpportunity
+        );
+
         companyScoreRepository.save(score);
     }
 
-    // JSON 파싱 헬퍼
     private double parseDouble(JsonNode node, String field) {
         if (node.has(field) && !node.get(field).asText().equalsIgnoreCase("None")) {
             try {
