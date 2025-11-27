@@ -1,8 +1,10 @@
 # Docker
 
 - 실행: `docker-compose up -d`
-- 스프링부트 서버 로그 보기: `docker logs -f company_backend`
+- 완전 종료 (Down) : `docker-compose down`
+- 일시 정지 (Stop): `docker-compose stop`
 - Redis 비우기 (필수): `docker exec -it company_redis redis-cli flushall`
+- 스프링부트 서버 로그 보기: `docker logs -f company_backend`
 - 스프링부트 코드 수정후 다시 빌드 시: `docker-compose up -d --build`
 
 기존 코드가 만들어낸 '잘못된 데이터(ResponseEntity JSON)'가 Redis에 남아있으면, 새 코드가 실행돼도 에러가 날 수 있으니 Redis를 꼭 비워야한다.

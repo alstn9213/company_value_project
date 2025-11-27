@@ -9,7 +9,7 @@ const ScoreRadarChart = ({ score }: Props) => {
   // 차트용 데이터 변환
   const data = [
     { subject: "안정성", A: score.stabilityScore, fullMark: 40 }, // 40점 만점
-     { subject: "수익성", A: score.profitabilityScore, fullMark: 30 }, // 30점 만점
+    { subject: "수익성", A: score.profitabilityScore, fullMark: 30 }, // 30점 만점
     { subject: "가치", A: score.valuationScore, fullMark: 20 }, // 20점 만점
     { subject: "미래투자", A: score.investmentScore, fullMark: 10 },
   ];
