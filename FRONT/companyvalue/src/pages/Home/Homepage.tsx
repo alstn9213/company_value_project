@@ -112,81 +112,104 @@ const HomePage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
         {/* 좌측: 메인 차트 (2칸 차지) */}
         <div className="lg:col-span-2 bg-card border border-slate-700 rounded-xl p-6 shadow-lg backdrop-blur-sm flex flex-col">
-        <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-          <TrendingUp className="text-emerald-500" />
-          주요 금리 및 인플레이션 추이 (최근 30일)
-        </h3>
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <TrendingUp className="text-emerald-500" />
+            주요 금리 및 인플레이션 추이 (최근 10년)
+          </h3>
 
-        <div className="flex-1 min-h-[400px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={history}
-              margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis
-                dataKey="date"
-                stroke="#94a3b8"
-                tick={{ fill: "#94a3b8" }}
-                tickFormatter={(val) => val.substring(5)} // 'MM-DD' 형태로 자르기
-              />
-              <YAxis
-                stroke="#94a3b8"
-                tick={{ fill: "#94a3b8" }}
-                domain={["auto", "auto"]}
-              />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "#1e293b",
-                  borderColor: "#475569",
-                  color: "#f1f5f9",
-                }}
-                itemStyle={{ color: "#f1f5f9" }}
-              />
-              <Legend />
-
-              {/* 장단기 금리차 역전 구간 강조 (빨간 배경) */}
-              {recessionStart && recessionEnd && (
-                <ReferenceArea
-                  x1={recessionStart}
-                  x2={recessionEnd}
-                  strokeOpacity={0.3}
-                  fill="red"
-                  fillOpacity={0.1}
-                  label="금리 역전 구간"
+          <div className="flex-1 min-h-[400px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={history}
+                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis
+                  dataKey="date"
+                  stroke="#94a3b8"
+                  tick={{ fill: "#94a3b8" }}
+                  tickFormatter={(val) => val.substring(5)} // 'MM-DD' 형태로 자르기
                 />
-              )}
+                {/* 왼쪽 Y축: 금리용 (%) */}
+                <YAxis
+                  yAxisId="left"
+                  stroke="#94a3b8"
+                  tick={{ fill: "#94a3b8" }}
+                  domain={["auto", "auto"]}
+                  label={{
+                    value: "금리 (%)",
+                    angle: -90,
+                    position: "insideLeft",
+                    fill: "#94a3b8",
+                  }}
+                />
+                {/* 오른쪽 Y축: 인플레이션용 (지수) */}
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  stroke="#f87171"
+                  tick={{ fill: "#f87171" }}
+                  domain={["auto", "auto"]}
+                  label={{ value: 'CPI 지수', angle: 90, position: 'insideRight', fill: '#f87171' }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#1e293b",
+                    borderColor: "#475569",
+                    color: "#f1f5f9",
+                  }}
+                  itemStyle={{ color: "#f1f5f9" }}
+                />
+                <Legend />
 
-              {/* 10년물(Blue), 2년물(Green), 인플레이션(Red) */}
-              <Line
-                type="monotone"
-                dataKey="us10y"
-                name="10년물 국채"
-                stroke="#60a5fa" // Blue-400
-                strokeWidth={2}
-                dot={false}
-                connectNulls={true}
-              />
-              <Line
-                type="monotone"
-                dataKey="us2y"
-                name="2년물 국채"
-                stroke="#34d399" // Emerald-400
-                strokeWidth={2}
-                dot={false}
-                connectNulls={true}
-              />
-              <Line
-                type="monotone"
-                dataKey="inflation"
-                name="인플레이션"
-                stroke="#f87171" // Red-400
-                strokeWidth={2}
-                dot={false}
-                connectNulls={true}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+                {/* 장단기 금리차 역전 구간 강조 (빨간 배경) */}
+                {recessionStart && recessionEnd && (
+                  <ReferenceArea
+                    x1={recessionStart}
+                    x2={recessionEnd}
+                    strokeOpacity={0.3}
+                    fill="red"
+                    fillOpacity={0.1}
+                    label="금리 역전 구간"
+                  />
+                )}
+
+                {/* 10년물(Blue), 2년물(Green), 인플레이션(Red) */}
+                {/* 금리 데이터는 왼쪽(left) 축 사용 */}
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="us10y"
+                  name="10년물 국채"
+                  stroke="#60a5fa"
+                  strokeWidth={2}
+                  dot={false}
+                  connectNulls={true}
+                />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="us2y"
+                  name="2년물 국채"
+                  stroke="#34d399"
+                  strokeWidth={2}
+                  dot={false}
+                  connectNulls={true}
+                />
+                
+                {/* 인플레이션 데이터는 오른쪽(right) 축 사용 */}
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="inflation"
+                  name="인플레이션 (CPI)"
+                  stroke="#f87171"
+                  strokeWidth={2}
+                  dot={false}
+                  connectNulls={true}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
         {/* 우측: 우량주 리스트 (1칸 차지) */}
