@@ -12,12 +12,13 @@ import {
   Building2,
   Sparkles,
   Star,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
 import ScoreRadarChart from "../../components/charts/ScoreRadarChart";
 import { watchlistApi } from "../../api/watchlistApi";
 import { useAuthStore } from "../../stores/authStore";
 import { AxiosError } from "axios";
+import FinancialTrendChart from "../../components/charts/FinancialTrendChart";
 
 const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();
@@ -33,7 +34,9 @@ const CompanyDetailPage = () => {
   // 관심 종목 추가 핸들러
   const handleAddWatchlist = () => {
     if (!isAuthenticated) {
-      if (confirm("로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?")) {
+      if (
+        confirm("로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?")
+      ) {
         navigate("/login");
       }
       return;
@@ -106,38 +109,43 @@ const CompanyDetailPage = () => {
         </div>
 
         <div className="flex items-center gap-6">
-           {/* ★ 관심 종목 추가 버튼 ★ */}
+          {/* ★ 관심 종목 추가 버튼 ★ */}
           <button
             onClick={handleAddWatchlist}
             className="flex flex-col items-center gap-1 text-slate-400 hover:text-yellow-400 transition-colors group"
             title="관심 종목 추가"
           >
             <div className="p-3 rounded-full bg-slate-800 group-hover:bg-yellow-400/10 border border-slate-600 group-hover:border-yellow-400/50 transition-all shadow-md">
-              <Star size={24} className="group-hover:fill-yellow-400 transition-colors" />
+              <Star
+                size={24}
+                className="group-hover:fill-yellow-400 transition-colors"
+              />
             </div>
-            <span className="text-xs font-medium group-hover:text-yellow-400">관심등록</span>
+            <span className="text-xs font-medium group-hover:text-yellow-400">
+              관심등록
+            </span>
           </button>
 
-        {/* 종합 등급 표시 */}
-        <div className="flex flex-col items-center">
-          <span className="text-slate-400 text-sm mb-1">투자 적합 등급</span>
-          <div
-            className={`w-20 h-20 rounded-full border-4 flex items-center justify-center text-4xl font-bold shadow-[0_0_20px_rgba(0,0,0,0.3)] ${getGradeColor(
-              score.grade
-            )}`}
-          >
-            {score.grade}
-          </div>
-          {/* ★ Opportunity 뱃지 추가 ★ */}
-          {score.isOpportunity && (
-            <div className="mt-3 flex items-center gap-1 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400 text-blue-300 text-xs font-bold animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-              <Sparkles size={12} className="text-blue-300 fill-blue-300" />
-              <span>저점 매수 기회</span>
+          {/* 종합 등급 표시 */}
+          <div className="flex flex-col items-center">
+            <span className="text-slate-400 text-sm mb-1">투자 적합 등급</span>
+            <div
+              className={`w-20 h-20 rounded-full border-4 flex items-center justify-center text-4xl font-bold shadow-[0_0_20px_rgba(0,0,0,0.3)] ${getGradeColor(
+                score.grade
+              )}`}
+            >
+              {score.grade}
             </div>
-          )}
+            {/*  저점 매수 뱃지 추가 ★ */}
+            {score.isOpportunity && (
+              <div className="mt-3 flex items-center gap-1 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400 text-blue-300 text-xs font-bold animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                <Sparkles size={12} className="text-blue-300 fill-blue-300" />
+                <span>저점 매수 기회</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
 
       {/* 2. 분석 대시보드 그리드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -189,9 +197,13 @@ const CompanyDetailPage = () => {
           </div>
         </div>
 
-        {/* 우측: 핵심 재무 데이터 */}
-        <div className="lg:col-span-2">
-          <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full">
+        {/* 우측: 핵심 재무 데이터 + 차트 */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* 실적 추이 차트 추가 */}
+          {data.financialHistory && data.financialHistory.length > 0 && (
+            <FinancialTrendChart data={data.financialHistory} />
+          )}
+          <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-fit">
             <div className="flex justify-between items-end mb-6">
               <h3 className="text-lg font-bold text-white">
                 📊 최신 재무제표 ({fin.year} Q{fin.quarter})

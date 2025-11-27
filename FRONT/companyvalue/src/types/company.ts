@@ -50,4 +50,5 @@ export interface CompanyDetailResponse {
   info: Company;
   score: ScoreResult;
   latestFinancial: FinancialDetail;
+  financialHistory: FinancialDetail[];
 }

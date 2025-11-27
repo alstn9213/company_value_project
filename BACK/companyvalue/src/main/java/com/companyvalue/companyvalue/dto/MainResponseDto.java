@@ -7,6 +7,7 @@ import com.companyvalue.companyvalue.domain.MacroEconomicData;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class MainResponseDto {
 
@@ -84,11 +85,12 @@ public class MainResponseDto {
         }
     }
 
-    // 4. 기업 상세 페이지용 통합 DTO (정보 + 최근 재무 + 점수)
+    // 4. 기업 상세 페이지용 통합 DTO (정보 + 재무 + 점수)
     public record CompanyDetailResponse(
             CompanyInfo info,
             ScoreResult score,
-            FinancialDetail latestFinancial
+            FinancialDetail latestFinancial,
+            List<FinancialDetail> financialHistory
     ) {}
 
     // 5. 거시 경제 지표

@@ -44,7 +44,7 @@ public class CompanyController {
         return ResponseEntity.ok(result);
     }
 
-    // 3. 기업 상세 정보 조회(기본 정보 + 점수 + 최근 재무제표)
+    // 3. 기업 상세 정보 조회(기본 정보 + 점수 + 재무제표)
     @GetMapping("/{ticker}")
     public ResponseEntity<MainResponseDto.CompanyDetailResponse> getCompanyDetail(@PathVariable String ticker) {
         Company company = company = companyRepository.findByTicker(ticker)
@@ -58,14 +58,17 @@ public class CompanyController {
                         .grade("N/A")
                         .build());
 
-        // 최신 재무제표 조회
-        FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
-                .orElse(new FinancialStatement()); // 빈 객체
+        List<FinancialStatement> history = financialStatementRepository.findByCompanyOrderByYearDescQuarterDesc(company);
+        FinancialStatement latest = history.isEmpty() ? new FinancialStatement() : history.get(0);
+        List<MainResponseDto.FinancialDetail> historyDto = history.stream()
+                .map(MainResponseDto.FinancialDetail::from)
+                .toList();
 
         return ResponseEntity.ok(new MainResponseDto.CompanyDetailResponse(
                 MainResponseDto.CompanyInfo.from(company),
                 MainResponseDto.ScoreResult.from(score),
-                MainResponseDto.FinancialDetail.from(fs)
+                MainResponseDto.FinancialDetail.from(latest),
+                historyDto
         ));
     }
 
