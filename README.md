@@ -1,9 +1,10 @@
 <div align="center">
 
-# 📈 기업 가치 평가 & 거시 경제 분석 플랫폼 (Company Value)
+# 📈 기업 가치 평가 & 거시 경제 분석 플랫폼 (Value Pick)
+
 <br/>
 
-**"위험한 기업을 회피하고, 시장의 흐름을 읽는 스마트한 투자 지표"** 재무제표 데이터와 거시 경제 지표(금리, 실업률 등)를 결합하여 기업의 투자 적합성을 입체적으로 분석하는 풀스택 웹 애플리케이션입니다.
+기업들의 재무제표와 거시 경제 지표(금리, 실업률 등)를 결합하여 장기 투자하기에 적합한 기업을 분석하는 풀스택 웹 애플리케이션입니다.
 
 <br/>
 
@@ -19,34 +20,41 @@
 
 ---
 
-## 📝 프로젝트 개요 (Overview)
-단순히 주가를 보여주는 것을 넘어, **Macro(시장 상황)**와 **Micro(기업 재무)**를 결합한 투자 인사이트를 제공합니다.  
+## 📝 프로젝트 개요
+
+단순히 주가를 보여주는 것을 넘어, 기업 재무상태와 시장 상황을 바탕으로 사용자에게 다각화된 투자 인사이트를 제공합니다.
 미국 주식 시장 데이터를 기반으로 기업의 **재무 건전성을 100점 만점으로 스코어링**하며, 경기 침체 시그널(장단기 금리차 역전 등) 발생 시 점수를 자동 차감하는 **동적 페널티 시스템**을 구현했습니다.
 
 ### 🎯 기획 의도
-- **시장 상황 반영:** 아무리 좋은 기업도 경기 침체기에는 위험할 수 있다는 점에 착안하여 거시 경제 지표를 평가 로직에 반영했습니다.
+
+- **장기투자자에게 적합한 정보 제공:**
+- **시장 상황 반영:** 재무적으로 탄탄한 기업도 경기 침체기에는 위험할 수 있다는 점에 착안하여 거시 경제 지표를 평가 로직에 반영했습니다.
 - **보수적 투자 유도:** 부채가 과도하거나 자본 잠식 상태인 기업을 필터링하여 투자자에게 안전한 선택지를 제안합니다.
 
 ---
 
-## 💡 핵심 기능 (Key Features)
+## 💡 핵심 기능
 
 ### 1. 📊 기업 재무 건전성 스코어링
+
 재무제표(손익계산서, 재무상태표, 현금흐름표) 3종을 분석하여 4대 지표를 산출합니다.
+
 - **안정성 (40점):** 부채비율, 영업활동 현금흐름 흑자 여부 평가
 - **수익성 (30점):** ROE(자기자본이익률), 영업이익률 분석
 - **가치 (20점):** PER, PBR을 활용한 저평가 기업 발굴
 - **미래 투자 (10점):** 매출액 대비 R&D 및 설비투자(CapEx) 비중 평가
 
-### 2. ⚠️ 동적 페널티 시스템 (Dynamic Penalty)
+### 2. ⚠️ 동적 페널티 시스템
+
 시장 상황에 따라 기업의 점수가 실시간으로 변동되는 **Risk Management** 로직입니다.
 | 상황 | 조건 | 페널티 |
 | :--- | :--- | :--- |
 | **경기 침체 경고** | 장단기 금리차(10Y - 2Y) 역전 발생 시 | **전 기업 -10점** |
-| **고금리 위험 투자** | 금리 4% 이상 & 부채비율 200% 초과 기업이 무리한 투자 감행 시 | **해당 기업 -15점** |
+| **고금리 위험 투자** | 금리 4% 이상인 상황에서 부채비율 200% 초과 기업이 무리한 투자 감행 시 | **해당 기업 -15점** |
 | **투자 부적격(과락)** | 자본 잠식 상태 또는 부채비율 400% 초과 | **즉시 F등급 (0점)** |
 
 ### 3. 🌏 거시 경제 대시보드
+
 - **FRED API**를 연동하여 미 10년물/2년물 국채 금리, 인플레이션(CPI), 실업률 데이터를 매일 업데이트합니다.
 - **Recharts**를 활용하여 장단기 금리차 역전 구간을 시각적으로 강조(Red Zone)하여 제공합니다.
 
@@ -55,6 +63,7 @@
 ## 🛠 시스템 아키텍처 (System Architecture)
 
 ### Tech Stack
+
 - **Backend:** Spring Boot 3, Spring Security (JWT), Spring Data JPA
 - **Frontend:** React, TypeScript, Vite, Tailwind CSS, Zustand, TanStack Query
 - **Database:** MariaDB (Main), Redis (Caching)
@@ -62,6 +71,7 @@
 - **External API:** Alpha Vantage (Financials), FRED (Macro Economy)
 
 ### Data Pipeline & Optimization
+
 1. **비동기 대용량 처리 (Spring WebClient):**
    - 외부 API의 대용량 JSON 응답을 처리하기 위해 `ExchangeStrategies`로 메모리 버퍼를 **10MB**로 증설하여 `DataBufferLimitException` 해결.
 2. **스케줄링 및 캐싱 전략:**
@@ -71,56 +81,58 @@
 
 ---
 
-## 🚀 실행 방법 (Getting Started)
+## 🚀 실행 방법
 
 이 프로젝트는 **Docker Compose**를 통해 DB(MariaDB, Redis)와 백엔드 애플리케이션을 한 번에 실행할 수 있습니다.
 
-### Prerequisites
-- Docker & Docker Compose installed
-- Java 17 (Local 개발 시)
-- Node.js 18+ (Frontend 개발 시)
+### 준비 프로그램
 
-### Installation
+- Docker & Docker Compose installed
+- Java 17
+- Node.js 18+
+
+### 설치 과정
+
 1. 프로젝트 클론
 
-    ```bash
-    git clone [https://github.com/alstn9213/company_value_project.git](https://github.com/   alstn9213/company_value_project.git)
-    cd company_value_project
-    ```
+   ```bash
+   git clone [https://github.com/alstn9213/company_value_project.git](https://github.com/   alstn9213/company_value_project.git)
+   cd company_value_project
+   ```
 
-2.  환경 변수 설정 (`.env`)
+2. 환경 변수 설정 (`.env`)
 
-      - 프로젝트 루트에 `.env` 파일을 생성하고 데이터베이스 설정을 입력합니다.
+   - 프로젝트 루트에 `.env` 파일을 생성하고 데이터베이스 설정을 입력합니다.
 
-    <!-- end list -->
+   <!-- end list -->
 
-    ```env
-    DB_ROOT_PASSWORD=your_password
-    DB_NAME=value
-    ```
+   ```env
+   DB_ROOT_PASSWORD=your_password
+   DB_NAME=value
+   ```
 
-3.  Docker 실행 (Backend + DB + Redis)
+3. Docker 실행 (Backend + DB + Redis)
 
-    ```bash
-    # 이미지 빌드 및 컨테이너 실행
-    docker-compose up -d --build
-    ```
+   ```bash
+   # 이미지 빌드 및 컨테이너 실행
+   docker-compose up -d --build
+   ```
 
-      - 백엔드 서버: `http://localhost:8080`
-      - MariaDB: `3310` 포트 매핑
-      - Redis: `6379` 포트
+   - 백엔드 서버: `http://localhost:8080`
+   - MariaDB: `3310` 포트 매핑
+   - Redis: `6379` 포트
 
-4.  Frontend 실행 (Local)
+4. Frontend 실행 (Local)
 
-    ```bash
-    cd FRONT/companyvalue
-    npm install
-    npm run dev
-    ```
+   ```bash
+   cd FRONT/companyvalue
+   npm install
+   npm run dev
+   ```
 
-      - 프론트엔드 서버: `http://localhost:5173`
+   - 프론트엔드 서버: `http://localhost:5173`
 
------
+---
 
 ## 📂 프로젝트 구조
 
@@ -141,13 +153,16 @@
 └── docker-compose.yml    # 인프라 오케스트레이션
 ```
 
------
+---
+
+>   * **Architecture:** [시스템 설계 및 구현 명세서](https://www.google.com/search?q=docs/architecture/system_architecture.md)
+>   * **DevOps:** [Docker 실행 및 트러블 슈팅 가이드](https://www.google.com/search?q=docs/guides/docker_guide.md)
+>   * **Domain Knowledge:** [프로젝트에 적용된 거시 경제 지표 해석](https://www.google.com/search?q=docs/domain/economy_concepts.md)
+
+---
 
 ## 👨‍💻 Developer
 
 **alstn9213**
-<br>
-    - GitHub: [https://github.com/alstn9213](https://github.com/alstn9213)
-<br>
-    - email: alstn9213@naver.com
-
+<br> - GitHub: [https://github.com/alstn9213](https://github.com/alstn9213)
+<br> - email: alstn9213@naver.com
