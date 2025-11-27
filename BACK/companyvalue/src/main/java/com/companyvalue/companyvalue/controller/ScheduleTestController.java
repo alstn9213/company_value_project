@@ -12,7 +12,7 @@ public class ScheduleTestController {
 
     private final SchedulingService schedulingService;
     private final MacroDataService macroDataService;
-
+//    http://localhost:8080/test/macro/init
     @GetMapping("/test/macro/init")
     public String initMacroHistory() {
         macroDataService.initHistoricalMacroData();

@@ -59,14 +59,14 @@ public class SchedulingService {
 
         for(Company company : companies) {
             String ticker = company.getTicker();
-            log.info("--- Processing: {} ---", ticker);
+//            log.info("--- Processing: {} ---", ticker);
 
             boolean alreadyExists = financialStatementRepository
                     .findTopByCompanyOrderByYearDescQuarterDesc(company)
                     .isPresent();
 
             if(alreadyExists) {
-                log.info(">>> [Skip] 이미 데이터가 존재합니다. 다음 기업으로 넘어갑니다: {}", ticker);
+//                log.info(">>> [Skip] 이미 데이터가 존재합니다. 다음 기업으로 넘어갑니다: {}", ticker);
                 continue;
             }
 
@@ -91,7 +91,7 @@ public class SchedulingService {
 
                 scoringService.calculateAndSaveScore(fs, overview);
 
-                log.info("--- Completed: {} ---", ticker);
+//                log.info("--- Completed: {} ---", ticker);
 
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();

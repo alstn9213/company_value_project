@@ -93,14 +93,8 @@
 
 ### 설치 과정
 
-1. 프로젝트 클론
 
-   ```bash
-   git clone [https://github.com/alstn9213/company_value_project.git](https://github.com/   alstn9213/company_value_project.git)
-   cd company_value_project
-   ```
-
-2. 환경 변수 설정 (`.env`)
+1. 환경 변수 설정 (`.env`)
 
    - 프로젝트 루트에 `.env` 파일을 생성하고 데이터베이스 설정을 입력합니다.
 
@@ -111,7 +105,7 @@
    DB_NAME=value
    ```
 
-3. Docker 실행 (Backend + DB + Redis)
+2. Docker 실행 (Backend + DB + Redis)
 
    ```bash
    # 이미지 빌드 및 컨테이너 실행
@@ -122,7 +116,7 @@
    - MariaDB: `3310` 포트 매핑
    - Redis: `6379` 포트
 
-4. Frontend 실행 (Local)
+3. Frontend 실행 (Local)
 
    ```bash
    cd FRONT/companyvalue
@@ -152,12 +146,6 @@
 │       └── src/stores    # Zustand 전역 상태 관리
 └── docker-compose.yml    # 인프라 오케스트레이션
 ```
-
----
-
->   * **Architecture:** [시스템 설계 및 구현 명세서](https://www.google.com/search?q=docs/architecture/system_architecture.md)
->   * **DevOps:** [Docker 실행 및 트러블 슈팅 가이드](https://www.google.com/search?q=docs/guides/docker_guide.md)
->   * **Domain Knowledge:** [프로젝트에 적용된 거시 경제 지표 해석](https://www.google.com/search?q=docs/domain/economy_concepts.md)
 
 ---
 
