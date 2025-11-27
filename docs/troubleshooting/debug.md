@@ -1,0 +1,79 @@
+# 🐛 백엔드 초기 설정 및 실행 트러블슈팅 로그
+
+**작성일:** 2025-11-27  
+**작성자:** alstn9213  
+**관련 서비스:** Backend (Spring Boot), Docker, Security
+
+---
+
+## 1. 문제 상황 (Problem)
+프로젝트 초기 구동 후 프론트엔드에서 대시보드와 기업 목록 데이터를 불러오지 못하는 현상 발생.
+- **증상 1:** 브라우저 콘솔에 `403 Forbidden` 에러 발생.
+- **증상 2:** 백엔드 로그에는 에러 로그없이 `INFO` 로그만 출력됨.
+- **증상 3:** 코드를 수정(CORS 설정, 로그 레벨 변경)하고 Docker를 재실행(`restart` 또는 `up --build`)해도 수정 사항이 반영되지 않음.
+
+---
+
+## 2. 원인 분석 (Root Cause Analysis)
+
+### A. 데이터 부재 (Initial Data Missing)
+- **원인:** 프로젝트 로직상 스케줄러가 특정 시간(매일 08:00)에만 데이터를 수집하므로, 초기 실행 시 DB가 비어있음.
+- **해결:** 테스트 컨트롤러(`ScheduleTestController`)를 통해 수동으로 데이터 수집 트리거 실행.
+
+### B. Docker 빌드 워크플로우 오해 (Build Process Mismatch) **[핵심 원인]**
+- **원인:** `Dockerfile`이 `COPY build/libs/*.jar app.jar` 명령어로 **'이미 빌드된 JAR 파일'**을 복사하도록 작성됨.
+- **문제:** `docker-compose up --build` 명령은 Docker 이미지만 새로 만들 뿐, **자바 소스 코드를 컴파일하여 JAR를 새로 만드는 과정(Gradle Build)은 수행하지 않음.**
+- **결과:** 코드를 아무리 수정해도 컨테이너는 과거에 빌드된 구버전 JAR 파일을 계속 실행함.
+
+### C. Spring Bean 등록 누락
+- **원인:** `JwtAuthenticationEntryPoint` 클래스에 `@Component` 어노테이션이 누락됨.
+- **결과:** `SecurityConfig`에서 해당 빈을 주입받지 못해 애플리케이션 실행 실패.
+
+### D. Spring Security 설정 충돌
+- **원인:** CORS 설정 시 `AllowedOrigins("*")`(모든 도메인 허용)와 `AllowCredentials(true)`(인증 정보 허용)를 함께 사용.
+- **결과:** 브라우저 보안 정책 위반으로 인해 스프링 부트가 구동 시점에 `IllegalArgumentException` 발생.
+
+---
+
+## 3. 해결 과정 (Chronological Steps)
+
+백엔드 로그에 아무런 에러가 뜨지 않는 상태에서 403 Forbidden 응답이 온다는 것은, 스프링 시큐리티 필터 단계에서 "조용히" 거부되고 있다는 뜻이다.
+
+스프링 부트의 기본 설정은 보안 관련 상세 로그를 숨기기 때문에, 로그 레벨을 DEBUG로 낮춰야한다.
+
+application.properties에 다음과 같은 설정을 추가한다.
+
+```properites
+logging.level.org.springframework.security=DEBUG
+logging.level.org.springframework.web=DEBUG
+logging.level.com.companyvalue=DEBUG
+```
+
+### Step 1: 데이터 초기화 및 캐시 정리
+1.  `http://localhost:8080/test/macro/init` 호출로 거시 경제 데이터 적재.
+2.  `docker exec -it company_redis redis-cli flushall` 명령어로 Redis 캐시 초기화 (빈 데이터 캐싱 방지).
+
+### Step 2: 올바른 빌드/배포 파이프라인 정립
+자바 코드가 수정될 때마다 다음 순서를 반드시 준수해야 함을 확인.
+1.  **기존 컨테이너 종료:** `docker-compose down`
+2.  **소스 코드 빌드 (JAR 생성):** `./gradlew clean build -x test` (Windows: `.\gradlew`)
+3.  **Docker 이미지 빌드 및 실행:** `docker-compose up -d --build backend`
+
+### Step 3: 코드 레벨 버그 수정
+1.  **Bean 등록:** `JwtAuthenticationEntryPoint.java`에 `@Component` 추가.
+2.  **CORS 설정 수정:** `SecurityConfig.java`에서 충돌 설정 변경.
+    ```java
+    // 변경 전
+    configuration.setAllowedOrigins(List.of("*"));
+    
+    // 변경 후
+    configuration.setAllowedOriginPatterns(List.of("*"));
+    ```
+
+---
+
+## 4. 결론 및 배운 점 (Conclusion)
+- Dockerfile이 JAR 파일을 단순히 복사하는 구조일 경우, **Docker 빌드 전에 반드시 Gradle 빌드를 선행**해야 한다.
+- 백엔드 수정 사항이 반영되지 않는 것 같으면 가장 먼저 **"새로운 JAR가 생성되었는지"** 의심해야 한다.
+- CORS 설정 시 `Credentials`와 `Origins(*)`는 공존할 수 없으므로 `OriginPatterns`를 사용해야 한다.
+    - 로그인 기능 때문에 쿠키/인증정보 허용(AllowCredentials(true))을 설정해 두었는데, 그와 동시에 모든 도메인 허용(AllowedOrigins("*"))를 사용하는 것은 브라우저 보안 정책상 금지되어 있기 때문에 스프링 부트가 시작 시점에 에러가 발생한다.
