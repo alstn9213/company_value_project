@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 메서드는 인증 없이 모두 허용
                         .requestMatchers("/auth/**", "/test/**", "/").permitAll() // 로그인, 회원가입 등 공개 API 허용
+                        .requestMatchers("/error").permitAll() // 에러 페이지 접근 허용
                         .requestMatchers(HttpMethod.GET, "/api/macro/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/companies/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/scores/**").permitAll()

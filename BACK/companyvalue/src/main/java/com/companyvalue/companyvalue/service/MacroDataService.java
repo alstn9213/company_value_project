@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,18 +30,38 @@ public class MacroDataService {
         // 날짜별 지표 값을 담을 임시 저장소 (Key: 날짜, Value: 지표별 값 Map)
         Map<LocalDate, Map<String, Double>> historyMap = new HashMap<>();
 
-        // 1. 각 지표별 전체 데이터 파싱하여 Map에 병합
+        // 각 지표별 전체 데이터 파싱하여 Map에 병합
         collectHistory(historyMap, "DGS10", "us10y");
         collectHistory(historyMap, "DGS2", "us2y");
         collectHistory(historyMap, "DFF", "fedFunds");
         collectHistory(historyMap, "CPIAUCSL", "cpi");
         collectHistory(historyMap, "UNRATE", "unemployment");
 
-        // 2. Map을 Entity로 변환하여 저장
+        // 날짜 정렬 (빈 데이터 채우기를 위해 순서가 중요함)
+        List<LocalDate> sortedDates = historyMap.keySet().stream()
+                .sorted()
+                .toList();
+
+        //  Map을 Entity로 변환하여 저장
         List<MacroEconomicData> dataList = new ArrayList<>();
+
+        // 직전 유효 값을 기억할 변수들 (Forward Fill 용)
+        Double lastCpi = null;
+        Double lastUnemployment = null;
 
         for (LocalDate date : historyMap.keySet()) {
             Map<String, Double> values = historyMap.get(date);
+
+            // 현재 날짜에 값이 있으면 갱신, 없으면 직전 값(lastCpi) 사용
+            Double currentCpi = values.get("cpi");
+            if (currentCpi != null) {
+                lastCpi = currentCpi;
+            }
+
+            Double currentUnemployment = values.get("unemployment");
+            if (currentUnemployment != null) {
+                lastUnemployment = currentUnemployment;
+            }
 
             // 이미 해당 날짜 데이터가 DB에 있는지 확인 (중복 방지)
             MacroEconomicData macroData = macroRepository.findByRecordedDate(date)
@@ -54,8 +75,8 @@ public class MacroDataService {
                     values.getOrDefault("fedFunds", macroData.getFedFundsRate()),
                     values.getOrDefault("us10y", macroData.getUs10yTreasuryYield()),
                     values.getOrDefault("us2y", macroData.getUs2yTreasuryYield()),
-                    values.getOrDefault("cpi", macroData.getInflationRate()),
-                    values.getOrDefault("unemployment", macroData.getUnemploymentRate())
+                    lastCpi,
+                    lastUnemployment
             );
 
             dataList.add(macroData);

@@ -111,7 +111,7 @@ const HomePage = () => {
       {/* 4. 메인 콘텐츠 영역 (차트 + 랭킹 리스트) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
         {/* 좌측: 메인 차트 (2칸 차지) */}
-        <div className="lg:col-span-2 bg-card border border-slate-700 rounded-xl p-6 shadow-lg backdrop-blur-sm flex flex-col"></div>
+        <div className="lg:col-span-2 bg-card border border-slate-700 rounded-xl p-6 shadow-lg backdrop-blur-sm flex flex-col">
         <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
           <TrendingUp className="text-emerald-500" />
           주요 금리 및 인플레이션 추이 (최근 30일)
@@ -187,6 +187,7 @@ const HomePage = () => {
               />
             </LineChart>
           </ResponsiveContainer>
+          </div>
         </div>
         {/* 우측: 우량주 리스트 (1칸 차지) */}
         <div className="lg:col-span-1 h-full">
