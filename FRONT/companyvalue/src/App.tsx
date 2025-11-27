@@ -14,28 +14,18 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 공개 라우트 (로그인 불필요) */}
         <Route path='/login' element={<LoginPage />}/>
         <Route path="/signup" element={<SignupPage />} />
-
-        {/* 보호된 라우트 (로그인 필요) */}
-        <Route element={<ProtectedRoute />}>
-          {/* MainLayout으로 감싸서 사이드바 공통 적용 */}
-          <Route element={<MainLayout />}>
-            {/* 1. 대시보드 */}
-            <Route path='/' element={<HomePage />}/>
-
-            {/* 2. 기업 찾기 */}
-            <Route path='/companies' element={<CompanyListPage />} />
-
-            {/* 3. 관심 종목  */}
+        <Route element={<MainLayout />}>
+          {/* [공개] 누구나 접근 가능 */}
+          <Route path='/' element={<HomePage />}/>
+          <Route path='/companies' element={<CompanyListPage />} />
+          <Route path='/company/:ticker' element={<CompanyDetailPage />} />
+          {/* [비공개] 로그인한 유저만 접근 가능 (관심 종목) */}
+          <Route element={<ProtectedRoute />}>
             <Route path='/watchlist' element={<WatchlistPage />} />
-
-             {/* 4. 기업 상세 */}
-            <Route path='/company/:ticker' element={<CompanyDetailPage />} />
-            </Route>
+          </Route>
         </Route>
-
         {/* 잘못된 경로는 홈으로 리다이렉트 */}
         <Route path='*' element={<Navigate to='/' replace/>}/>
       </Routes>

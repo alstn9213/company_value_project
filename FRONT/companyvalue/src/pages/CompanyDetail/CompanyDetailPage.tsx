@@ -6,19 +6,40 @@ import {
   getGradeColor,
   getScoreColor,
 } from "../../utils/formatters";
-import { AlertTriangle, ArrowLeft, Building2, Sparkles, Star, TrendingUp } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Building2,
+  Sparkles,
+  Star,
+  TrendingUp
+} from "lucide-react";
 import ScoreRadarChart from "../../components/charts/ScoreRadarChart";
 import { watchlistApi } from "../../api/watchlistApi";
+import { useAuthStore } from "../../stores/authStore";
+import { AxiosError } from "axios";
 
 const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuthStore();
   const { data, isLoading, isError } = useQuery({
     queryKey: ["company", ticker],
     queryFn: () => companyApi.getDetail(ticker!),
     enabled: !!ticker,
   });
+
+  // 관심 종목 추가 핸들러
+  const handleAddWatchlist = () => {
+    if (!isAuthenticated) {
+      if (confirm("로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?")) {
+        navigate("/login");
+      }
+      return;
+    }
+    addWatchlistMutation.mutate(ticker!);
+  };
 
   // 관심 종목 추가 Mutation
   const addWatchlistMutation = useMutation({
@@ -27,7 +48,7 @@ const CompanyDetailPage = () => {
       alert("관심 종목에 추가되었습니다.");
       queryClient.invalidateQueries({ queryKey: ["watchlist"] });
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       // 백엔드에서 중복 시 400 Bad Request를 보냄
       if (error.response?.status === 400) {
         alert("이미 관심 목록에 존재하는 기업입니다.");
@@ -87,7 +108,7 @@ const CompanyDetailPage = () => {
         <div className="flex items-center gap-6">
            {/* ★ 관심 종목 추가 버튼 ★ */}
           <button
-            onClick={() => addWatchlistMutation.mutate(ticker!)}
+            onClick={handleAddWatchlist}
             className="flex flex-col items-center gap-1 text-slate-400 hover:text-yellow-400 transition-colors group"
             title="관심 종목 추가"
           >
