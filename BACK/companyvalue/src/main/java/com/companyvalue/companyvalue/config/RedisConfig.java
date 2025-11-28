@@ -54,11 +54,10 @@ public class RedisConfig {
 
         // 캐시 이름별 별도 TTL 설정 (Map)
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        // 거시 경제 데이터는 하루에 한 번 바뀌므로 길게(24시간) 설정
         cacheConfigurations.put("macro_latest", defaultConfig.entryTtl(Duration.ofHours(24)));
         cacheConfigurations.put("macro_history", defaultConfig.entryTtl(Duration.ofHours(24)));
-        // 기업 점수는 자주 조회되지만 변동이 적으므로 적당히(30분) 설정
         cacheConfigurations.put("company_score", defaultConfig.entryTtl(Duration.ofMinutes(30)));
+        cacheConfigurations.put("stock_history", defaultConfig.entryTtl(Duration.ofHours(6)));
 
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(defaultConfig)

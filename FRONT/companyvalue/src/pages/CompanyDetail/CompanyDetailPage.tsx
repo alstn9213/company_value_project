@@ -19,16 +19,25 @@ import { watchlistApi } from "../../api/watchlistApi";
 import { useAuthStore } from "../../stores/authStore";
 import { AxiosError } from "axios";
 import FinancialTrendChart from "../../components/charts/FinancialTrendChart";
+import StockPriceChart from "../../components/charts/StockPriceChart";
 
 const CompanyDetailPage = () => {
-  const { ticker } = useParams<{ ticker: string }>();
+  const {ticker} = useParams<{ ticker: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useAuthStore();
-  const { data, isLoading, isError } = useQuery({
+  const {isAuthenticated} = useAuthStore();
+  const {data, isLoading, isError} = useQuery({
     queryKey: ["company", ticker],
     queryFn: () => companyApi.getDetail(ticker!),
     enabled: !!ticker,
+  });
+
+  // 2. [추가] 주가 차트 데이터 조회 Query (Mock 지원)
+  const {data: stockHistory, isLoading: isChartLoading} = useQuery({
+    queryKey: ["companyStock", ticker],
+    queryFn: async () => companyApi.getStockHistory(ticker!),
+    enabled: !!ticker,
+    staleTime: 1000 * 60 * 60, // 1시간 캐싱
   });
 
   // 관심 종목 추가 핸들러
@@ -235,6 +244,16 @@ const CompanyDetailPage = () => {
 
         {/* 우측: 핵심 재무 데이터 + 차트 */}
         <div className="lg:col-span-2 space-y-6">
+
+          {/* 주가 차트 */}
+          {isChartLoading ? (
+            <div className="w-full h-[350px] bg-slate-800/30 rounded-xl flex items-center justify-center text-slate-400 border border-slate-700/50 animate-pulse">
+              주가 데이터 로딩 중...
+            </div>
+          ) : (
+            <StockPriceChart data={stockHistory || []} />
+          )}
+
           {/* 실적 추이 차트 추가 */}
           {data.financialHistory && data.financialHistory.length > 0 && (
             <FinancialTrendChart data={data.financialHistory} />

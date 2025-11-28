@@ -54,3 +54,8 @@ export interface CompanyDetailResponse {
   latestFinancial: FinancialDetail;
   financialHistory: FinancialDetail[];
 }
+
+export interface StockHistory {
+  date: string; // "2024-01-01"
+  close: number; // 150.50
+}

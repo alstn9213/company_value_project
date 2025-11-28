@@ -1,4 +1,4 @@
-import { Company, CompanyDetailResponse, PageResponse } from "../types/company";
+import { Company, CompanyDetailResponse, PageResponse, StockHistory } from "../types/company";
 import axiosClient from "./axiosClient";
 
 export const companyApi = {
@@ -22,6 +22,12 @@ export const companyApi = {
   // 기업 상세 조회 (정보 + 점수 + 재무)
   getDetail: async (ticker: string): Promise<CompanyDetailResponse> => {
     const response = await axiosClient.get<CompanyDetailResponse>(`/api/companies/${ticker}`);
+    return response.data;
+  },
+
+  // 주가 차트 데이터 조회
+  getStockHistory: async (ticker: string): Promise<StockHistory[]> => {
+    const response = await axiosClient.get<StockHistory[]>(`/api/companies/${ticker}/chart`);
     return response.data;
   }
 

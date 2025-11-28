@@ -7,6 +7,8 @@ import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import com.companyvalue.companyvalue.domain.repository.CompanyScoreRepository;
 import com.companyvalue.companyvalue.domain.repository.FinancialStatementRepository;
 import com.companyvalue.companyvalue.dto.MainResponseDto;
+import com.companyvalue.companyvalue.dto.StockHistoryDto;
+import com.companyvalue.companyvalue.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +27,7 @@ public class CompanyController {
     private final CompanyRepository companyRepository;
     private final FinancialStatementRepository financialStatementRepository;
     private final CompanyScoreRepository companyScoreRepository;
+    private final StockService stockService;
 
     // 1. 전체 기업 목록 조회
     @GetMapping
@@ -95,6 +98,13 @@ public class CompanyController {
                 MainResponseDto.FinancialDetail.from(latest),
                 historyDto
         ));
+    }
+
+    // 4. 주가 차트 조회
+    @GetMapping("/{ticker}/chart")
+    public ResponseEntity<List<StockHistoryDto>> getCompanyChart(@PathVariable String ticker) {
+        List<StockHistoryDto> chartData = stockService.getStockHistory(ticker);
+        return ResponseEntity.ok(chartData);
     }
 
 }

@@ -47,11 +47,10 @@ public class DataFetchService {
     }
 
     /**
-     * 실시간 주가 정보 가져오기
-     * Function: GLOBAL_QUOTE
+     * 일별 주가 데이터 (차트용) - TIME_SERIES_DAILY
      */
-    public JsonNode getStockPrice(String symbol) {
-        return callAlphaVantage("GLOBAL_QUOTE", symbol);
+    public JsonNode getDailyStockHistory(String symbol) {
+        return callAlphaVantage("TIME_SERIES_DAILY", symbol);
     }
 
     // 공통 호출 메서드 추출
