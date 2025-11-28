@@ -103,6 +103,22 @@ public class MacroDataService {
 //        UNRATE: 실업률
         Double unemployment = fetchLatestValue("UNRATE");
 
+        // 결측치 보정: 값이 없으면 가장 최근(어제) 데이터를 가져와서 채움
+        // DB에서 가장 최근 데이터 1건 조회
+        MacroEconomicData lastData = macroRepository.findTopByOrderByRecordedDateDesc().orElse(null);
+
+        if (lastData != null) {
+            if (cpi == null) {
+                cpi = lastData.getInflationRate();
+                log.info("오늘 CPI 데이터 없음 -> 직전 값으로 대체: {}", cpi);
+            }
+            if (unemployment == null) {
+                unemployment = lastData.getUnemploymentRate();
+                log.info("오늘 실업률 데이터 없음 -> 직전 값으로 대체: {}", unemployment);
+            }
+            // (필요 시 금리 데이터도 동일하게 처리 가능)
+        }
+
         LocalDate today = LocalDate.now();
 
         // DB에 저장하기 (오늘 날짜 데이터가 이미 있으면 업데이트, 없으면 생성)

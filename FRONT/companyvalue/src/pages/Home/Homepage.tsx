@@ -121,7 +121,7 @@ const HomePage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={history}
-                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis
@@ -141,6 +141,7 @@ const HomePage = () => {
                     angle: -90,
                     position: "insideLeft",
                     fill: "#94a3b8",
+                    dy: 10,
                   }}
                 />
                 {/* 오른쪽 Y축: 인플레이션용 (지수) */}
@@ -150,7 +151,12 @@ const HomePage = () => {
                   stroke="#f87171"
                   tick={{ fill: "#f87171" }}
                   domain={["auto", "auto"]}
-                  label={{ value: 'CPI 지수', angle: 90, position: 'insideRight', fill: '#f87171' }}
+                  label={{
+                    value: "CPI 지수",
+                    angle: 90,
+                    position: "insideRight",
+                    fill: "#f87171",
+                  }}
                 />
                 <Tooltip
                   contentStyle={{
@@ -196,11 +202,11 @@ const HomePage = () => {
                   dot={false}
                   connectNulls={true}
                 />
-                
+
                 {/* 인플레이션 데이터는 오른쪽(right) 축 사용 */}
                 <Line
                   yAxisId="right"
-                  type="monotone"
+                  type="stepAfter"
                   dataKey="inflation"
                   name="인플레이션 (CPI)"
                   stroke="#f87171"
