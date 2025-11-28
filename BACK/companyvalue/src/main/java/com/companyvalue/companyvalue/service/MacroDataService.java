@@ -49,7 +49,7 @@ public class MacroDataService {
         Double lastCpi = null;
         Double lastUnemployment = null;
 
-        for (LocalDate date : historyMap.keySet()) {
+        for (LocalDate date : sortedDates) {
             Map<String, Double> values = historyMap.get(date);
 
             // 현재 날짜에 값이 있으면 갱신, 없으면 직전 값(lastCpi) 사용
