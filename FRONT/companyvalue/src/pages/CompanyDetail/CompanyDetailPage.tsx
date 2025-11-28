@@ -254,7 +254,7 @@ const CompanyDetailPage = () => {
               />
             </div>
 
-            {/* 과락/페널티 알림 (예시) */}
+            {/* 과락/페널티 알림  */}
             {score.grade === "F" && (
               <div className="mt-8 bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex gap-3 items-start">
                 <AlertTriangle className="text-red-500 shrink-0" />

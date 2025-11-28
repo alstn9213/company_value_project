@@ -37,7 +37,7 @@ public class ScoringService {
 
         // 재무 정보로 불량 기업 과락 체크
         if(isDisqualified(fs)) {
-            saveScore(fs, 0, 0, 0, 0, 0, "F (과락)", false);
+            saveScore(fs, 0, 0, 0, 0, 0, "F", false);
             return;
         }
         // 점수 계산

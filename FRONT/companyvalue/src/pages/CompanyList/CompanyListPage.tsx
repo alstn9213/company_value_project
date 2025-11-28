@@ -209,7 +209,7 @@ const CompanyListPage = () => {
               >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex gap-2 items-start">
-                    {/* [추가] 등급 뱃지 표시 */}
+                    {/* 등급 뱃지 표시 */}
                     <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold border ${getGradeColor(company.grade)}`}>
                       {company.grade}
                     </div>

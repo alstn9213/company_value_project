@@ -30,9 +30,9 @@ const MainLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-[#0f172a] text-slate-200 font-sans">
-      {/* Sidebar (좌측 메뉴) */}
-      <aside className="w-64 flex-shrink-0 border-r border-slate-800 bg-[#0f172a] flex flex-col fixed h-full z-10 transition-all duration-300">
-        {/* Logo Area */}
+      {/* 사이드바 (좌측 메뉴) */}
+      <aside className="w-64 flex-shrink-0 border-r border-slate-800 bg-[#0f172a] flex flex-col sticky top-0 h-screen z-10 transition-all duration-300">
+        {/* 로고 */}
         <div className="p-6 flex items-center gap-2">
           <div className="bg-emerald-500/20 p-2 rounded-lg text-emerald-400">
             <TrendingUp size={24} />
@@ -42,7 +42,7 @@ const MainLayout = () => {
           </h1>
         </div>
 
-        {/* User Info */}
+        {/* 회원 정보 */}
         {isAuthenticated && (
           <div className="px-6 py-4 mb-2 border-b border-slate-800">
             <p className="text-xs text-slate-500 uppercase mb-1">Welcome</p>
@@ -52,7 +52,7 @@ const MainLayout = () => {
           </div>
         )}
 
-        {/* Navigation Links */}
+        {/* 내비게이션 링크 */}
         <nav className="flex-1 px-4 space-y-2 py-4 overflow-y-auto">
           {menus.map((menu) => {
             const isActive = location.pathname === menu.path;
@@ -104,11 +104,11 @@ const MainLayout = () => {
         </nav>
       </aside>
 
-      {/* Main Content Area (우측 컨텐츠) */}
-      <main className="flex-1 ml-64 bg-[#0f172a] min-h-screen relative flex flex-col">
+      {/* 우측 컨텐츠 */}
+      <main className="flex-1 min-w-0 bg-[#0f172a] min-h-screen relative flex flex-col">
         {/* Background Glow Effect */}
         <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-blue-900/10 to-transparent pointer-events-none" />
-        {/* Header */}
+        {/* 헤더 */}
         <header className="sticky top-0 z-20 flex justify-end items-center px-8 py-4 backdrop-blur-md bg-[#0f172a]/80 border-b border-slate-800/50">
           <div className="flex items-center gap-6">
             {isAuthenticated ? (
@@ -118,7 +118,7 @@ const MainLayout = () => {
                   <div className="text-right hidden sm:block">
                     <p className="text-xs text-slate-500">Welcome back,</p>
                     <p className="text-sm font-bold text-emerald-400">
-                      {user?.nickname || 'User'}
+                      {user?.nickname || "User"}
                     </p>
                   </div>
                   <div className="bg-slate-800 p-2 rounded-full text-slate-400">
@@ -126,7 +126,10 @@ const MainLayout = () => {
                   </div>
                 </div>
                 <div className="h-8 w-[1px] bg-slate-700"></div>
-                <button onClick={handleLogout} className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 text-sm font-medium">
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 text-sm font-medium"
+                >
                   <LogOut size={18} />
                   <span>로그아웃</span>
                 </button>
@@ -134,11 +137,17 @@ const MainLayout = () => {
             ) : (
               <>
                 {/* 비로그인 상태 UI */}
-                <Link to="/login" className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/20 text-sm font-medium">
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-lg shadow-blue-600/20 text-sm font-medium"
+                >
                   <LogIn size={18} />
                   <span>로그인</span>
                 </Link>
-                <Link to="/signup" className="text-sm font-medium text-slate-400 hover:text-white transition-colors">
+                <Link
+                  to="/signup"
+                  className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
+                >
                   회원가입
                 </Link>
               </>
@@ -146,7 +155,7 @@ const MainLayout = () => {
           </div>
         </header>
 
-        {/* Page Content */}
+        {/* 페이지 컨텐츠 */}
         <div className="relative z-0 p-8 flex-1">
           <Outlet />
         </div>

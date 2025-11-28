@@ -9,7 +9,7 @@ export const macroApi = {
     return response.data;
   },
 
-  // 최근 30일 데이터 (차트용)
+  // 최근 10년 데이터 (차트용)
   getHistory: async (): Promise<MacroData[]> => {
     const response = await axiosClient.get<MacroData[]>('/api/macro/history');
     return response.data;
