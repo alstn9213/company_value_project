@@ -35,26 +35,30 @@ public class ScoringService {
         MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
                 .orElseThrow(() -> new RuntimeException("거시 경제 데이터가 없습니다."));
 
-        // 재무 정보로 불량 기업 과락 체크
-        if(isDisqualified(fs)) {
-            saveScore(fs, 0, 0, 0, 0, 0, "F", false);
-            return;
-        }
         // 점수 계산
-        int stability = calculateStability(fs);       // 40점 만점
-        int profitability = calculateProfitability(fs); // 30점 만점
-        int valuation = calculateValuation(overview); // 20점 만점
-        int investment = calculateInvestment(fs);     // 10점 만점
+        int stability = calculateStability(fs);
+        int profitability = calculateProfitability(fs);
+        int valuation = calculateValuation(overview);
+        int investment = calculateInvestment(fs);
         int totalScore = stability + profitability + valuation + investment;
-        // 페널티 및 점수 보정
-        int macroPenalty = applyMacroPenalty(macro);
-        int riskyPenalty = applyRiskyInvestmentPenalty(fs, macro);
-        totalScore = totalScore - macroPenalty - riskyPenalty;
-        totalScore = Math.max(0, Math.min(100, totalScore)); // 점수를 0 ~ 100 범위로 유지
-        String grade = calculateGrade(totalScore);
+        String grade;
+        // 저점 매수 판단
+        boolean isOpportunity = false;
+        // 과락 체크
+        if (isDisqualified(fs)) {
+            // 과락인 경우: 세부 점수는 유지하되, 총점은 0점, 등급은 F로 강제
+            totalScore = 0;
+            grade = "F";
+        } else {
+            // 페널티 및 점수 보정
+            int macroPenalty = applyMacroPenalty(macro);
+            int riskyPenalty = applyRiskyInvestmentPenalty(fs, macro);
+            totalScore = totalScore - macroPenalty - riskyPenalty;
+            totalScore = Math.max(0, Math.min(100, totalScore)); // 점수를 0 ~ 100 범위로 유지
 
-        // 경기 침체일 때 저점 매수를 위해 저평가된 기업을 판단
-        boolean isOpportunity = (macroPenalty > 0) && (valuation >= 20);
+            grade = calculateGrade(totalScore);
+            isOpportunity = (macroPenalty > 0) && (valuation >= 20);
+        }
 
         saveScore(
                 fs,

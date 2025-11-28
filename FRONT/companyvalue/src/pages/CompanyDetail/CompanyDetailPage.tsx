@@ -74,6 +74,22 @@ const CompanyDetailPage = () => {
 
   const { info, score, latestFinancial: fin } = data;
 
+  // 점수가 아직 계산되지 않은 경우(N/A) 처리
+  if (score.grade === "N/A") {
+    return (
+      <div className="max-w-6xl mx-auto py-20 text-center space-y-4">
+        <h2 className="text-3xl font-bold text-white">{info.name} ({info.ticker})</h2>
+        <div className="bg-slate-800/50 p-8 rounded-xl border border-slate-700 inline-block">
+          <p className="text-xl text-yellow-400 font-bold mb-2">⚠ 분석 데이터 대기 중</p>
+          <p className="text-slate-400">
+            현재 해당 기업의 재무 데이터를 분석하고 있습니다.<br/>
+            잠시 후 다시 시도해주세요.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-10">
       {/* 상단 네비게이션 */}
@@ -109,7 +125,7 @@ const CompanyDetailPage = () => {
         </div>
 
         <div className="flex items-center gap-6">
-          {/* ★ 관심 종목 추가 버튼 ★ */}
+          {/* 관심 종목 추가 버튼 */}
           <button
             onClick={handleAddWatchlist}
             className="flex flex-col items-center gap-1 text-slate-400 hover:text-yellow-400 transition-colors group"
@@ -136,7 +152,7 @@ const CompanyDetailPage = () => {
             >
               {score.grade}
             </div>
-            {/*  저점 매수 뱃지 추가 ★ */}
+            {/* 저점 매수 뱃지 추가 */}
             {score.isOpportunity && (
               <div className="mt-3 flex items-center gap-1 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400 text-blue-300 text-xs font-bold animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]">
                 <Sparkles size={12} className="text-blue-300 fill-blue-300" />
@@ -256,13 +272,14 @@ const CompanyDetailPage = () => {
 
             {/* 과락/페널티 알림  */}
             {score.grade === "F" && (
-              <div className="mt-8 bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex gap-3 items-start">
-                <AlertTriangle className="text-red-500 shrink-0" />
+              <div className="mt-8 bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex gap-3 items-start animate-pulse">
+                <AlertTriangle className="text-red-500 shrink-0 mt-1" />
                 <div>
-                  <h4 className="font-bold text-red-400">투자 주의 요망</h4>
-                  <p className="text-sm text-red-300/80 mt-1">
-                    이 기업은 부채비율이 과도하거나 자본잠식 상태로, 투자
-                    위험도가 매우 높습니다.
+                  <h4 className="font-bold text-red-400 text-lg">투자 위험 등급 (F)</h4>
+                  <p className="text-sm text-red-200/80 mt-1">
+                    이 기업은 <strong>자본 잠식</strong> 상태이거나 <strong>부채비율이 400%를 초과</strong>하여 
+                    자동으로 0점 처리되었습니다. <br/>
+                    현재 투자하기에 매우 위험한 상태입니다.
                   </p>
                 </div>
               </div>

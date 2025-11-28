@@ -27,8 +27,8 @@ a:hover {
 
 body {
   margin: 0;
-  /* display: flex; 이 설정과 아래 설정때문에 기업 검색 페이지가 오른쪽으로 치우침*/
-  /* place-items: center; */
+  /* display: flex;
+  place-items: center; */
   min-width: 320px;
   min-height: 100vh;
   display: block;

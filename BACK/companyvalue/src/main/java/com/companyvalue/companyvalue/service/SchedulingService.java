@@ -3,6 +3,7 @@ package com.companyvalue.companyvalue.service;
 import com.companyvalue.companyvalue.domain.Company;
 import com.companyvalue.companyvalue.domain.FinancialStatement;
 import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
+import com.companyvalue.companyvalue.domain.repository.CompanyScoreRepository;
 import com.companyvalue.companyvalue.domain.repository.FinancialStatementRepository;
 import com.companyvalue.companyvalue.dto.FinancialDataDto;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +26,7 @@ public class SchedulingService {
     private final MacroDataService macroDataService;
     private final FinancialStatementRepository financialStatementRepository;
     private final DataFetchService dataFetchService;
+    private final CompanyScoreRepository companyScoreRepository;
 
     // ==========================================
     // 1. 거시 경제 지표 자동 업데이트 (매일 아침 8시)
@@ -54,44 +56,29 @@ public class SchedulingService {
 
     // 실제 로직을 수행하는 메서드 (테스트 컨트롤러에서도 호출 가능하도록 분리)
     public void executeAllCompaniesUpdate() {
-        // 1. DB에 있는 모든 기업 가져오기
         List<Company> companies = companyRepository.findAll();
-
         for(Company company : companies) {
             String ticker = company.getTicker();
-//            log.info("--- Processing: {} ---", ticker);
-
-            boolean alreadyExists = financialStatementRepository
+            boolean hasFinancials = financialStatementRepository
                     .findTopByCompanyOrderByYearDescQuarterDesc(company)
                     .isPresent();
+            boolean hasScore = companyScoreRepository.findByCompany(company).isPresent();
 
-            if(alreadyExists) {
-//                log.info(">>> [Skip] 이미 데이터가 존재합니다. 다음 기업으로 넘어갑니다: {}", ticker);
-                continue;
-            }
+            if(hasFinancials && hasScore) continue;
 
             try {
-                // 외부 API 호출(재무제표 3종)
-                FinancialDataDto rawData = financialDataService.fetchRawFinancialData(ticker);
-
-                // 재무제표 DB 저장
-                // 아주 짧은 시간 동안만 커넥션 사용
-                financialDataService.saveFinancialData(ticker, rawData);
-
-                // API Rate Limit 방지(Alpha Vantage 무료 키 제한 고려)
-                Thread.sleep(12000);
-
-                // 외부 API 호출 (기업 Overview: PER, PBR 등)
-                JsonNode overview = dataFetchService.getCompanyOverview(ticker);
-
-                // 점수 계산 및 저장
-                // 저장된 재무제표를 다시 조회해서 사용
+                if (!hasFinancials) {
+                    FinancialDataDto rawData = financialDataService.fetchRawFinancialData(ticker);
+                    financialDataService.saveFinancialData(ticker, rawData);
+                    Thread.sleep(12000); // API 무료 키 제한 고려
+                }
+                // 점수 계산 (재무제표가 방금 저장되었거나, 이미 있었는데 점수만 없는 경우 모두 수행)
                 FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
                         .orElseThrow(() -> new RuntimeException("재무제표 없음: " + ticker));
-
+                JsonNode overview = dataFetchService.getCompanyOverview(ticker);
                 scoringService.calculateAndSaveScore(fs, overview);
 
-//                log.info("--- Completed: {} ---", ticker);
+                if(hasFinancials) Thread.sleep(12000); // 점수만 계산하는 경우에도 API 호출했으므로 대기
 
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
