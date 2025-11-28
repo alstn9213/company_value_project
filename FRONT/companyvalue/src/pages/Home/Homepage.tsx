@@ -25,9 +25,10 @@ import axiosClient from "../../api/axiosClient";
 import { Link } from "react-router-dom";
 import { getGradeColor } from "../../utils/formatters";
 import { ScoreResult } from "../../types/company";
+import { useMemo } from "react";
 
 const HomePage = () => {
-  // 1. 데이터 페칭(React Query)
+
   const { data: latest, isLoading: isLatestLoading } = useQuery({
     queryKey: ["macroLatest"],
     queryFn: macroApi.getLatest,
@@ -37,6 +38,31 @@ const HomePage = () => {
     queryKey: ["macroHistory"],
     queryFn: macroApi.getHistory,
   });
+
+  // 장단기 금리차 역전 구간(spread < 0) 계산
+  const inversionIntervals = useMemo(() => {
+    if(!history || history.length === 0) return [];
+    const intervals: {start: string; end: string}[] = [];
+    let startTime: string | null = null;
+
+    history.forEach((d, index) => {
+      const isInverted = d.spread < 0;
+
+      // 역전 시작 지점 감지
+      if(isInverted && !startTime) startTime = d.date;
+      // 역전 종료 지점 감지 (현재는 정상인데 직전까지 역전이었을 때)
+      else if(!isInverted && startTime) {
+        intervals.push({start: startTime, end: history[index-1].date});
+        startTime = null;
+      }
+    });
+
+    // 마지막 데이터까지 역전 상태가 지속된 경우 처리
+    if(startTime) {
+      intervals.push({start: startTime, end: history[history.length-1].date});
+    }
+    return intervals;
+  }, [history]);
 
   if (isLatestLoading || isHistoryLoading) {
     return (
@@ -53,11 +79,6 @@ const HomePage = () => {
       </div>
     );
   }
-
-  // 2. 장단기 금리차 역전 구간 찾기(차트 배경 강조용)
-  // history 데이터 중 spread가 음수인 구간의 시작과 끝을 찾음(간소화 로직)
-  const recessionStart = history.find((d) => d.spread < 0)?.date;
-  const recessionEnd = history.findLast((d) => d.spread < 0)?.date; // 마지막 역전 구간을 찾는다
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 text-slate-200">
@@ -114,7 +135,7 @@ const HomePage = () => {
         <div className="lg:col-span-2 bg-card border border-slate-700 rounded-xl p-6 shadow-lg backdrop-blur-sm flex flex-col">
           <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
             <TrendingUp className="text-emerald-500" />
-            주요 금리 및 인플레이션 추이 (최근 10년)
+            미국의 주요 금리 및 인플레이션 추이 (최근 10년)
           </h3>
 
           <div className="flex-1 min-h-[400px] w-full">
@@ -128,7 +149,7 @@ const HomePage = () => {
                   dataKey="date"
                   stroke="#94a3b8"
                   tick={{ fill: "#94a3b8" }}
-                  tickFormatter={(val) => val.substring(5)} // 'MM-DD' 형태로 자르기
+                  tickFormatter={(val) => val.substring(0, 4)} // 연도만 표시 (공간 확보)
                 />
                 {/* 왼쪽 Y축: 금리용 (%) */}
                 <YAxis
@@ -168,17 +189,18 @@ const HomePage = () => {
                 />
                 <Legend />
 
-                {/* 장단기 금리차 역전 구간 강조 (빨간 배경) */}
-                {recessionStart && recessionEnd && (
+                {/* [수정] 계산된 모든 역전 구간 렌더링 */}
+                {inversionIntervals.map((interval, index) => (
                   <ReferenceArea
-                    x1={recessionStart}
-                    x2={recessionEnd}
-                    strokeOpacity={0.3}
+                    key={index}
+                    yAxisId="left"
+                    x1={interval.start}
+                    x2={interval.end}
+                    strokeOpacity={0}
                     fill="red"
-                    fillOpacity={0.1}
-                    label="금리 역전 구간"
+                    fillOpacity={0.15} // 투명도 조절
                   />
-                )}
+                ))}
 
                 {/* 10년물(Blue), 2년물(Green), 인플레이션(Red) */}
                 {/* 금리 데이터는 왼쪽(left) 축 사용 */}

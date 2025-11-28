@@ -5,7 +5,7 @@ import ProtectedRoute from './components/layout/ProtectedRoute'
 import HomePage from './pages/Home/Homepage';
 import SignupPage from './pages/Auth/SignupPage';
 import MainLayout from './components/layout/MainLayout';
-import CompanyListPage from './pages/CompanyList/CompantListPage';
+import CompanyListPage from './pages/CompanyList/CompanyListPage';
 import CompanyDetailPage from './pages/CompanyDetail/CompanyDetailPage';
 import WatchlistPage from './pages/Watchlist/WatchlistPage';
 
