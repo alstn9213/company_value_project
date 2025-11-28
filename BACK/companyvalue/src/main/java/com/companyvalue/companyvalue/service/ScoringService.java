@@ -26,7 +26,7 @@ public class ScoringService {
     private final CompanyScoreRepository companyScoreRepository;
     private final MacroRepository macroRepository;
     private final CompanyRepository companyRepository;
-
+    private static final String SECTOR_FINANCIAL = "Financial Services";
     /**
      * 기업의 재무제표와 현재 시장 상황을 기반으로 점수를 계산하고 저장합니다.
      */
@@ -78,17 +78,24 @@ public class ScoringService {
         BigDecimal totalLiabilities = fs.getTotalLiabilities();
         BigDecimal totalEquity = fs.getTotalEquity();
         int score = 0;
-
+        boolean isFinance = isFinancialSector(fs.getCompany());
         // 1. 부채비율 계산 (부채 / 자본 * 100)
         if (totalEquity.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal debtRatio = totalLiabilities.divide(totalEquity, 4, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100));
 
-            // 부채비율에 따른 점수 (20점 만점)
-            if (debtRatio.compareTo(BigDecimal.valueOf(100)) < 0) score += 20;      // 100% 미만
-            else if (debtRatio.compareTo(BigDecimal.valueOf(200)) < 0) score += 10; // 200% 미만
-            else if (debtRatio.compareTo(BigDecimal.valueOf(300)) < 0) score += 5;  // 300% 미만
-            // 300% 이상은 0점
+            // [수정] 금융업 여부에 따라 기준 분기
+            if (isFinance) {
+                // 금융업: 부채비율이 훨씬 높으므로 기준을 완화 (예: 1200% 미만까지 점수 부여)
+                if (debtRatio.compareTo(BigDecimal.valueOf(800)) < 0) score += 20;      // 800% 미만
+                else if (debtRatio.compareTo(BigDecimal.valueOf(1000)) < 0) score += 10; // 1000% 미만
+                else if (debtRatio.compareTo(BigDecimal.valueOf(1200)) < 0) score += 5;  // 1200% 미만
+            } else {
+                // 일반 기업 (기존 로직)
+                if (debtRatio.compareTo(BigDecimal.valueOf(100)) < 0) score += 20;
+                else if (debtRatio.compareTo(BigDecimal.valueOf(200)) < 0) score += 10;
+                else if (debtRatio.compareTo(BigDecimal.valueOf(300)) < 0) score += 5;
+            }
         }
 
         // 2. 영업활동 현금흐름 (20점 만점)
@@ -171,13 +178,15 @@ public class ScoringService {
         BigDecimal liabilities = fs.getTotalLiabilities();
 
         // 자본 잠식
-        if (equity.compareTo(BigDecimal.ZERO) <= 0) return true;
+        if(equity.compareTo(BigDecimal.ZERO) <= 0) return true;
 
         // 부채비율 400% 초과
         BigDecimal debtRatio = liabilities.divide(equity, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
+        boolean isFinance = isFinancialSector(fs.getCompany());
+        double limit = isFinance ? 1500.0 : 400.0;
 
-        if (debtRatio.compareTo(BigDecimal.valueOf(400)) > 0) return true;
+        if(debtRatio.doubleValue() > limit) return true;
 
         return false;
     }
@@ -206,7 +215,9 @@ public class ScoringService {
 
         BigDecimal debtRatio = fs.getTotalLiabilities().divide(equity, 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
-        boolean isHighDebt = debtRatio.doubleValue() >= 200.0;
+        boolean isFinance = isFinancialSector(fs.getCompany());
+        double debtThreshold = isFinance ? 1000.0 : 200.0;
+        boolean isHighDebt = debtRatio.doubleValue() >= debtThreshold;
 
         // 3. 공격적 투자 (매출 대비 10% 이상)
         BigDecimal revenue = fs.getRevenue();
@@ -222,6 +233,10 @@ public class ScoringService {
             return 15;
         }
         return 0;
+    }
+
+    private boolean isFinancialSector(Company company) {
+        return SECTOR_FINANCIAL.equalsIgnoreCase(company.getSector());
     }
 
     private String calculateGrade(int score) {
