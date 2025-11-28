@@ -12,11 +12,12 @@ import java.time.LocalDate;
 @Builder
 @Table(
         name = "stock_price_history",
-        indexes = @Index(name = "idx_company_date", columnList = "company_id, recordedDate") // 조회 성능 향상
+        indexes = @Index(name = "idx_company_date", columnList = "company_id, recorded_date") // 조회 성능 향상
 )
 public class StockPriceHistory {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
