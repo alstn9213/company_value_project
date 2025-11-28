@@ -78,11 +78,16 @@ const CompanyDetailPage = () => {
   if (score.grade === "N/A") {
     return (
       <div className="max-w-6xl mx-auto py-20 text-center space-y-4">
-        <h2 className="text-3xl font-bold text-white">{info.name} ({info.ticker})</h2>
+        <h2 className="text-3xl font-bold text-white">
+          {info.name} ({info.ticker})
+        </h2>
         <div className="bg-slate-800/50 p-8 rounded-xl border border-slate-700 inline-block">
-          <p className="text-xl text-yellow-400 font-bold mb-2">⚠ 분석 데이터 대기 중</p>
+          <p className="text-xl text-yellow-400 font-bold mb-2">
+            ⚠ 분석 데이터 대기 중
+          </p>
           <p className="text-slate-400">
-            현재 해당 기업의 재무 데이터를 분석하고 있습니다.<br/>
+            현재 해당 기업의 재무 데이터를 분석하고 있습니다.
+            <br />
             잠시 후 다시 시도해주세요.
           </p>
         </div>
@@ -163,10 +168,25 @@ const CompanyDetailPage = () => {
         </div>
       </div>
 
+
       {/* 2. 분석 대시보드 그리드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 좌측: 종합 점수 및 차트 */}
         <div className="lg:col-span-1 space-y-6">
+          {/* F등급일 때 안내 메시지 추가 */}
+            {(score.grade.includes("F") || score.totalScore === 0) && (
+              <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-sm text-red-200">
+                <p className="font-bold flex items-center gap-2">
+                  <AlertTriangle size={16} />
+                  투자 위험 경고
+                </p>
+                <p className="mt-1 opacity-80">
+                  이 기업은 <strong>자본 잠식</strong> 상태이거나{" "}
+                  <strong>부채 비율이 과도(400% 초과)</strong>하여 평가 대상에서
+                  제외(0점 처리)되었습니다.
+                </p>
+              </div>
+            )}
           <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full">
             <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
               <TrendingUp size={20} className="text-emerald-400" /> 분석 리포트
@@ -269,21 +289,6 @@ const CompanyDetailPage = () => {
                 color="text-purple-300"
               />
             </div>
-
-            {/* 과락/페널티 알림  */}
-            {score.grade === "F" && (
-              <div className="mt-8 bg-red-500/10 border border-red-500/50 rounded-lg p-4 flex gap-3 items-start animate-pulse">
-                <AlertTriangle className="text-red-500 shrink-0 mt-1" />
-                <div>
-                  <h4 className="font-bold text-red-400 text-lg">투자 위험 등급 (F)</h4>
-                  <p className="text-sm text-red-200/80 mt-1">
-                    이 기업은 <strong>자본 잠식</strong> 상태이거나 <strong>부채비율이 400%를 초과</strong>하여 
-                    자동으로 0점 처리되었습니다. <br/>
-                    현재 투자하기에 매우 위험한 상태입니다.
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
