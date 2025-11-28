@@ -24,4 +24,7 @@ public class Company {
     private String sector; // 예: Technology
 
     private String exchange; // 예: NASDAQ, NYSE (미국 주식 구분)
+
+    @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
+    private CompanyScore companyScore;
 }

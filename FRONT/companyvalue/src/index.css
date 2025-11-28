@@ -7,7 +7,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0f172a;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,10 +27,11 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /* display: flex; 이 설정과 아래 설정때문에 기업 검색 페이지가 오른쪽으로 치우침*/
+  /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  display: block;
 }
 
 h1 {

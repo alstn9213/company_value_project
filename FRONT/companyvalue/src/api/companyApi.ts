@@ -2,11 +2,11 @@ import { Company, CompanyDetailResponse, PageResponse } from "../types/company";
 import axiosClient from "./axiosClient";
 
 export const companyApi = {
-
+  
   // 전체 목록 조회 (페이징)
-  getAll: async (page: number, size: number = 12): Promise<PageResponse<Company>> => {
+  getAll: async (page: number, size: number = 12, sortOption: string = 'name'): Promise<PageResponse<Company>> => {
     const response = await axiosClient.get<PageResponse<Company>>('/api/companies', {
-    params: { page, size, sort: 'ticker,asc' }
+    params: { page, size, sort: sortOption }
     });
     return response.data;
   },

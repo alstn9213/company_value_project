@@ -6,8 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Building2,
-  Activity,
   Trophy,
+  Filter,
 } from "lucide-react";
 import { companyApi } from "../../api/companyApi";
 import { ScoreResult } from "../../types/company";
@@ -18,6 +18,7 @@ const CompanyListPage = () => {
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [sortOption, setSortOption] = useState("name");
 
   // 검색어 디바운스 처리(입력 멈추고 0.5초 뒤 반영)
   useEffect(() => {
@@ -44,8 +45,8 @@ const CompanyListPage = () => {
     isLoading: isPageLoading,
     isPlaceholderData, // v5 변경사항: isPreviousData -> isPlaceholderData
   } = useQuery({
-    queryKey: ["companies", page],
-    queryFn: () => companyApi.getAll(page),
+    queryKey: ["companies", page, sortOption],
+    queryFn: () => companyApi.getAll(page, 12, sortOption),
     enabled: !debouncedSearch, // 검색어가 없을 때만 활성화
     placeholderData: keepPreviousData, // 페이지 전환 시 깜빡임 방지
     // v5 변경사항: keepPreviousData: true -> placeholderData: keepPreviousData
@@ -64,7 +65,6 @@ const CompanyListPage = () => {
   const isEmpty = !isLoading && (!companies || companies.length === 0);
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-10">
-      
       {/* --- [섹션 1] Top 5 추천 기업 (가로 스크롤 카드) --- */}
       {topRanked && topRanked.length > 0 && !debouncedSearch && (
         <section className="space-y-4">
@@ -74,7 +74,7 @@ const CompanyListPage = () => {
               이달의 추천 우량주 Top 5
             </span>
           </h2>
-          
+
           <div className="flex gap-5 overflow-x-auto pb-6 pt-2 px-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
             {topRanked.slice(0, 5).map((item, idx) => (
               <Link
@@ -88,13 +88,21 @@ const CompanyListPage = () => {
                     1st Pick
                   </div>
                 )}
-                
+
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold border-2 ${getGradeColor(item.grade)}`}>
+                  <div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold border-2 ${getGradeColor(
+                      item.grade
+                    )}`}
+                  >
                     {item.grade}
                   </div>
                   <div className="text-right">
-                    <span className={`text-2xl font-bold ${getScoreColor(item.totalScore)}`}>
+                    <span
+                      className={`text-2xl font-bold ${getScoreColor(
+                        item.totalScore
+                      )}`}
+                    >
                       {item.totalScore}
                     </span>
                     <span className="text-xs text-slate-500 block">점</span>
@@ -112,11 +120,15 @@ const CompanyListPage = () => {
                 <div className="mt-4 pt-4 border-t border-slate-700/50 flex justify-between text-xs text-slate-500">
                   <div className="flex flex-col gap-1">
                     <span>안정성</span>
-                    <span className="text-slate-300">{item.stabilityScore}/40</span>
+                    <span className="text-slate-300">
+                      {item.stabilityScore}/40
+                    </span>
                   </div>
                   <div className="flex flex-col gap-1 text-right">
                     <span>수익성</span>
-                    <span className="text-slate-300">{item.profitabilityScore}/30</span>
+                    <span className="text-slate-300">
+                      {item.profitabilityScore}/30
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -127,6 +139,7 @@ const CompanyListPage = () => {
 
       {/* --- [섹션 2] 검색 및 전체 목록 --- */}
       <div className="space-y-6">
+        {/* 헤더 및 검색/정렬 영역 */}
         <div className="flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-800 pb-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Companies</h1>
@@ -135,17 +148,36 @@ const CompanyListPage = () => {
             </p>
           </div>
 
-          <div className="relative w-full md:w-80">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-slate-400" />
+          <div className="flex gap-3 w-full md:w-auto">
+            {/* 정렬 드롭다운 */}
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Filter className="h-4 w-4 text-slate-400" />
+              </div>
+              <select
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
+                disabled={!!debouncedSearch} // 검색 중엔 정렬 비활성화 (검색 API는 정렬 미구현 시)
+                className="pl-9 pr-8 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer hover:bg-slate-800 transition-colors"
+              >
+                <option value="name">이름순 (A-Z)</option>
+                <option value="score">점수 높은순</option>
+              </select>
             </div>
-            <input
-              type="text"
-              placeholder="티커 또는 기업명 검색..."
-              className="block w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-500"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+
+          {/* 검색창 */}
+            <div className="relative flex-1 md:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="티커 또는 기업명..."
+                className="block w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
@@ -176,20 +208,30 @@ const CompanyListPage = () => {
                 className="group relative bg-card border border-slate-700/50 rounded-xl p-5 hover:border-blue-500/50 transition-all duration-200 hover:shadow-lg hover:bg-slate-800/80"
               >
                 <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-700 text-slate-300 mb-2">
-                      {company.exchange}
-                    </span>
-                    <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
-                      {company.ticker}
-                    </h3>
+                  <div className="flex gap-2 items-start">
+                    {/* [추가] 등급 뱃지 표시 */}
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold border ${getGradeColor(company.grade)}`}>
+                      {company.grade}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                        {company.ticker}
+                      </h3>
+                      <span className="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">
+                        {company.exchange}
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-2 bg-slate-800/50 rounded-lg text-slate-500 group-hover:text-blue-400 transition-colors">
-                    <Activity size={18} />
+
+                  {/* 점수 표시 */}
+                  <div className="text-right">
+                    <span className={`block font-bold text-lg ${getScoreColor(company.totalScore)}`}>
+                      {company.totalScore}
+                    </span>
                   </div>
                 </div>
 
-                <div className="space-y-1">
+                <div className="space-y-1 mt-2">
                   <p className="text-slate-300 font-medium truncate text-sm" title={company.name}>
                     {company.name}
                   </p>

@@ -9,9 +9,9 @@ import com.companyvalue.companyvalue.domain.repository.FinancialStatementReposit
 import com.companyvalue.companyvalue.dto.MainResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +29,34 @@ public class CompanyController {
     // 1. 전체 기업 목록 조회
     @GetMapping
     public ResponseEntity<Page<MainResponseDto.CompanyInfo>> getAllCompanies(
-            @PageableDefault(size = 20, sort = "ticker", direction = Sort.Direction.ASC) Pageable pageable) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            @RequestParam(defaultValue = "name") String sort
+    ) {
+        // 1. 정렬 기준 설정 (자바 필드명 기준)
+        Sort sortObj = Sort.by(Sort.Direction.ASC, "name"); // 기본: 이름순
+        if ("score".equals(sort)) {
+            // 연관된 객체의 필드로 정렬할 때는 '필드명.필드명' 표기법 사용
+            sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
+        }
+        Pageable pageable = PageRequest.of(page, size, sortObj);
+
+        // 2. 조회 및 변환 (Entity -> DTO)
         Page<MainResponseDto.CompanyInfo> companies = companyRepository.findAll(pageable)
-                .map(MainResponseDto.CompanyInfo::from);
+                .map(company -> {
+                    // 점수 정보가 없는 경우(null) 안전하게 처리
+                    int score = (company.getCompanyScore() != null) ? company.getCompanyScore().getTotalScore() : 0;
+                    String grade = (company.getCompanyScore() != null) ? company.getCompanyScore().getGrade() : "N/A";
+
+                    return new MainResponseDto.CompanyInfo(
+                            company.getTicker(),
+                            company.getName(),
+                            company.getSector(),
+                            company.getExchange(),
+                            score,
+                            grade
+                    );
+                });
         return ResponseEntity.ok(companies);
     }
 

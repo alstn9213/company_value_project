@@ -3,6 +3,8 @@ export interface Company {
   name: string;
   sector: string;
   exchange: string;
+  totalScore: number;
+  grade: string;
 }
 
 // Spring Data JPA의 Page 인터페이스 응답 구조 대응
