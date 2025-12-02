@@ -1,13 +1,20 @@
-import React, { useState } from "react";
-import { LogIn, LogOut, Search, Star, TrendingUp } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { LogIn, LogOut, Search, Star, TrendingUp, X } from "lucide-react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
+import { Company } from "../../types/company";
+import { companyApi } from "../../api/companyApi";
 
 const MainLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated } = useAuthStore();
+
+  // 검색 관련 상태 관리
   const [keyword, setKeyword] = useState("");
+  const [suggestions, setSuggestions] = useState<Company[]>([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const menus = [
     { name: "기업 목록", path: "/companies", icon: <Search size={18} /> },
@@ -16,15 +23,58 @@ const MainLayout = () => {
   const handleLogout = () => {
     if (confirm("로그아웃 하시겠습니까?")) {
       logout();
-      navigate("/login");
+      navigate("/");
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  // 검색어 입력 시 DB 조회 (Debounce 적용: 0.3초 대기)
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      if (keyword.trim().length < 1) {
+        setSuggestions([]);
+        return;
+      }
+      try {
+        const data = await companyApi.search(keyword);
+        setSuggestions(data);
+        setShowDropdown(true);
+      } catch (error) {
+        console.error("검색 실패:", error);
+      }
+    };
+
+    const timer = setTimeout(fetchSuggestions, 300);
+    return () => clearTimeout(timer);
+  }, [keyword]);
+
+  // 드롭다운 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 검색어 제출
+  const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (keyword.trim()) {
+      setShowDropdown(false);
       navigate(`/companies?search=${keyword}`);
     }
+  };
+
+  // 드롭다운 항목 클릭 -> 기업 상세 페이지로 이동
+  const handleSelectCompany = (ticker: string) => {
+    setKeyword(""); // 검색어 초기화
+    setShowDropdown(false);
+    navigate(`/company/${ticker}`);
   };
 
   return (
@@ -33,9 +83,8 @@ const MainLayout = () => {
       <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-[#0f172a]/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full items-center justify-between px-6 lg:px-10">
           
-          {/* [Left] 로고 및 메인 메뉴 (좌측 정렬) */}
+          {/* [Left] 로고 및 메인 메뉴 */}
           <div className="flex flex-1 items-center justify-start gap-8">
-            {/* 로고 */}
             <Link to="/" className="flex items-center gap-2 group shrink-0">
               <div className="rounded-lg bg-emerald-500/20 p-2 text-emerald-400 transition-colors group-hover:bg-emerald-500/30">
                 <TrendingUp size={24} />
@@ -45,7 +94,6 @@ const MainLayout = () => {
               </span>
             </Link>
 
-            {/* 내비게이션 링크 */}
             <nav className="hidden md:flex items-center gap-1">
               {menus.map((menu) => {
                 const isActive = location.pathname === menu.path;
@@ -80,23 +128,93 @@ const MainLayout = () => {
             </nav>
           </div>
 
-          {/* [Center] 검색창 (중앙 정렬) */}
-          <div className="flex flex-1 items-center justify-center">
-            <form onSubmit={handleSearch} className="relative w-full max-w-md hidden sm:block">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <Search className="h-4 w-4 text-slate-500" />
-              </div>
-              <input
-                type="text"
-                placeholder="티커(AAPL) 또는 기업명 검색"
-                className="block w-full rounded-lg border border-slate-700 bg-slate-900 py-2 pl-10 pr-3 text-sm text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-              />
-            </form>
+          {/* [Center] 검색바 UI 수정됨 */}
+          <div className="flex flex-1 items-center justify-center z-50">
+            <div className="relative w-full max-w-md hidden sm:block" ref={dropdownRef}>
+              
+              {/*
+                form 태그에 border와 rounded를 적용하여 input과 button을 감쌌다.
+                이렇게 하면 버튼이 튀어나오지 않고 하나의 박스처럼 보인다.
+              */}
+              <form 
+                onSubmit={handleSearchSubmit} 
+                className="flex w-full items-center rounded-lg border border-slate-700 bg-slate-900 shadow-sm transition-colors focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
+              >
+                {/* 돋보기 아이콘 */}
+                <div className="pl-3 text-slate-500">
+                  <Search className="h-4 w-4" />
+                </div>
+                
+                {/* 입력창 (테두리 제거, 배경 투명) */}
+                <input
+                  type="text"
+                  placeholder="티커(AAPL) 또는 기업명 검색"
+                  className="w-full bg-transparent border-none py-2.5 pl-2 pr-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-0"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onFocus={() => {
+                    if (suggestions.length > 0) setShowDropdown(true);
+                  }}
+                />
+
+                {/* X 버튼 (입력값 있을 때만) */}
+                {keyword && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setKeyword("");
+                      setSuggestions([]);
+                    }}
+                    className="p-2 text-slate-500 hover:text-white"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+
+                {/* 검색 버튼 (우측 끝에 딱 맞게 배치) */}
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-r-lg text-sm font-medium transition-colors m-[-1px] mr-[-1px]"
+                >
+                  검색
+                </button>
+              </form>
+
+              {/* 검색 결과 드롭다운 (DB 조회 결과) */}
+              {showDropdown && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-xl overflow-hidden max-h-80 overflow-y-auto z-50">
+                  <ul>
+                    {suggestions.map((company) => (
+                      <li
+                        key={company.ticker}
+                        onClick={() => handleSelectCompany(company.ticker)}
+                        className="px-4 py-3 hover:bg-slate-700 cursor-pointer flex justify-between items-center group transition-colors border-b border-slate-700/50 last:border-0"
+                      >
+                        <div className="flex flex-col overflow-hidden">
+                          <span className="font-bold text-white group-hover:text-blue-400 transition-colors">
+                            {company.ticker}
+                          </span>
+                          <span className="text-xs text-slate-400 truncate">
+                            {company.name}
+                          </span>
+                        </div>
+                        <div className="flex flex-col items-end shrink-0">
+                          <span className="text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">
+                            {company.exchange}
+                          </span>
+                          <span className="text-xs text-slate-500 mt-1">
+                            {company.sector}
+                          </span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* [Right] 유저 메뉴 (우측 정렬) */}
+          {/* [Right] 유저 메뉴 */}
           <div className="flex flex-1 items-center justify-end gap-4">
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
@@ -116,7 +234,6 @@ const MainLayout = () => {
                 </button>
               </div>
             ) : (
-              // 로그인/회원가입 버튼 가로 배치 (flex-row 명시)
               <div className="flex flex-row items-center gap-3">
                 <Link
                   to="/login"
@@ -138,7 +255,6 @@ const MainLayout = () => {
         </div>
       </header>
 
-      {/* 메인 컨텐츠 영역 */}
       <main className="flex-1 w-full relative">
         <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-blue-900/5 to-transparent pointer-events-none" />
         <div className="relative z-0 w-full p-6 lg:p-8">
