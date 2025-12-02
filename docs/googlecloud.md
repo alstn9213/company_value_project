@@ -69,7 +69,7 @@
 
 -----
 
-###  스왑(Swap) 메모리 설정 (필수 ⭐)
+###  스왑(Swap) 메모리 설정
 
 지금 만든 **`e2-micro` 인스턴스는 램이 1GB**밖에 안 됩니다.
 그런데 현재 프로젝트 스택(Spring Boot + MariaDB + Redis)을 돌리려면 최소 2GB 이상의 메모리가 필요합니다. 스왑 설정 없이 서버를 실행하면, **Spring Boot가 켜지다가 OOM Killed (Out Of Memory) 에러를 뱉으며 강제로 종료**됩니다.
