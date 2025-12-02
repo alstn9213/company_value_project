@@ -28,15 +28,15 @@ const MainLayout = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-[#0f172a] text-slate-200 font-sans">
-      {/* 상단 통합 헤더 (Top Navigation Bar) */}
+    <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans flex flex-col">
+      {/* 상단 통합 헤더 */}
       <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-[#0f172a]/90 backdrop-blur-md">
-        {/* max-w 제한 제거 후 px 조정 */}
         <div className="mx-auto flex h-16 w-full items-center justify-between px-6 lg:px-10">
-          {/* [Left] 로고 및 메인 메뉴 */}
-          <div className="flex items-center gap-8">
-            {/* 로고 (대시보드로 이동) */}
-            <Link to="/" className="flex items-center gap-2 group">
+          
+          {/* [Left] 로고 및 메인 메뉴 (좌측 정렬) */}
+          <div className="flex flex-1 items-center justify-start gap-8">
+            {/* 로고 */}
+            <Link to="/" className="flex items-center gap-2 group shrink-0">
               <div className="rounded-lg bg-emerald-500/20 p-2 text-emerald-400 transition-colors group-hover:bg-emerald-500/30">
                 <TrendingUp size={24} />
               </div>
@@ -45,7 +45,7 @@ const MainLayout = () => {
               </span>
             </Link>
 
-            {/* 내비게이션 링크 (Desktop) */}
+            {/* 내비게이션 링크 */}
             <nav className="hidden md:flex items-center gap-1">
               {menus.map((menu) => {
                 const isActive = location.pathname === menu.path;
@@ -64,7 +64,6 @@ const MainLayout = () => {
                   </Link>
                 );
               })}
-              {/* 관심 종목 (로그인 시 노출) */}
               {isAuthenticated && (
                 <Link
                   to="/watchlist"
@@ -81,13 +80,9 @@ const MainLayout = () => {
             </nav>
           </div>
 
-          {/* [Center & Right] 검색창 및 유저 메뉴 */}
-          <div className="flex items-center gap-4 lg:gap-8">
-            {/* 검색창 */}
-            <form
-              onSubmit={handleSearch}
-              className="relative w-full max-w-sm hidden sm:block"
-            >
+          {/* [Center] 검색창 (중앙 정렬) */}
+          <div className="flex flex-1 items-center justify-center">
+            <form onSubmit={handleSearch} className="relative w-full max-w-md hidden sm:block">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <Search className="h-4 w-4 text-slate-500" />
               </div>
@@ -99,54 +94,53 @@ const MainLayout = () => {
                 onChange={(e) => setKeyword(e.target.value)}
               />
             </form>
-
-            {/* 로그인 상태 UI */}
-            <div className="flex items-center gap-4">
-              {isAuthenticated ? (
-                <>
-                  <div className="hidden text-right sm:block">
-                    <p className="text-xs text-slate-500">Welcome,</p>
-                    <p className="text-sm font-bold text-emerald-400">
-                      {user?.nickname || "User"}
-                    </p>
-                  </div>
-                  <div className="h-8 w-[1px] bg-slate-800 hidden sm:block"></div>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-400"
-                  >
-                    <LogOut size={18} />
-                    <span className="hidden sm:inline">로그아웃</span>
-                  </button>
-                </>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Link
-                    to="/login"
-                    className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-                  >
-                    <LogIn size={18} />
-                    <span>로그인</span>
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-blue-500"
-                  >
-                    회원가입
-                  </Link>
-                </div>
-              )}
-            </div>
           </div>
+
+          {/* [Right] 유저 메뉴 (우측 정렬) */}
+          <div className="flex flex-1 items-center justify-end gap-4">
+            {isAuthenticated ? (
+              <div className="flex items-center gap-4">
+                <div className="hidden text-right sm:block">
+                  <p className="text-xs text-slate-500">Welcome,</p>
+                  <p className="text-sm font-bold text-emerald-400">
+                    {user?.nickname || "User"}
+                  </p>
+                </div>
+                <div className="h-8 w-[1px] bg-slate-800 hidden sm:block"></div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-all hover:bg-red-500/10 hover:text-red-400"
+                >
+                  <LogOut size={18} />
+                  <span className="hidden sm:inline">로그아웃</span>
+                </button>
+              </div>
+            ) : (
+              // 로그인/회원가입 버튼 가로 배치 (flex-row 명시)
+              <div className="flex flex-row items-center gap-3">
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                >
+                  <LogIn size={18} />
+                  <span>로그인</span>
+                </Link>
+                <Link
+                  to="/signup"
+                  className="whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-lg shadow-blue-900/20 transition-all hover:bg-blue-500"
+                >
+                  회원가입
+                </Link>
+              </div>
+            )}
+          </div>
+
         </div>
       </header>
 
-      {/* 메인 컨텐츠 영역 (Full Width) */}
+      {/* 메인 컨텐츠 영역 */}
       <main className="flex-1 w-full relative">
-        {/* 상단 배경 그라데이션 효과 (Visual Depth) */}
         <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-blue-900/5 to-transparent pointer-events-none" />
-
-        {/* 전체 너비 사용 */}
         <div className="relative z-0 w-full p-6 lg:p-8">
           <Outlet />
         </div>

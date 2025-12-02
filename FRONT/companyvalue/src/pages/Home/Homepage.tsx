@@ -108,7 +108,6 @@ const HomePage = () => {
               value={`${latest.us10y}%`}
               icon={<Activity size={16} />}
               color={latest.us10y >= 4.0 ? "text-orange-400" : "text-blue-400"}
-              subText="투자 심리 기준"
             />
             <IndicatorItem
               label="2년 물 금리"
