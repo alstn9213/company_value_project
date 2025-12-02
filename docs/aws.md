@@ -214,4 +214,3 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 3.  **비용**:
       * EC2, RDS 모두 켜놓으면 750시간/월 무료야. (하나씩만 켜면 한 달 내내 켜도 됨).
       * 안 쓸 땐 `docker-compose stop`으로 컨테이너 내리고, AWS Console에서 인스턴스 **중지**해두는 습관을 들이면 좋아.
-
