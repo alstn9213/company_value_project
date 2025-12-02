@@ -4,6 +4,8 @@ import com.companyvalue.companyvalue.domain.Member;
 import com.companyvalue.companyvalue.domain.Role;
 import com.companyvalue.companyvalue.domain.repository.MemberRepository;
 import com.companyvalue.companyvalue.dto.AuthDto;
+import com.companyvalue.companyvalue.global.error.ErrorCode;
+import com.companyvalue.companyvalue.global.error.exception.BusinessException;
 import com.companyvalue.companyvalue.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +27,7 @@ public class AuthService {
     @Transactional
     public  void signup(AuthDto.SignUpRequest request) {
         if(memberRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("이미 가입돼 있는 유저입니다.");
+            throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
         }
 
         Member member = Member.builder()
@@ -50,7 +52,7 @@ public class AuthService {
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         Member member = memberRepository.findByEmail(request.email())
-                .orElseThrow(() -> new RuntimeException("유저 정보 없음"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         String accessToken = jwtTokenProvider.createToken(authentication, member.getNickname());
 
