@@ -45,7 +45,7 @@ public class StockService {
     private List<StockPriceHistory> fetchAndSaveStockHistory(Company company) {
         try {
             JsonNode json = dataFetchService.getDailyStockHistory(company.getTicker());
-            JsonNode timeSeries = json.path("Time Series (Daily");
+            JsonNode timeSeries = json.path("Time Series (Daily)");
             if(timeSeries.isMissingNode()) {
                 log.warn("API 호출 실패 또는 제한 도달: {}", company.getTicker());
                 return Collections.emptyList();
