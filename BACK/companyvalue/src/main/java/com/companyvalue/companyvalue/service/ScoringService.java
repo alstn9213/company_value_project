@@ -8,6 +8,10 @@ import com.companyvalue.companyvalue.domain.repository.CompanyRepository;
 import com.companyvalue.companyvalue.domain.repository.CompanyScoreRepository;
 import com.companyvalue.companyvalue.domain.repository.MacroRepository;
 import com.companyvalue.companyvalue.dto.MainResponseDto;
+import com.companyvalue.companyvalue.service.strategy.InvestmentStrategy;
+import com.companyvalue.companyvalue.service.strategy.ProfitabilityStrategy;
+import com.companyvalue.companyvalue.service.strategy.StabilityStrategy;
+import com.companyvalue.companyvalue.service.strategy.ValuationStrategy;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +30,14 @@ public class ScoringService {
     private final CompanyScoreRepository companyScoreRepository;
     private final MacroRepository macroRepository;
     private final CompanyRepository companyRepository;
+
+    private final StabilityStrategy stabilityStrategy;
+    private final ProfitabilityStrategy profitabilityStrategy;
+    private final ValuationStrategy valuationStrategy;
+    private final InvestmentStrategy investmentStrategy;
+
     private static final String SECTOR_FINANCIAL = "Financial Services";
+
     /**
      * 기업의 재무제표와 현재 시장 상황을 기반으로 점수를 계산하고 저장합니다.
      */
@@ -36,10 +47,10 @@ public class ScoringService {
                 .orElseThrow(() -> new RuntimeException("거시 경제 데이터가 없습니다."));
 
         // 점수 계산
-        int stability = calculateStability(fs);
-        int profitability = calculateProfitability(fs);
-        int valuation = calculateValuation(overview);
-        int investment = calculateInvestment(fs);
+        int stability = stabilityStrategy.calculate(fs, overview);
+        int profitability = profitabilityStrategy.calculate(fs, overview);
+        int valuation = valuationStrategy.calculate(fs, overview);
+        int investment = investmentStrategy.calculate(fs, overview);
         int totalScore = stability + profitability + valuation + investment;
         String grade;
         // 저점 매수 판단
@@ -53,6 +64,7 @@ public class ScoringService {
             // 페널티 및 점수 보정
             int macroPenalty = applyMacroPenalty(macro);
             int riskyPenalty = applyRiskyInvestmentPenalty(fs, macro);
+
             totalScore = totalScore - macroPenalty - riskyPenalty;
             totalScore = Math.max(0, Math.min(100, totalScore)); // 점수를 0 ~ 100 범위로 유지
 
@@ -70,105 +82,6 @@ public class ScoringService {
                 grade,
                 isOpportunity
         );
-    }
-
-    // --- [1] 안정성 평가 (40점 만점) ---
-    // 기준: 부채비율(Debt Ratio)과 영업활동현금흐름
-    private int calculateStability(FinancialStatement fs) {
-        BigDecimal totalLiabilities = fs.getTotalLiabilities();
-        BigDecimal totalEquity = fs.getTotalEquity();
-        int score = 0;
-        boolean isFinance = isFinancialSector(fs.getCompany());
-        // 1. 부채비율 계산 (부채 / 자본 * 100)
-        if (totalEquity.compareTo(BigDecimal.ZERO) > 0) {
-            BigDecimal debtRatio = totalLiabilities.divide(totalEquity, 4, RoundingMode.HALF_UP)
-                    .multiply(BigDecimal.valueOf(100));
-
-            // [수정] 금융업 여부에 따라 기준 분기
-            if (isFinance) {
-                // 금융업: 부채비율이 훨씬 높으므로 기준을 완화 (예: 1200% 미만까지 점수 부여)
-                if (debtRatio.compareTo(BigDecimal.valueOf(800)) < 0) score += 20;      // 800% 미만
-                else if (debtRatio.compareTo(BigDecimal.valueOf(1000)) < 0) score += 10; // 1000% 미만
-                else if (debtRatio.compareTo(BigDecimal.valueOf(1200)) < 0) score += 5;  // 1200% 미만
-            } else {
-                // 일반 기업 (기존 로직)
-                if (debtRatio.compareTo(BigDecimal.valueOf(100)) < 0) score += 20;
-                else if (debtRatio.compareTo(BigDecimal.valueOf(200)) < 0) score += 10;
-                else if (debtRatio.compareTo(BigDecimal.valueOf(300)) < 0) score += 5;
-            }
-        }
-
-        // 2. 영업활동 현금흐름 (20점 만점)
-        // 흑자면 20점, 적자면 0점 (단순화)
-        if (fs.getOperatingCashFlow().compareTo(BigDecimal.ZERO) > 0) {
-            score += 20;
-        }
-
-        return score;
-        }
-
-    // --- [2] 수익성 평가 (30점 만점) ---
-    // 기준: ROE(자기자본이익률), 영업이익률
-    private int calculateProfitability(FinancialStatement fs) {
-        int score = 0;
-        BigDecimal netIncome = fs.getNetIncome();
-        BigDecimal equity = fs.getTotalEquity();
-        BigDecimal revenue = fs.getRevenue();
-        BigDecimal operatingProfit = fs.getOperatingProfit();
-
-        // 1. ROE (당기순이익 / 자본 * 100) - 15점
-        if (equity.compareTo(BigDecimal.ZERO) > 0) {
-            double roe = netIncome.divide(equity, 4, RoundingMode.HALF_UP).doubleValue() * 100;
-            if (roe >= 20) score += 15;
-            else if (roe >= 10) score += 10;
-            else if (roe >= 0) score += 5;
-        }
-
-        // 2. 영업이익률 (영업이익 / 매출 * 100) - 15점
-        if (revenue.compareTo(BigDecimal.ZERO) > 0) {
-            double opMargin = operatingProfit.divide(revenue, 4, RoundingMode.HALF_UP).doubleValue() * 100;
-            if (opMargin >= 20) score += 15;
-            else if (opMargin >= 10) score += 10;
-            else if (opMargin >= 0) score += 5;
-        }
-        return score;
-    }
-
-    // --- [3] 가치 평가 (20점 만점) ---
-    private int calculateValuation(JsonNode overview) {
-        int score = 0;
-        try {
-            double per = parseDouble(overview, "PERatio");
-            double pbr = parseDouble(overview, "PriceToBookRatio");
-
-            if (0 < per && per < 15) score += 10;
-            else if (15 <= per && per < 25) score += 7;
-            else if (25<= per && per < 40) score += 3;
-
-            if (0 < pbr && pbr < 1.5) score += 10;
-            else if (1.5 <= pbr && pbr < 3.0) score += 7;
-            else if (3.0 <= pbr && pbr < 5.0) score += 3;
-        } catch (Exception e) {
-            return 0;
-        }
-        return score;
-    }
-
-    // --- [4] 미래 투자 적극성 (10점 만점) ---
-    // 기준: 매출액 대비 (R&D + CapEx) 비율
-    private int calculateInvestment(FinancialStatement fs) {
-        BigDecimal revenue = fs.getRevenue();
-        if(revenue.compareTo(BigDecimal.ZERO) == 0) return 0;
-
-        BigDecimal rnd = fs.getResearchAndDevelopment() != null ? fs.getResearchAndDevelopment() : BigDecimal.ZERO;
-        BigDecimal capex = fs.getCapitalExpenditure() != null ? fs.getCapitalExpenditure() : BigDecimal.ZERO;
-        BigDecimal investmentSum = rnd.add(capex);
-        double ratio = investmentSum.divide(revenue, 4, RoundingMode.HALF_UP).doubleValue() * 100;
-        if (ratio >= 15) return 10;
-        else if (ratio >= 10) return 7;
-        else if (ratio >= 5) return 3;
-
-        return 0;
     }
 
     // --- [과락 체크] ---
@@ -273,17 +186,6 @@ public class ScoringService {
         );
 
         companyScoreRepository.save(score);
-    }
-
-    private double parseDouble(JsonNode node, String field) {
-        if (node.has(field) && !node.get(field).asText().equalsIgnoreCase("None")) {
-            try {
-                return Double.parseDouble(node.get(field).asText());
-            } catch (NumberFormatException e) {
-                return 0.0;
-            }
-        }
-        return 0.0;
     }
 
     @Transactional(readOnly = true)

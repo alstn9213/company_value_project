@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class FinancialStatement {
 
     @Id
@@ -39,5 +37,32 @@ public class FinancialStatement {
     private BigDecimal researchAndDevelopment; // R&D 비용
     private BigDecimal capitalExpenditure;     // CapEx (자본지출)
 
+    @Builder
+    public FinancialStatement(Company company,
+                              Integer year,
+                              Integer quarter,
+                              BigDecimal revenue,
+                              BigDecimal operatingProfit,
+                              BigDecimal netIncome,
+                              BigDecimal totalAssets,
+                              BigDecimal totalLiabilities,
+                              BigDecimal totalEquity,
+                              BigDecimal operatingCashFlow,
+                              BigDecimal researchAndDevelopment,
+                              BigDecimal capitalExpenditure
+    ) {
 
+        this.company = company;
+        this.year = year;
+        this.quarter = quarter;
+        this.revenue = revenue;
+        this.operatingProfit = operatingProfit;
+        this.netIncome = netIncome;
+        this.totalAssets = totalAssets;
+        this.totalLiabilities = totalLiabilities;
+        this.totalEquity = totalEquity;
+        this.operatingCashFlow = operatingCashFlow;
+        this.researchAndDevelopment = researchAndDevelopment;
+        this.capitalExpenditure = capitalExpenditure;
+    }
 }

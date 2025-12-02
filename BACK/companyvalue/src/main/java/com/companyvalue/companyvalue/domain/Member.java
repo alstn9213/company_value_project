@@ -6,8 +6,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class Member extends BaseTime {
 
     @Id
@@ -30,5 +28,13 @@ public class Member extends BaseTime {
 
     public String getRoleKey() {
         return this.role.getKey();
+    }
+
+    @Builder
+    public Member(String email, String password, String nickname, Role role) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.role = role;
     }
 }

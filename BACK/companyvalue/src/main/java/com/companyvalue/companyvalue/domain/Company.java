@@ -6,8 +6,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class Company {
 
     @Id
@@ -27,4 +25,18 @@ public class Company {
 
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private CompanyScore companyScore;
+
+    @Builder
+    public Company(String ticker,
+                   String name,
+                   String sector,
+                   String exchange,
+                   CompanyScore companyScore
+    ) {
+        this.ticker = ticker;
+        this.name = name;
+        this.sector = sector;
+        this.exchange = exchange;
+        this.companyScore = companyScore;
+    }
 }

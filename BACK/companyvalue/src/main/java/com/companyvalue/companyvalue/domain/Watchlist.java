@@ -6,8 +6,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 public class Watchlist extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +20,9 @@ public class Watchlist extends BaseTime {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @Builder
+    public Watchlist(Member member, Company company) {
+        this.member = member;
+        this.company = company;
+    }
 }
