@@ -55,6 +55,11 @@ public class DataFetchService {
 
     // 공통 호출 메서드 추출
     private JsonNode callAlphaVantage(String function, String symbol) {
+        if (!"AAPL".equals(symbol)) {
+            log.warn("API 호출 차단됨 (무료 한도 보호): {}", symbol);
+            return objectMapper.createObjectNode(); // 빈 JSON 반환
+        }
+
         String response = webClient.get()
                 .uri(alphaBaseUrl, uriBuilder -> uriBuilder
                         .queryParam("function", function)

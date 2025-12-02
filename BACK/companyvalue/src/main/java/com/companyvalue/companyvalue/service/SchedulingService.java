@@ -13,7 +13,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -57,7 +56,11 @@ public class SchedulingService {
 
     // 실제 로직을 수행하는 메서드 (테스트 컨트롤러에서도 호출 가능하도록 분리)
     public void executeAllCompaniesUpdate() {
-        List<Company> companies = companyRepository.findAll();
+//        List<Company> companies = companyRepository.findAll();
+        List<Company> companies = companyRepository.findAll().stream()
+                .filter(c -> "AAPL".equals(c.getTicker()))
+                .toList();
+        log.info(">>> [Scheduler] 대상 기업 수: {}", companies.size());
         for(Company company : companies) {
             String ticker = company.getTicker();
             boolean hasFinancials = financialStatementRepository

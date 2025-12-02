@@ -22,32 +22,31 @@ public class InitDataConfig {
         return args -> {
             log.info("[InitData] 기업 데이터 초기화 작업을 시작합니다...");
 
-            // 추가하고 싶은 10개+ 기업 리스트 정의
             List<Company> targetCompanies = List.of(
-                    Company.builder().ticker("AAPL").name("Apple Inc.").sector("Technology").exchange("NASDAQ").build(),
-                    Company.builder().ticker("TSLA").name("Tesla Inc.").sector("Consumer Cyclical").exchange("NASDAQ").build(),
-                    Company.builder().ticker("MSFT").name("Microsoft Corp.").sector("Technology").exchange("NASDAQ").build(),
-                    Company.builder().ticker("GOOGL").name("Alphabet Inc.").sector("Technology").exchange("NASDAQ").build(),
-                    Company.builder().ticker("AMZN").name("Amazon.com Inc.").sector("Consumer Cyclical").exchange("NASDAQ").build(),
-                    Company.builder().ticker("NVDA").name("NVIDIA Corp.").sector("Technology").exchange("NASDAQ").build(),
-                    Company.builder().ticker("META").name("Meta Platforms Inc.").sector("Technology").exchange("NASDAQ").build(),
-                    Company.builder().ticker("BRK.B").name("Berkshire Hathaway").sector("Financial Services").exchange("NYSE").build(),
-                    Company.builder().ticker("JPM").name("JPMorgan Chase & Co.").sector("Financial Services").exchange("NYSE").build(),
-                    Company.builder().ticker("V").name("Visa Inc.").sector("Financial Services").exchange("NYSE").build(),
-                    Company.builder().ticker("JNJ").name("Johnson & Johnson").sector("Healthcare").exchange("NYSE").build(),
-                    Company.builder().ticker("WMT").name("Walmart Inc.").sector("Consumer Defensive").exchange("NYSE").build(),
-                    // --- 고득점(A등급) 도전 우량주 ---
-                    // 1. 수익성/투자 만점 기대 (Tech)
-                    Company.builder().ticker("META").name("Meta Platforms").sector("Communication Services").exchange("NASDAQ").build(),
-                    Company.builder().ticker("TSM").name("Taiwan Semiconductor").sector("Technology").exchange("NYSE").build(),
-                    Company.builder().ticker("AVGO").name("Broadcom Inc.").sector("Technology").exchange("NASDAQ").build(),
-
-                    // 2. 가치/안정성 만점 기대 (Energy/Finance)
-                    Company.builder().ticker("XOM").name("Exxon Mobil Corp.").sector("Energy").exchange("NYSE").build(),
-                    Company.builder().ticker("BRK.B").name("Berkshire Hathaway").sector("Financial Services").exchange("NYSE").build(),
-
-                    // 3. 미래 성장성 (Healthcare)
-                    Company.builder().ticker("LLY").name("Eli Lilly and Co.").sector("Healthcare").exchange("NYSE").build()
+                    Company.builder().ticker("AAPL").name("Apple Inc.").sector("Technology").exchange("NASDAQ").build()
+//                    Company.builder().ticker("TSLA").name("Tesla Inc.").sector("Consumer Cyclical").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("MSFT").name("Microsoft Corp.").sector("Technology").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("GOOGL").name("Alphabet Inc.").sector("Technology").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("AMZN").name("Amazon.com Inc.").sector("Consumer Cyclical").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("NVDA").name("NVIDIA Corp.").sector("Technology").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("META").name("Meta Platforms Inc.").sector("Technology").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("BRK.B").name("Berkshire Hathaway").sector("Financial Services").exchange("NYSE").build(),
+//                    Company.builder().ticker("JPM").name("JPMorgan Chase & Co.").sector("Financial Services").exchange("NYSE").build(),
+//                    Company.builder().ticker("V").name("Visa Inc.").sector("Financial Services").exchange("NYSE").build(),
+//                    Company.builder().ticker("JNJ").name("Johnson & Johnson").sector("Healthcare").exchange("NYSE").build(),
+//                    Company.builder().ticker("WMT").name("Walmart Inc.").sector("Consumer Defensive").exchange("NYSE").build(),
+//                    // --- 고득점(A등급) 도전 우량주 ---
+//                    // 1. 수익성/투자 만점 기대 (Tech)
+//                    Company.builder().ticker("META").name("Meta Platforms").sector("Communication Services").exchange("NASDAQ").build(),
+//                    Company.builder().ticker("TSM").name("Taiwan Semiconductor").sector("Technology").exchange("NYSE").build(),
+//                    Company.builder().ticker("AVGO").name("Broadcom Inc.").sector("Technology").exchange("NASDAQ").build(),
+//
+//                    // 2. 가치/안정성 만점 기대 (Energy/Finance)
+//                    Company.builder().ticker("XOM").name("Exxon Mobil Corp.").sector("Energy").exchange("NYSE").build(),
+//                    Company.builder().ticker("BRK.B").name("Berkshire Hathaway").sector("Financial Services").exchange("NYSE").build(),
+//
+//                    // 3. 미래 성장성 (Healthcare)
+//                    Company.builder().ticker("LLY").name("Eli Lilly and Co.").sector("Healthcare").exchange("NYSE").build()
             );
 
 

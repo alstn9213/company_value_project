@@ -31,7 +31,6 @@ public class StockService {
     @Transactional
     @Cacheable(value = "stock_history", key = "#ticker", unless = "#result == null || #result.isEmpty()")
     public List<StockHistoryDto> getStockHistory(String ticker) {
-
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 기업입니다."));
         List<StockPriceHistory> histories = stockRepository.findByCompanyOrderByRecordedDateAsc(company);
