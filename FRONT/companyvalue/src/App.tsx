@@ -1,4 +1,3 @@
-import './App.css'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/Auth/LoginPage'
 import ProtectedRoute from './components/layout/ProtectedRoute'
