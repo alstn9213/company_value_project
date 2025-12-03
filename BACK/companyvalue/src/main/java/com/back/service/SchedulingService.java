@@ -56,7 +56,11 @@ public class SchedulingService {
 
     // 실제 로직을 수행하는 메서드 (테스트 컨트롤러에서도 호출 가능하도록 분리)
     public void executeAllCompaniesUpdate() {
-//        List<Company> companies = companyRepository.findAll();
+        // List<Company> companies = companyRepository.findAll(); 기업 전체를 불러오는 로직이지만 api 제약때문에 주석처리
+
+        // 외부 API(Alpha Vantage)의 Free Tier 정책을 준수하기 위해
+        // 포트폴리오 시연용으로 'AAPL' 단일 종목만 업데이트하도록 제한하였습니다.
+        // 실무 환경(Premium Tier)에서는 아래 filter 조건을 제거하여 전 종목을 배치 처리합니다.
         List<Company> companies = companyRepository.findAll().stream()
                 .filter(c -> "AAPL".equals(c.getTicker()))
                 .toList();

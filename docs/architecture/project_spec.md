@@ -12,18 +12,20 @@
 ### 2.1. Tech Stack
 | 구분 | 기술 스택 | 선정 이유 |
 | :--- | :--- | :--- |
-| **Backend** | **Spring Boot 3.x, Java 17** | 안정적인 서버 환경 및 최신 Java 기능 활용 |
+| **Backend** | **Spring Boot 3.5, Java 17** | 안정적인 서버 환경 및 최신 Spring Boot 기능 활용 |
 | **DB / Cache** | **MariaDB, Redis** | 관계형 데이터 저장 및 조회 성능 최적화(캐싱) |
 | **Network** | **Spring WebClient** | Alpha Vantage/FRED의 대용량 JSON 비동기 처리 |
 | **Security** | **Spring Security, JWT** | Stateless한 인증 방식 및 확장성 고려 |
 | **Frontend** | **React, TypeScript, Vite** | 빠른 렌더링과 타입 안정성 확보 |
+| **Style** | **Tailwind CSS 4** | 유틸리티 퍼스트 CSS를 통한 빠른 UI 개발 |
 | **State** | **Zustand, TanStack Query** | 전역 상태 관리 및 효율적인 서버 상태 동기화 |
-| **UI/UX** | **Tailwind CSS, Recharts** | 직관적인 스타일링 및 데이터 시각화 |
+| **Infra** | **GCP, Docker Compose** | 컨테이너 기반의 일관된 배포 환경 구성 |
 
 ### 2.2. 데이터 파이프라인
 1.  **Data Collection (Scheduler):**
     * **매일 08:00:** FRED API를 통해 금리, 인플레이션, 실업률 등 거시 경제 지표 수집.
-    * **매주 일요일 02:00:** Alpha Vantage API를 통해 전체 기업의 재무제표(Income, Balance, CashFlow) 및 주가 지표 일괄 업데이트.
+    * **매주 일요일 02:00:** Alpha Vantage API를 통해 기업 재무제표 및 주가 지표 업데이트.
+    * *(Note: 현재 데모 버전은 API Free Tier 제한 준수를 위해 대표 기업(AAPL)에 대해서만 배치 업데이트가 수행되도록 의도적으로 제한됨)*
 2.  **Processing & Scoring:**
     * 수집된 Raw Data를 파싱하여 DB에 적재 후, `ScoringService`가 즉시 기업별 등급(S~F) 재산정.
 3.  **Caching Strategy (Redis):**
@@ -38,6 +40,7 @@
 
 ### 3.2. 데이터 소스 (API)
 * **기업 재무 데이터:** Alpha Vantage (Income Statement, Balance Sheet, Cash Flow, Overview)
+* **주가 데이터:** Alpha Vantage (Time Series Daily / Global Quote)
 * **거시 경제 데이터:** FRED (Federal Reserve Economic Data) - `DGS10`(10년물), `DGS2`(2년물), `DFF`(기준금리), `CPIAUCSL`(CPI), `UNRATE`(실업률)
 
 ---
@@ -48,7 +51,8 @@
 재무제표 3종(손익계산서, 재무상태표, 현금흐름표)을 분석하여 4대 지표를 산출합니다.
 평가 기준은 장기 투자를 위해 **'보수적 안정성'**을 최우선으로 하며, 미래 성장 잠재력에 대한 가산점과 시장 위험에 따른 페널티가 **동적으로 계산**됩니다.
 
-* **안정성 (40점):** * 부채비율(Debt Ratio) 구간별 차등 점수 부여.
+* **안정성 (40점):**
+    * 부채비율(Debt Ratio) 구간별 차등 점수 부여.
     * **업종별 기준 차등 적용:** 일반 기업은 부채비율 100% 미만 시 만점이나, 부채 성격이 다른 **금융업(Financial Services)은 800% 미만**을 만점 기준으로 완화.
     * 영업활동 현금흐름 흑자 여부 가산점.
 * **수익성 (30점):** ROE(자기자본이익률), 영업이익률(OPM) 평가.
@@ -76,14 +80,6 @@
 * **시각화:** Recharts를 활용하여 최근 30일/10년간의 국채 금리 및 인플레이션 추이 시각화.
 * **Alert:** 장단기 금리차 역전 구간을 차트 내 붉은 영역(`ReferenceArea`)으로 강조하여 사용자에게 경고.
 
-### 4.4. 주요 지표 및 해석
-
-1. **미 10년물 국채 금리 (US 10Y Treasury Yield)**
-   * **역할:** 무위험 수익률의 기준점. 4.0% 이상 시 고금리 기조로 판단하여 위험 자산(주식) 매력도 감소.
-2. **장단기 금리차 (10Y - 2Y Spread)**
-   * **역할:** 경기 침체(Recession)의 선행 지표. 역전(음수) 발생 시 경기 침체 경고 신호로 반영.
-3. **기타 지표:** 기준 금리, 인플레이션(CPI), 실업률 데이터를 매일 최신화하여 시장 기초 체력 모니터링.
-
 ---
 
 ## 5. 트러블 슈팅 및 성능 최적화
@@ -92,20 +88,25 @@
 * **문제:** Alpha Vantage의 재무제표 응답 데이터가 Spring WebClient의 기본 버퍼 사이즈(256KB)를 초과하여 `DataBufferLimitException` 발생.
 * **해결:** `ExchangeStrategies` 설정을 통해 인메모리 버퍼 사이즈를 **10MB**로 증설하여 대용량 데이터 수집 안정성 확보.
 
-### 5.2. API Rate Limit 대응
-* **문제:** 무료 API 키 사용 시 분당 호출 횟수 제한으로 인한 데이터 누락 가능성.
-* **해결:** `SchedulingService` 내 루프 실행 시 `Thread.sleep(12000)`을 적용하여 호출 간격을 조절, 안정적인 배치 작업 구현.
+### 5.2. API 비용 최적화 및 Rate Limit 대응 (Cost Optimization)
+* **상황:** Alpha Vantage Free Tier 사용으로 인한 분당 5회, 일 500회 호출 제한 존재.
+* **해결 1 (배치 제한):** `SchedulingService`의 배치 로직 실행 시, 전체 기업을 순회하는 대신 **대표 기업(AAPL)에 대해서만 업데이트**하도록 의도적으로 필터링하여 API 쿼터 초과 방지. (실무 환경 전환 시 필터 해제 가능하도록 설계)
+* **해결 2 (Rate Limiting):** 루프 실행 시 `Thread.sleep(12000)`을 적용하여 호출 간격을 강제로 조절, `429 Too Many Requests` 에러 방어.
 
-### 5.3. 반복 조회 성능 개선
+### 5.3. 반복 조회 성능 개선 (Redis Cache)
 * **문제:** 메인 대시보드 및 기업 상세 페이지 접근 시 빈번한 DB 조회 발생.
 * **해결:** **Redis**를 도입하여 `MacroData` 및 `CompanyScore` 조회 결과 캐싱.
-    * `@Cacheable`: 조회 성능 최적화.
+    * `@Cacheable`: 조회 성능 최적화 (응답 속도 ms 단위).
     * `@CacheEvict`: 스케줄러 실행 시 낡은 캐시 자동 삭제로 데이터 정합성 유지.
-* **추가 이슈 해결 (2025.11.27):** `RedisSerializationException` 발생(Java Record 타입 정보 누락) 해결을 위해 `ObjectMapper`의 `DefaultTyping` 전략을 수정하여 역직렬화 오류를 방지함.
+* **추가 이슈:** `RedisSerializationException` 발생(Java Record 타입 정보 누락) 해결을 위해 `ObjectMapper`의 `DefaultTyping` 전략을 수정하여 역직렬화 오류를 방지함.
+
+### 5.4. Spring Security 정적 리소스 차단 문제
+* **문제:** JWT 필터 적용 후 React 빌드 파일(JS, CSS)까지 인증 필터를 거치게 되어 403 에러 발생.
+* **해결:** `SecurityConfig`의 `WebSecurityCustomizer`를 통해 `/assets/**`, `/index.html`, `/favicon.ico` 등 정적 리소스 경로를 필터 체인에서 완전히 배제(`ignoring()`)하여 해결.
 
 ---
 
 ## 6. 구현 현황
 * **Backend API:** 100% 구현 (Auth, Company, Macro, Watchlist, Score Domain)
 * **Frontend UI:** 100% 구현 (로그인, 회원가입, 대시보드, 기업 목록/검색, 상세 분석, 관심종목)
-* **Infrastructure:** Local Dev Environment (Docker Compose), AWS Deployment Architecture Designed
+* **Infrastructure:** Docker Compose 기반 Local/GCP 배포 환경 구성 완료
