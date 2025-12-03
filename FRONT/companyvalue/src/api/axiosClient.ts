@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../stores/authStore';
 
 const axiosClient = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: '', // 빈 문자열로 설정 (자동으로 현재 도메인/포트 사용)
   headers: {
     'Content-Type' : 'application/json',
   },
