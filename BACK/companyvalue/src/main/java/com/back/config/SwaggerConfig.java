@@ -13,17 +13,25 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
+        String jwt = "JWT";
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
+        Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme()
+                .name(jwt)
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+        );
+
         return new OpenAPI()
-                .info(new Info()
-                        .title("Value Pick API Document")
-                        .description("기업 가치 평가 및 거시 경제 분석 플랫폼 API 명세서")
-                        .version("v1.0.0"))
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Auth")) // JWT 인증 설정
-                .components(new Components()
-                        .addSecuritySchemes("Bearer Auth", new SecurityScheme()
-                        .name("Authorization")
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")));
+                .components(components)
+                .addSecurityItem(securityRequirement)
+                .info(apiInfo());
+    }
+
+    private Info apiInfo() {
+        return new Info()
+                .title("Company Value Project API")
+                .description("기업 가치 분석 서비스의 API 명세서입니다.")
+                .version("1.0.0");
     }
 }
