@@ -51,11 +51,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 이므로 세션 미사용
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 메서드는 인증 없이 모두 허용
-                        .requestMatchers("/auth/**", "/test/**", "/").permitAll() // 로그인, 회원가입 등 공개 API 허용
-                        .requestMatchers("/error").permitAll() // 에러 페이지 접근 허용
-                        .requestMatchers(HttpMethod.GET, "/api/macro/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/companies/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/scores/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/assets/**", "/*.ico", "/vite.svg").permitAll() // 정적 리소스(React 파일) 접근 허용
+                        .requestMatchers("/auth/**", "/test/**", "/error").permitAll() // 로그인/회원가입 등 인증 없이 접근 가능한 API
+                        .requestMatchers(HttpMethod.GET, "/api/macro/**", "/api/companies/**", "/api/scores/**").permitAll() // 공개 데이터 조회 API 허용
                         .anyRequest().authenticated() // 나머지는 인증 필요
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
