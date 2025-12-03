@@ -97,7 +97,7 @@ public class CompanyController {
             @PathVariable
             String ticker
     ) {
-        Company company = company = companyRepository.findByTicker(ticker)
+        Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(() -> new IllegalArgumentException("해당 기업을 찾을 수 없습니다. " + ticker));
 
         // 점수 조회(없으면 null 처리 혹은 기본값)
