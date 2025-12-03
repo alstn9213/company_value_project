@@ -9,6 +9,9 @@ import com.back.domain.repository.FinancialStatementRepository;
 import com.back.dto.MainResponseDto;
 import com.back.dto.StockHistoryDto;
 import com.back.service.StockService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/companies")
 @RequiredArgsConstructor
+@Tag(name = "Company API", description = "기업 정보 및 재무 데이터 및 주가 차트 조회 API")
 public class CompanyController {
 
     private final CompanyRepository companyRepository;
@@ -31,12 +35,19 @@ public class CompanyController {
 
     // 1. 전체 기업 목록 조회
     @GetMapping
+    @Operation(summary = "전체 기업 목록 조회", description = "페이징 처리된 기업 목록을 반환합니다. 이름순 또는 점수순 정렬이 가능합니다.")
     public ResponseEntity<Page<MainResponseDto.CompanyInfo>> getAllCompanies(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
-            @RequestParam(defaultValue = "name") String sort
+            @Parameter(description = "페이지 번호 (0부터 시작)", example = "0")
+            @RequestParam(defaultValue = "0")
+            int page,
+            @Parameter(description = "페이지 크기", example = "12")
+            @RequestParam(defaultValue = "12")
+            int size,
+            @Parameter(description = "정렬 기준 (name 또는 score)", example = "score")
+            @RequestParam(defaultValue = "name")
+            String sort
     ) {
-        // 1. 정렬 기준 설정 (자바 필드명 기준)
+        // 정렬 기준 설정 (자바 필드명 기준)
         Sort sortObj = Sort.by(Sort.Direction.ASC, "name"); // 기본: 이름순
         if ("score".equals(sort)) {
             // 연관된 객체의 필드로 정렬할 때는 '필드명.필드명' 표기법 사용
@@ -44,7 +55,7 @@ public class CompanyController {
         }
         Pageable pageable = PageRequest.of(page, size, sortObj);
 
-        // 2. 조회 및 변환 (Entity -> DTO)
+        // 조회 및 변환 (Entity -> DTO)
         Page<MainResponseDto.CompanyInfo> companies = companyRepository.findAll(pageable)
                 .map(company -> {
                     // 점수 정보가 없는 경우(null) 안전하게 처리
@@ -60,12 +71,18 @@ public class CompanyController {
                             grade
                     );
                 });
+
         return ResponseEntity.ok(companies);
     }
 
     // 2. 기업 검색(이름으로)
     @GetMapping("/search")
-    public ResponseEntity<List<MainResponseDto.CompanyInfo>> searchCompanies(@RequestParam String keyword) {
+    @Operation(summary = "기업 검색", description = "기업명에 검색어가 포함된 기업 목록을 반환합니다.")
+    public ResponseEntity<List<MainResponseDto.CompanyInfo>> searchCompanies(
+            @Parameter(description = "검색할 기업명 또는 키워드", example = "Apple")
+            @RequestParam
+            String keyword
+    ) {
         List<MainResponseDto.CompanyInfo> result = companyRepository.findByNameContaining(keyword).stream()
                 .map(MainResponseDto.CompanyInfo::from)
                 .toList();
@@ -74,7 +91,12 @@ public class CompanyController {
 
     // 3. 기업 상세 정보 조회(기본 정보 + 점수 + 재무제표)
     @GetMapping("/{ticker}")
-    public ResponseEntity<MainResponseDto.CompanyDetailResponse> getCompanyDetail(@PathVariable String ticker) {
+    @Operation(summary = "기업 상세 정보 조회", description = "특정 기업의 기본 정보, 재무 건전성 점수, 최근 재무제표 내역을 조회합니다.")
+    public ResponseEntity<MainResponseDto.CompanyDetailResponse> getCompanyDetail(
+            @Parameter(description = "기업 티커 (예: AAPL)", example = "AAPL")
+            @PathVariable
+            String ticker
+    ) {
         Company company = company = companyRepository.findByTicker(ticker)
                 .orElseThrow(() -> new IllegalArgumentException("해당 기업을 찾을 수 없습니다. " + ticker));
 
@@ -102,7 +124,12 @@ public class CompanyController {
 
     // 4. 주가 차트 조회
     @GetMapping("/{ticker}/chart")
-    public ResponseEntity<List<StockHistoryDto>> getCompanyChart(@PathVariable String ticker) {
+    @Operation(summary = "주가 차트 데이터 조회", description = "특정 기업의 주가 히스토리 데이터를 조회합니다.")
+    public ResponseEntity<List<StockHistoryDto>> getCompanyChart(
+            @Parameter(description = "기업 티커 (예: AAPL)", example = "AAPL")
+            @PathVariable
+            String ticker
+    ) {
         List<StockHistoryDto> chartData = stockService.getStockHistory(ticker);
         return ResponseEntity.ok(chartData);
     }
