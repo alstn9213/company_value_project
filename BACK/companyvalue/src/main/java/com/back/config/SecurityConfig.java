@@ -45,7 +45,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // REST API 이므로 CSRF 보안 미사용
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 연결
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 연결 -> 리액트와 스프링부트를 하나로 합쳐서 배포해, cors 설정이 필요없어짐
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)) // 예외 처리 설정: 인증 실패 시 401 핸들러 호출
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 이므로 세션 미사용
