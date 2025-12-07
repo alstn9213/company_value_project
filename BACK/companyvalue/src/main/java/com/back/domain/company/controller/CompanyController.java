@@ -1,22 +1,13 @@
 package com.back.domain.company.controller;
 
 import com.back.domain.company.dto.response.*;
-import com.back.domain.company.entity.Company;
-import com.back.domain.company.entity.CompanyScore;
-import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.repository.CompanyRepository;
-import com.back.domain.company.repository.CompanyScoreRepository;
-import com.back.domain.company.repository.FinancialStatementRepository;
-import com.back.domain.company.service.CompanyReadService;
-import com.back.domain.company.service.StockService;
+import com.back.domain.company.service.core.CompanyReadService;
+import com.back.domain.company.service.stock.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

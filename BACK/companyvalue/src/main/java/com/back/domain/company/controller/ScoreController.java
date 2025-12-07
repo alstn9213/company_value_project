@@ -2,7 +2,7 @@ package com.back.domain.company.controller;
 
 import com.back.domain.company.dto.response.CompanyScoreResponse;
 import com.back.domain.company.repository.CompanyScoreRepository;
-import com.back.domain.company.service.ScoringService;
+import com.back.domain.company.service.analysis.ScoringService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

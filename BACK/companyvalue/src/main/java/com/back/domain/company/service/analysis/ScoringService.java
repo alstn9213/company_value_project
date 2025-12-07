@@ -1,9 +1,13 @@
-package com.back.domain.company.service;
+package com.back.domain.company.service.analysis;
 
 import com.back.domain.company.dto.response.CompanyScoreResponse;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.strategy.InvestmentStrategy;
+import com.back.domain.company.service.analysis.strategy.ProfitabilityStrategy;
+import com.back.domain.company.service.analysis.strategy.StabilityStrategy;
+import com.back.domain.company.service.analysis.strategy.ValuationStrategy;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.CompanyScoreRepository;

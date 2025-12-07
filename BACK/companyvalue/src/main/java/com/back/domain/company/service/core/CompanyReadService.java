@@ -1,4 +1,4 @@
-package com.back.domain.company.service;
+package com.back.domain.company.service.core;
 
 import com.back.domain.company.dto.response.CompanyDetailResponse;
 import com.back.domain.company.dto.response.CompanySummaryResponse;

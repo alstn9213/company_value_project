@@ -1,4 +1,4 @@
-package com.back.domain.company.service;
+package com.back.domain.company.service.stock;
 
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.StockPriceHistory;

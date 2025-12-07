@@ -5,11 +5,12 @@ import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.CompanyScoreRepository;
 import com.back.domain.company.repository.FinancialStatementRepository;
+import com.back.domain.company.service.finance.FinancialDataSyncService;
+import com.back.domain.company.service.finance.FinancialStatementService;
 import com.back.infra.external.dto.ExternalFinancialDataResponse;
-import com.back.domain.company.service.FinancialDataService;
 import com.back.domain.macro.service.MacroDataService;
 import com.back.infra.external.DataFetchService;
-import com.back.domain.company.service.ScoringService;
+import com.back.domain.company.service.analysis.ScoringService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,8 @@ import java.util.List;
 public class SchedulingService {
 
     private final CompanyRepository companyRepository;
-    private final FinancialDataService financialDataService;
+    private final FinancialDataSyncService financialDataSyncService;
+    private final FinancialStatementService financialStatementService;
     private final ScoringService scoringService;
     private final MacroDataService macroDataService;
     private final FinancialStatementRepository financialStatementRepository;
@@ -80,8 +82,8 @@ public class SchedulingService {
 
             try {
                 if (!hasFinancials) {
-                    ExternalFinancialDataResponse rawData = financialDataService.fetchRawFinancialData(ticker);
-                    financialDataService.saveFinancialData(ticker, rawData);
+                    ExternalFinancialDataResponse rawData = financialDataSyncService.fetchRawFinancialData(ticker);
+                    financialStatementService.saveFinancialStatements(company, rawData);
                     Thread.sleep(12000); // API 무료 키 제한 고려
                 }
                 // 점수 계산 (재무제표가 방금 저장되었거나, 이미 있었는데 점수만 없는 경우 모두 수행)

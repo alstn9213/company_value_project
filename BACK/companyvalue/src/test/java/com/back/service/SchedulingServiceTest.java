@@ -4,9 +4,10 @@ import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.FinancialStatementRepository;
+import com.back.domain.company.service.finance.FinancialDataSyncService;
+import com.back.domain.company.service.finance.FinancialStatementService;
 import com.back.infra.external.dto.ExternalFinancialDataResponse;
-import com.back.domain.company.service.FinancialDataService;
-import com.back.domain.company.service.ScoringService;
+import com.back.domain.company.service.analysis.ScoringService;
 import com.back.infra.external.DataFetchService;
 import com.back.infra.scheduler.SchedulingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +40,7 @@ class SchedulingServiceTest {
     private FinancialStatementRepository financialStatementRepository;
 
     @MockitoBean
-    private FinancialDataService financialDataService;
+    private FinancialDataSyncService financialDataSyncService;
 
     @MockitoBean
     private DataFetchService dataFetchService;
@@ -48,19 +49,18 @@ class SchedulingServiceTest {
     private ScoringService scoringService;
 
     @Test
-    @DisplayName("재무제표 업데이트 스케줄러: 데이터가 없는 기업에 대해 데이터를 수집하고 점수를 계산해야 한다")
+    @DisplayName("스케줄러 실행 시 데이터 동기화와 점수 계산이 순차적으로 수행되어야 한다")
     void executeAllCompaniesUpdate_success() {
         // given
         Company apple = Company.builder().ticker("AAPL").name("Apple").build();
         given(companyRepository.findAll()).willReturn(List.of(apple));
 
+        // 1. SyncService가 호출된 이후, 점수 계산을 위해 재무제표를 조회할 때 리턴될 객체 Mocking
+        FinancialStatement mockFs = new FinancialStatement();
         given(financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(apple))
-                .willReturn(Optional.empty())
-                .willReturn(Optional.of(new FinancialStatement()));
+                .willReturn(Optional.of(mockFs));
 
-        ExternalFinancialDataResponse mockData = new ExternalFinancialDataResponse(null, null, null);
-        given(financialDataService.fetchRawFinancialData("AAPL")).willReturn(mockData);
-
+        // 2. 점수 계산 시 필요한 Overview 데이터 Mocking
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode overview = mapper.createObjectNode();
         given(dataFetchService.getCompanyOverview("AAPL")).willReturn(overview);
@@ -69,8 +69,10 @@ class SchedulingServiceTest {
         schedulingService.executeAllCompaniesUpdate();
 
         // then
-        verify(financialDataService, times(1)).fetchRawFinancialData("AAPL");
-        verify(financialDataService, times(1)).saveFinancialData(eq("AAPL"), any());
-        verify(scoringService, times(1)).calculateAndSaveScore(any(), any());
+        // 1. [핵심] 기존 fetchRawFinancialData 대신 SyncService의 메서드가 호출되었는지 검증
+        verify(financialDataSyncService, times(1)).synchronizeCompany("AAPL");
+
+        // 2. 점수 계산 서비스가 호출되었는지 검증
+        verify(scoringService, times(1)).calculateAndSaveScore(any(FinancialStatement.class), any());
     }
 }

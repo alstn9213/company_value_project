@@ -3,7 +3,7 @@ package com.back.service;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.service.ScoringService;
+import com.back.domain.company.service.analysis.ScoringService;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.CompanyScoreRepository;
