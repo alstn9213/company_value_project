@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis.strategy.common;
+package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.fasterxml.jackson.databind.JsonNode;

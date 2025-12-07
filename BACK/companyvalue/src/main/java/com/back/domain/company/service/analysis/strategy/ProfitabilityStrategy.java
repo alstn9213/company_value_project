@@ -1,7 +1,6 @@
 package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.service.analysis.strategy.common.ScoringStrategy;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 
