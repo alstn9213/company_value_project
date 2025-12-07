@@ -1,10 +1,14 @@
 package com.back.service;
 
-import com.back.domain.Company;
-import com.back.domain.FinancialStatement;
-import com.back.domain.repository.CompanyRepository;
-import com.back.domain.repository.FinancialStatementRepository;
-import com.back.dto.FinancialDataDto;
+import com.back.domain.company.entity.Company;
+import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.repository.CompanyRepository;
+import com.back.domain.company.repository.FinancialStatementRepository;
+import com.back.infra.external.dto.ExternalFinancialDataResponse;
+import com.back.domain.company.service.FinancialDataService;
+import com.back.domain.company.service.ScoringService;
+import com.back.infra.external.DataFetchService;
+import com.back.infra.scheduler.SchedulingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +58,7 @@ class SchedulingServiceTest {
                 .willReturn(Optional.empty())
                 .willReturn(Optional.of(new FinancialStatement()));
 
-        FinancialDataDto mockData = new FinancialDataDto(null, null, null);
+        ExternalFinancialDataResponse mockData = new ExternalFinancialDataResponse(null, null, null);
         given(financialDataService.fetchRawFinancialData("AAPL")).willReturn(mockData);
 
         ObjectMapper mapper = new ObjectMapper();

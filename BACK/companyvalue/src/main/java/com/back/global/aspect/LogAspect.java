@@ -16,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class LogAspect {
 
     // com.companyvalue.companyvalue 패키지 하위의 모든 Controller에 적용
-    @Pointcut("execution(* com.companyvalue.companyvalue.controller..*Controller.*(..))")
+    @Pointcut("execution(* com.back..*Controller.*(..))")
     public void controllerPointcut() {}
 
     @Around("controllerPointcut()")

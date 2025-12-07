@@ -1,12 +1,13 @@
 package com.back.service;
 
-import com.back.domain.Company;
-import com.back.domain.CompanyScore;
-import com.back.domain.FinancialStatement;
-import com.back.domain.MacroEconomicData;
-import com.back.domain.repository.CompanyRepository;
-import com.back.domain.repository.CompanyScoreRepository;
-import com.back.domain.repository.MacroRepository;
+import com.back.domain.company.entity.Company;
+import com.back.domain.company.entity.CompanyScore;
+import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.ScoringService;
+import com.back.domain.macro.entity.MacroEconomicData;
+import com.back.domain.company.repository.CompanyRepository;
+import com.back.domain.company.repository.CompanyScoreRepository;
+import com.back.domain.macro.repository.MacroRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.DisplayName;
