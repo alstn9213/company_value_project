@@ -22,14 +22,13 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest request) {
         // 1. ID/PW를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.email(), request.password());
 
         // 2. 실제 검증 (사용자 비밀번호 체크)
-        // authenticate 메서드가 실행될 때 CustomUserDetailsService 의 loadUserByUsername 메서드가 실행됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성

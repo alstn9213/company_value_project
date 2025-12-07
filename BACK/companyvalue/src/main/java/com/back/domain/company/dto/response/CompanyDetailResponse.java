@@ -1,6 +1,8 @@
 package com.back.domain.company.dto.response;
 
-import com.back.infra.external.dto.ExternalFinancialDataResponse;
+import com.back.domain.company.entity.Company;
+import com.back.domain.company.entity.CompanyScore;
+import com.back.domain.company.entity.FinancialStatement;
 
 import java.util.List;
 
@@ -10,4 +12,22 @@ public record CompanyDetailResponse(
         CompanyScoreResponse score,
         FinancialStatementResponse latestFinancial,
         List<FinancialStatementResponse> financialHistory
-) {}
+) {
+    public static CompanyDetailResponse of(Company company,
+                                           CompanyScore score,
+                                           List<FinancialStatement> history) {
+
+        List<FinancialStatementResponse> historyDto = history.stream()
+                .map(FinancialStatementResponse::from)
+                .toList();
+
+        FinancialStatement latest = history.isEmpty() ? new FinancialStatement() : history.get(0);
+
+        return new CompanyDetailResponse(
+                CompanySummaryResponse.from(company),
+                CompanyScoreResponse.from(score),
+                FinancialStatementResponse.from(latest),
+                historyDto
+        );
+    }
+}

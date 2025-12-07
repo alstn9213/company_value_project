@@ -2,7 +2,7 @@ package com.back.domain.watchlist.entity;
 
 import com.back.domain.company.entity.Company;
 import com.back.domain.member.entity.Member;
-import com.back.global.common.BaseTime;
+import com.back.domain.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 

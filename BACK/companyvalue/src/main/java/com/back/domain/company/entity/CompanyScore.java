@@ -1,6 +1,6 @@
 package com.back.domain.company.entity;
 
-import com.back.global.common.BaseTime;
+import com.back.domain.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,5 +54,14 @@ public class CompanyScore extends BaseTime {
         this.totalScore = totalScore;
         this.grade = grade;
         this.isOpportunity = isOpportunity;
+    }
+
+    public static CompanyScore empty(Company company) {
+        return CompanyScore.builder()
+                .company(company)
+                .totalScore(0)
+                .grade("N/A")
+                .isOpportunity(false)
+                .build();
     }
 }
