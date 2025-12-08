@@ -41,32 +41,25 @@ public class ScoringService {
     private final DisqualificationPolicy disqualificationPolicy;
     private final PenaltyPolicy penaltyPolicy;
 
-    /**
-     * 기업의 재무제표와 현재 시장 상황을 기반으로 점수를 계산하고 저장합니다.
-     */
     @Transactional
     public void calculateAndSaveScore(FinancialStatement fs, JsonNode overview) {
-        // 1. 거시 경제 데이터 조회
         MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
                 .orElseThrow(() -> new RuntimeException("거시 경제 데이터가 없습니다."));
 
-        // 2. 기본 점수 계산 (Strategy Pattern 활용)
+        // 기본 점수 계산 (Strategy Pattern 활용)
         int stability = stabilityStrategy.calculate(fs, overview);
         int profitability = profitabilityStrategy.calculate(fs, overview);
         int valuation = valuationStrategy.calculate(fs, overview);
         int investment = investmentStrategy.calculate(fs, overview);
 
         int totalScore = stability + profitability + valuation + investment;
-        String grade;
+        String grade = "F";
         boolean isOpportunity = false;
 
-        // 3. 과락 및 페널티 적용 (Policy Pattern 활용)
-        if (disqualificationPolicy.isDisqualified(fs)) {
-            totalScore = 0;
-            grade = "F";
-        } else {
+        // 과락 및 페널티 적용 (Policy Pattern 활용)
+        if(disqualificationPolicy.isDisqualified(fs)) totalScore = 0;
+        else {
             int penalty = penaltyPolicy.calculatePenalty(fs, macro);
-
             totalScore = Math.max(0, Math.min(100, totalScore - penalty)); // 0~100 범위 보정
             grade = calculateGrade(totalScore);
 
@@ -74,26 +67,7 @@ public class ScoringService {
             isOpportunity = (penalty > 0) && (valuation >= ScoringConstants.OPPORTUNITY_VALUATION_THRESHOLD);
         }
 
-        // 4. 저장
         saveScore(fs, totalScore, stability, profitability, valuation, investment, grade, isOpportunity);
-    }
-
-    private String calculateGrade(int score) {
-        if (score >= ScoringConstants.GRADE_S_THRESHOLD) return "S";
-        if (score >= ScoringConstants.GRADE_A_THRESHOLD) return "A";
-        if (score >= ScoringConstants.GRADE_B_THRESHOLD) return "B";
-        if (score >= ScoringConstants.GRADE_C_THRESHOLD) return "C";
-        return "D";
-    }
-
-    private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
-        CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
-                .orElseGet(() -> CompanyScore.builder()
-                        .company(fs.getCompany())
-                        .build());
-
-        score.updateScore(total, stab, prof, val, inv, grade, isOpportunity);
-        companyScoreRepository.save(score);
     }
 
     @Transactional(readOnly = true)
@@ -105,5 +79,25 @@ public class ScoringService {
         return companyScoreRepository.findByCompany(company)
                 .map(CompanyScoreResponse::from)
                 .orElse(null);
+    }
+
+    // --- 내부 메서드 ---
+
+    private String calculateGrade(int score) {
+        if(score >= ScoringConstants.GRADE_S_THRESHOLD) return "S";
+        if(score >= ScoringConstants.GRADE_A_THRESHOLD) return "A";
+        if(score >= ScoringConstants.GRADE_B_THRESHOLD) return "B";
+        if(score >= ScoringConstants.GRADE_C_THRESHOLD) return "C";
+        return "D";
+    }
+
+    private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
+        CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
+                .orElseGet(() -> CompanyScore.builder()
+                        .company(fs.getCompany())
+                        .build());
+
+        score.updateScore(total, stab, prof, val, inv, grade, isOpportunity);
+        companyScoreRepository.save(score);
     }
 }

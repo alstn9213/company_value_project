@@ -16,9 +16,7 @@ public class DefaultDisqualificationPolicy implements DisqualificationPolicy{
         BigDecimal liabilities = fs.getTotalLiabilities();
 
         // 자본 잠식 체크
-        if (equity.compareTo(BigDecimal.ZERO) <= 0) {
-            return true;
-        }
+        if(equity.compareTo(BigDecimal.ZERO) <= 0) return true;
 
         return isDebtRatioExceeded(fs, liabilities, equity);
     }
@@ -28,7 +26,9 @@ public class DefaultDisqualificationPolicy implements DisqualificationPolicy{
                 .multiply(BigDecimal.valueOf(100));
 
         boolean isFinance = ScoringConstants.SECTOR_FINANCIAL.equalsIgnoreCase(fs.getCompany().getSector());
-        double limit = isFinance ? ScoringConstants.DEBT_RATIO_LIMIT_FINANCIAL : ScoringConstants.DEBT_RATIO_LIMIT_GENERAL;
+        double limit = isFinance
+                ? ScoringConstants.DEBT_RATIO_LIMIT_FINANCIAL
+                : ScoringConstants.DEBT_RATIO_LIMIT_GENERAL;
 
         return debtRatio.doubleValue() > limit;
     }

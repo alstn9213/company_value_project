@@ -51,7 +51,6 @@ public class FinancialStatement {
                               BigDecimal researchAndDevelopment,
                               BigDecimal capitalExpenditure
     ) {
-
         this.company = company;
         this.year = year;
         this.quarter = quarter;

@@ -12,10 +12,10 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableJpaAuditing
 @SpringBootApplication
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
-public class PickValue {
+public class ValuePick {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PickValue.class, args);
+		SpringApplication.run(ValuePick.class, args);
 	}
 
 }

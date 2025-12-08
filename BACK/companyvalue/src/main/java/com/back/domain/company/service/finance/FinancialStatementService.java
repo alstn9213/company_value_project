@@ -34,31 +34,31 @@ public class FinancialStatementService {
      */
     @Transactional
     public void saveFinancialStatements(Company company, ExternalFinancialDataResponse rawData) {
-        // 1. 데이터 병합 (날짜 기준)
+        // 데이터 병합 (날짜 기준)
         Map<String, FinancialDataMap> mergedData = new HashMap<>();
 
         processReports(rawData.incomeStatement().get("quarterlyReports"), mergedData, "INCOME");
         processReports(rawData.balanceSheet().get("quarterlyReports"), mergedData, "BALANCE");
         processReports(rawData.cashFlow().get("quarterlyReports"), mergedData, "CASH");
 
-        // 2. Entity 변환 및 저장
+        // Entity 변환 및 저장
         int savedCount = 0;
-        for (String dateStr : mergedData.keySet()) {
+        for(String dateStr : mergedData.keySet()) {
             FinancialDataMap data = mergedData.get(dateStr);
 
             // 3가지 데이터가 모두 존재해야 신뢰할 수 있는 재무제표로 간주
-            if (data.hasAllData()) {
+            if(data.hasAllData()) {
                 boolean saved = saveFinancialStatementIfNew(company, dateStr, data);
                 if (saved) savedCount++;
             }
         }
 
-        if (savedCount > 0) {
+        if(savedCount > 0) {
             log.info("재무제표 저장 완료 - Ticker: {}, 건수: {}", company.getTicker(), savedCount);
         }
     }
 
-// --- 내부 헬퍼 메서드 ---
+    // --- 내부 메서드 ---
 
     private boolean saveFinancialStatementIfNew(Company company, String dateStr, FinancialDataMap data) {
         LocalDate date = LocalDate.parse(dateStr);
@@ -66,15 +66,12 @@ public class FinancialStatementService {
         int quarter = (date.getMonthValue() - 1) / 3 + 1; // 월 -> 분기 변환 (예: 9월 -> 3분기)
 
         // 중복 방지: 이미 해당 연도/분기의 데이터가 있는지 확인
-        // (더 정교하게 하려면 날짜까지 비교하거나, 수정 시 업데이트 로직 추가 가능)
         boolean exists = financialStatementRepository
                 .findTopByCompanyOrderByYearDescQuarterDesc(company)
                 .filter(fs -> fs.getYear() == year && fs.getQuarter() == quarter)
                 .isPresent();
 
-        if (exists) {
-            return false;
-        }
+        if(exists) return false;
 
         FinancialStatement fs = FinancialStatement.builder()
                 .company(company)
@@ -99,26 +96,26 @@ public class FinancialStatementService {
     }
 
     private void processReports(JsonNode reports, Map<String, FinancialDataMap> map, String type) {
-        if (reports == null || !reports.isArray()) return;
+        if(reports == null || !reports.isArray()) return;
 
-        for (JsonNode report : reports) {
-            if (!report.has("fiscalDateEnding")) continue;
+        for(JsonNode report : reports) {
+            if(!report.has("fiscalDateEnding")) continue;
 
             String date = report.get("fiscalDateEnding").asText();
             map.putIfAbsent(date, new FinancialDataMap());
             FinancialDataMap dataMap = map.get(date);
 
-            if ("INCOME".equals(type)) dataMap.incomeNode = report;
-            else if ("BALANCE".equals(type)) dataMap.balanceNode = report;
-            else if ("CASH".equals(type)) dataMap.cashNode = report;
+            if("INCOME".equals(type)) dataMap.incomeNode = report;
+            else if("BALANCE".equals(type)) dataMap.balanceNode = report;
+            else if("CASH".equals(type)) dataMap.cashNode = report;
         }
     }
 
     private BigDecimal parseBigDecimal(JsonNode node, String fieldName) {
-        if (node == null || !node.has(fieldName)) return BigDecimal.ZERO;
+        if(node == null || !node.has(fieldName)) return BigDecimal.ZERO;
         String value = node.get(fieldName).asText();
 
-        if ("None".equalsIgnoreCase(value) || value == null || value.isEmpty()) {
+        if("None".equalsIgnoreCase(value) || value == null || value.isEmpty()) {
             return BigDecimal.ZERO;
         }
         try {

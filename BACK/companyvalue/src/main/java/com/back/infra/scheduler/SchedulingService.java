@@ -62,7 +62,7 @@ public class SchedulingService {
 
     // 실제 로직을 수행하는 메서드 (테스트 컨트롤러에서도 호출 가능하도록 분리)
     public void executeAllCompaniesUpdate() {
-        // List<Company> companies = companyRepository.findAll(); 기업 전체를 불러오는 로직이지만 api 제약때문에 주석처리
+        // List<Company> companies = companyRepository.findAll(); 기업 전체를 불러오는 로직이지만 api 호출 제약 때문에 주석처리
 
         // 외부 API(Alpha Vantage)의 Free Tier 정책을 준수하기 위해
         // 포트폴리오 시연용으로 'AAPL' 단일 종목만 업데이트하도록 제한하였습니다.
@@ -71,6 +71,7 @@ public class SchedulingService {
                 .filter(c -> "AAPL".equals(c.getTicker()))
                 .toList();
         log.info(">>> [Scheduler] 대상 기업 수: {}", companies.size());
+
         for(Company company : companies) {
             String ticker = company.getTicker();
             boolean hasFinancials = financialStatementRepository
@@ -81,7 +82,7 @@ public class SchedulingService {
             if(hasFinancials && hasScore) continue;
 
             try {
-                if (!hasFinancials) {
+                if(!hasFinancials) {
                     ExternalFinancialDataResponse rawData = financialDataSyncService.fetchRawFinancialData(ticker);
                     financialStatementService.saveFinancialStatements(company, rawData);
                     Thread.sleep(12000); // API 무료 키 제한 고려
@@ -99,7 +100,6 @@ public class SchedulingService {
                 log.error("스레드 대기 중 인터럽트 발생", ie);
             } catch (Exception e) {
                 log.error("처리 중 오류 발생 ({}): {}", ticker, e.getMessage());
-                // 한 기업이 실패해도 다음 기업으로 계속 진행 (continue)
             }
         }
     }

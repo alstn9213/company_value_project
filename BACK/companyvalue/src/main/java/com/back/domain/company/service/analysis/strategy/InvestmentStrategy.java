@@ -9,20 +9,27 @@ import java.math.RoundingMode;
 
 @Component
 public class InvestmentStrategy implements ScoringStrategy {
+
     @Override
     public int calculate(FinancialStatement fs, JsonNode overview) {
         BigDecimal revenue = fs.getRevenue();
-        if (revenue.compareTo(BigDecimal.ZERO) == 0) return 0;
+        if(revenue.compareTo(BigDecimal.ZERO) == 0) return 0;
 
-        BigDecimal rnd = fs.getResearchAndDevelopment() != null ? fs.getResearchAndDevelopment() : BigDecimal.ZERO;
-        BigDecimal capex = fs.getCapitalExpenditure() != null ? fs.getCapitalExpenditure() : BigDecimal.ZERO;
+        // rnd 연구
+        BigDecimal rnd = fs.getResearchAndDevelopment() != null
+                ? fs.getResearchAndDevelopment()
+                : BigDecimal.ZERO;
+        // 자본 지출은 설비들을 구입하니 미래를 위한 투자로 분류
+        BigDecimal capex = fs.getCapitalExpenditure() != null
+                ? fs.getCapitalExpenditure()
+                : BigDecimal.ZERO;
         BigDecimal investmentSum = rnd.add(capex);
 
         double ratio = investmentSum.divide(revenue, 4, RoundingMode.HALF_UP).doubleValue() * 100;
 
-        if (ratio >= 15) return 10;
-        else if (ratio >= 10) return 7;
-        else if (ratio >= 5) return 3;
+        if(ratio >= 15) return 10;
+        else if(ratio >= 10) return 7;
+        else if(ratio >= 5) return 3;
 
         return 0;
     }

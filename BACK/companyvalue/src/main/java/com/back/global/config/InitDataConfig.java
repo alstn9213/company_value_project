@@ -52,12 +52,11 @@ public class InitDataConfig {
 
             for (Company company : targetCompanies) {
                 // DB에 해당 티커가 없을 때만 저장 (중복 방지)
-                if (companyRepository.findByTicker(company.getTicker()).isEmpty()) {
+                if(companyRepository.findByTicker(company.getTicker()).isEmpty()) {
                     companyRepository.save(company);
                     log.info("[InitData] 새 기업 추가: {} ({})", company.getTicker(), company.getName());
                 }
             }
-
             log.info("[InitData] 기업 목록 확인 완료. 총 기업 수: {}", companyRepository.count());
         };
     }

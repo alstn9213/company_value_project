@@ -22,8 +22,6 @@ public class ScheduleTestController {
     // http://localhost:8080/test/schedule/run
     @GetMapping("/test/schedule/run")
     public String runScheduleManually() {
-        // 비동기 처리를 안 했으므로, 이 메서드가 끝날 때까지 브라우저가 로딩 상태일 것입니다.
-        // (기업이 많으면 타임아웃 날 수 있음, 로그로 진행상황 확인 추천)
         schedulingService.executeAllCompaniesUpdate();
         return "모든 기업 업데이트 완료.";
     }

@@ -1,6 +1,6 @@
 package com.back.domain.company.entity;
 
-import com.back.domain.common.BaseTime;
+import com.back.domain.time.BaseTime;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

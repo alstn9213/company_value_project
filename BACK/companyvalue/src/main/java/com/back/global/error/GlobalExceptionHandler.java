@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. 비즈니스 로직 에러 처리 (우리가 정의한 예외)
+    // 1. 비즈니스 로직 에러 처리 (미리 정의한 예외)
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
         log.error("Handle BusinessException: {}", e.getErrorCode());

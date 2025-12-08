@@ -124,21 +124,22 @@
 - **Backend API:** 100% 구현 (Auth, Company, Macro, Watchlist, Score Domain)
 - **Frontend UI:** 100% 구현 (로그인, 회원가입, 대시보드, 기업 목록/검색, 상세 분석, 관심종목)
 - **Infrastructure:** Docker Compose 기반 Local/GCP 배포 환경 구성 완료
+----
 
-# 배포 이후 업데이트 상황
+## 배포 이후 업데이트 상황
 
-## 20251205
+### 20251205
 
 - swagger 구현
 - 기업 상세 페이지 코드 리팩토링
 - 배포 이후에도 로컬에서 실행할 수 있도록 설정 수정
 - 기업 상세 페이지에 경제 및 회계 용어 모달 창 구현
 
-## 20251207
+### 20251207
 
 - 백엔드 디렉토리 구조 재설계
 - 백엔드 company(stock, finance) 리팩토링
 
-## 20251208
+### 20251208
 
-- 백엔드 watchlist 리팩토링
+- 백엔드 watchlist, macro 리팩토링

@@ -147,7 +147,7 @@ const HomePage = () => {
             <h3 className="mb-6 text-lg font-bold text-slate-200">
               미국의 주요 금리 및 인플레이션 추이 (최근 10년)
             </h3>
-            {/* [수정 3-1] 차트 높이를 320px -> 500px로 늘려 기울기를 더 가파르게 표현 */}
+            {/* 차트 높이를 320px -> 500px로 늘려 기울기를 더 가파르게 표현 */}
             <div className="h-[500px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
@@ -160,7 +160,7 @@ const HomePage = () => {
                     stroke="#94a3b8"
                     tick={{ fill: "#94a3b8", fontSize: 12 }}
                     tickFormatter={(val) => val.substring(0, 4)}
-                    minTickGap={100} // [수정 1] 연도 중복 표시 방지를 위해 간격 확대
+                    minTickGap={100} // 연도 중복 표시 방지를 위해 간격 확대
                   />
                   <YAxis
                     yAxisId="left"
@@ -173,7 +173,7 @@ const HomePage = () => {
                     orientation="right"
                     stroke="#f87171"
                     tick={{ fill: "#f87171", fontSize: 12 }}
-                    domain={['auto', 'auto']} // [수정 3-2] 데이터 범위에 맞춰 자동 스케일링 (기울기 강조)
+                    domain={['auto', 'auto']} // 데이터 범위에 맞춰 자동 스케일링 (기울기 강조)
                   />
                   <Tooltip
                     contentStyle={{
@@ -181,7 +181,7 @@ const HomePage = () => {
                       borderColor: "#475569",
                       color: "#f1f5f9",
                     }}
-                    position={{ x: 0, y: 0 }} // [수정 2] 툴팁 위치를 상단 고정하여 그래프 가림 방지
+                    position={{ x: 0, y: 0 }} // 툴팁 위치를 상단 고정하여 그래프 가림 방지
                   />
                   <Legend wrapperStyle={{ paddingTop: "10px" }} />
 

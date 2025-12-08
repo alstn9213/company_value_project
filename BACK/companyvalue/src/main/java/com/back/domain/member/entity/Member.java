@@ -1,6 +1,6 @@
 package com.back.domain.member.entity;
 
-import com.back.domain.common.BaseTime;
+import com.back.domain.time.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 

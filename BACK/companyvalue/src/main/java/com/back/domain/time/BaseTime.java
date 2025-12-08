@@ -1,4 +1,4 @@
-package com.back.domain.common;
+package com.back.domain.time;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
