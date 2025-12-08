@@ -1,0 +1,88 @@
+package com.back.domain.watchlist.service;
+
+import com.back.domain.company.entity.Company;
+import com.back.domain.company.entity.CompanyScore;
+import com.back.domain.company.repository.CompanyRepository;
+import com.back.domain.member.entity.Member;
+import com.back.domain.member.repository.MemberRepository;
+import com.back.domain.watchlist.dto.WatchlistResponse;
+import com.back.domain.watchlist.entity.Watchlist;
+import com.back.domain.watchlist.repository.WatchlistRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class WatchlistService {
+
+    private final WatchlistRepository watchlistRepository;
+    private final MemberRepository memberRepository;
+    private final CompanyRepository companyRepository;
+
+    public List<WatchlistResponse> getWatchlist(Long memberId) {
+        Member member = getMember(memberId);
+
+        return watchlistRepository.findAllByMemberWithCompanyAndScore(member).stream()
+                .map(this::convertToDto)
+                .toList();
+
+    }
+
+    @Transactional
+    public void addWatchlist(Long memberId, String ticker) {
+        Member member = getMember(memberId);
+        Company company = companyRepository.findByTicker(ticker)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다."));
+
+        if (watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
+            throw new IllegalArgumentException("이미 관심 목록에 존재합니다.");
+        }
+
+        watchlistRepository.save(Watchlist.builder()
+                .member(member)
+                .company(company)
+                .build());
+    }
+
+    @Transactional
+    public void deleteWatchlist(Long memberId, Long watchlistId) {
+        Member member = getMember(memberId);
+
+        // 내 관심종목인지 확인 후 삭제 (보안 강화)
+        if (!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
+            throw new IllegalArgumentException("삭제 권한이 없거나 존재하지 않는 항목입니다.");
+        }
+
+        watchlistRepository.deleteById(watchlistId);
+    }
+
+    /*
+    * [내부 메서드]
+    * */
+
+    private WatchlistResponse convertToDto(Watchlist watchlist) {
+        Company company = watchlist.getCompany();
+        CompanyScore score = company.getCompanyScore();
+
+        // 점수가 null일 경우(신규 상장 등) 방어 로직
+        int totalScore = (score != null) ? score.getTotalScore() : 0;
+        String grade = (score != null) ? score.getGrade() : "-";
+
+        return new WatchlistResponse(
+                watchlist.getId(),
+                company.getTicker(),
+                company.getName(),
+                totalScore,
+                grade
+        );
+    }
+
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 정보 없음"));
+    }
+}
