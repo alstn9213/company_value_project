@@ -117,26 +117,6 @@ npm run dev
 - Backend: `http://localhost:8080`
 
 ---
-
-## 📂 프로젝트 구조
-
-```
-├── BACK
-│   └── companyvalue
-│       ├── controller    # API Endpoints
-│       ├── domain        # Entity (Company, Score, MacroData)
-│       ├── service       # Business Logic (Scoring, Scheduling)
-│       ├── security      # JWT Auth & Security Config
-│       └── config        # WebClient, Redis, CORS
-├── FRONT
-│   └── companyvalue
-│       ├── src/pages     # Dashboard, Detail, Watchlist
-│       ├── src/components # Recharts & Common UI
-│       ├── src/api       # Axios Clients
-│       └── src/stores    # Global State (Zustand)
-└── docker-compose.yml    # Infrastructure Orchestration
-```
----
 ## API Reference
 ![alt text](image.png)
 ![alt text](image-1.png)
