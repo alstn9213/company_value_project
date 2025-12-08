@@ -49,7 +49,7 @@ export interface FinancialDetail {
 
 // 백엔드 CompanyDetailResponse DTO 대응
 export interface CompanyDetailResponse {
-  info: Company;
+  companySummary: Company;
   score: ScoreResult;
   latestFinancial: FinancialDetail;
   financialHistory: FinancialDetail[];

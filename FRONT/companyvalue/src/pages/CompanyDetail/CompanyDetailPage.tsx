@@ -20,7 +20,7 @@ const CompanyDetailPage = () => {
   if (isLoading) return <div className="...">로딩 중...</div>;
   if (isError || !data) return <div className="...">에러...</div>;
 
-  const {info, score, latestFinancial} = data;
+  const {companySummary, score, latestFinancial} = data;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-10">
@@ -31,7 +31,7 @@ const CompanyDetailPage = () => {
         <ArrowLeft size={18} /> 목록으로 돌아가기
       </button>
 
-      <CompanyHeader info={info} score={score}/>
+      <CompanyHeader info={companySummary} score={score}/>
 
       {/* 대시보드 그리드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
