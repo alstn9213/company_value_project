@@ -12,6 +12,8 @@ import com.back.domain.macro.service.MacroDataService;
 import com.back.infra.external.DataFetchService;
 import com.back.domain.company.service.analysis.ScoringService;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -33,6 +35,7 @@ public class SchedulingService {
     private final FinancialStatementRepository financialStatementRepository;
     private final DataFetchService dataFetchService;
     private final CompanyScoreRepository companyScoreRepository;
+    private final ObjectMapper objectMapper;
 
     // ==========================================
     // 1. 거시 경제 지표 자동 업데이트 (매일 아침 8시)
@@ -62,14 +65,7 @@ public class SchedulingService {
 
     // 실제 로직을 수행하는 메서드 (테스트 컨트롤러에서도 호출 가능하도록 분리)
     public void executeAllCompaniesUpdate() {
-        // List<Company> companies = companyRepository.findAll(); 기업 전체를 불러오는 로직이지만 api 호출 제약 때문에 주석처리
-
-        // 외부 API(Alpha Vantage)의 Free Tier 정책을 준수하기 위해
-        // 포트폴리오 시연용으로 'AAPL' 단일 종목만 업데이트하도록 제한하였습니다.
-        // 실무 환경(Premium Tier)에서는 아래 filter 조건을 제거하여 전 종목을 배치 처리합니다.
-        List<Company> companies = companyRepository.findAll().stream()
-                .filter(c -> "AAPL".equals(c.getTicker()))
-                .toList();
+        List<Company> companies = companyRepository.findAll();
         log.info(">>> [Scheduler] 대상 기업 수: {}", companies.size());
 
         for(Company company : companies) {
@@ -83,17 +79,42 @@ public class SchedulingService {
 
             try {
                 if(!hasFinancials) {
-                    ExternalFinancialDataResponse rawData = financialDataSyncService.fetchRawFinancialData(ticker);
-                    financialStatementService.saveFinancialStatements(company, rawData);
-                    Thread.sleep(12000); // API 무료 키 제한 고려
+                    try {
+                        ExternalFinancialDataResponse rawData = financialDataSyncService.fetchRawFinancialData(ticker);
+                        financialStatementService.saveFinancialStatements(company, rawData);
+                        Thread.sleep(12000); // API 무료 키 제한 고려
+                    } catch (Exception e) {
+                        // 가짜 기업은 API 호출 실패함. 실패해도 로그만 남기고 다음 단계(점수 계산)로 진행 시도
+                        // InitDataConfig에서 더미 데이터를 넣었으므로 실제로는 hasFinancials가 true일 가능성이 높음
+                        // 만약 진짜 API 실패이고 데이터도 없다면 아래 점수 계산에서 터지므로 catch
+                        log.warn("재무 데이터 동기화 실패 (가짜 기업이거나 API 오류): {}", ticker);
+                    }
                 }
-                // 점수 계산 (재무제표가 방금 저장되었거나, 이미 있었는데 점수만 없는 경우 모두 수행)
+                // 점수 계산 로직
+                // DB에서 가장 최근 재무제표 조회
                 FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
-                        .orElseThrow(() -> new RuntimeException("재무제표 없음: " + ticker));
-                JsonNode overview = dataFetchService.getCompanyOverview(ticker);
-                scoringService.calculateAndSaveScore(fs, overview);
+                        .orElse(null);
 
-                if(hasFinancials) Thread.sleep(12000); // 점수만 계산하는 경우에도 API 호출했으므로 대기
+                if(fs == null) {
+                    log.error("점수 계산 불가 (재무제표 없음): {}", ticker);
+                    continue;
+                }
+
+                // Overview 데이터(PER, 시총 등) 조회
+                JsonNode overview;
+                try {
+                    overview = dataFetchService.getCompanyOverview(ticker);
+                } catch (Exception e) {
+                    log.warn("Overview API 조회 실패 (가짜 기업): {}, 더미 Overview를 사용합니다.", ticker);
+                    // 가짜 기업을 위해 가짜 Overview 생성
+                    overview = createDummyOverview(ticker);
+                }
+
+                scoringService.calculateAndSaveScore(fs, overview);
+                log.info("점수 계산 완료: {}", ticker);
+
+                // API 호출을 성공적으로 수행했다면 대기 (가짜 기업은 API 호출 안 했으므로 대기 불필요하지만 안전하게 적용)
+                if(!hasFinancials) Thread.sleep(2000);
 
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();
@@ -103,4 +124,15 @@ public class SchedulingService {
             }
         }
     }
+        // 가짜 기업용 더미 Overview 생성 (점수 계산 시 NPE 방지)
+        private JsonNode createDummyOverview(String ticker) {
+            ObjectNode node = objectMapper.createObjectNode();
+            node.put("Symbol", ticker);
+            node.put("PERatio", "15.0");       // 평균적인 PER
+            node.put("PriceToBookRatio", "2.0"); // 평균적인 PBR
+            node.put("MarketCapitalization", "1000000000"); // 10억 달러
+            node.put("DividendYield", "0.02"); // 2% 배당
+            node.put("EPS", "5.0");
+            return node;
+        }
 }

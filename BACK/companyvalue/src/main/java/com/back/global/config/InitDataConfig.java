@@ -39,7 +39,7 @@ public class InitDataConfig {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
-            log.info("[InitData] 가상의 미국 기업 데이터 확인 및 생성을 시작합니다...");
+            log.info("[InitData] 미국 기업 데이터 확인 및 생성을 시작합니다...");
             List<Company> companies = createCompanyList();
 
             for (Company companyData : companies) {
@@ -53,7 +53,7 @@ public class InitDataConfig {
                 // 2. 재무 데이터 존재 여부 확인 (하나라도 있으면 스킵)
                 boolean hasFinancials = financialStatementRepository.existsByCompany(company);
 
-                if (!hasFinancials) {
+                if (!hasFinancials && !"AAPL".equals(company.getTicker())) {
                     log.info("[InitData] {}의 재무/주가 데이터를 생성합니다...", company.getName());
 
                     SectorProfile profile = SectorProfile.getProfile(company.getSector());
@@ -65,6 +65,8 @@ public class InitDataConfig {
                     // 주가 데이터 생성
                     List<StockPriceHistory> stockHistory = generateStockPrices(company, financials, profile);
                     stockPriceHistoryRepository.saveAll(stockHistory);
+                } else if ("AAPL".equals(company.getTicker())) {
+                    log.info("[InitData] {}은 실제 API 데이터를 사용하기 위해 더미 생성을 건너뜁니다.", company.getName());
                 }
             }
             log.info("[InitData] 데이터 초기화 로직 완료.");
