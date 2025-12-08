@@ -1,4 +1,4 @@
-[Refactoring] 기업 가치 평가 로직 개선 (ScoringService)
+# 기업 가치 평가 로직 개선 (ScoringService)
 
 1. 배경 (Background)
 
