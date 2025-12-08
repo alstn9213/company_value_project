@@ -1,6 +1,7 @@
 package com.back.domain.company.service.finance;
 
 import com.back.domain.company.entity.Company;
+import com.back.domain.company.event.CompanyFinancialsUpdatedEvent;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.service.stock.StockPriceService;
 import com.back.infra.external.DataFetchService;
@@ -8,6 +9,7 @@ import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +25,10 @@ public class FinancialDataSyncService {
     private final DataFetchService dataFetchService;
     private final FinancialStatementService  financialStatementService;
     private final StockPriceService stockPriceService;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * 모든 회사의 재무 및 주가 데이터를 외부에서 가져와 저장합니다.
-     * 스케줄러(SchedulingService)에 의해 주기적으로 호출됩니다.
      */
     @Transactional
     public void synchronizeAll() {
@@ -44,7 +46,7 @@ public class FinancialDataSyncService {
     }
 
     /**
-     * 특정 기업의 재무제표 및 주가 데이터를 동기화합니다.
+     * 특정 기업의 재무제표 및 주가 데이터를 동기화하고, 완료 이벤트를 발행합니다.
      */
     @Transactional
     public void synchronizeCompany(String ticker) {
@@ -53,15 +55,18 @@ public class FinancialDataSyncService {
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다: " + ticker));
 
-        syncFinancialStatements(company);
-        syncStockPrice(company);
+        // 1. 재무제표 및 주가 데이터 수집 및 저장
+        boolean fsSaved = syncFinancialStatements(company);
+        boolean stockSaved = syncStockPrice(company);
 
-        log.info("기업 데이터 동기화 완료: {}", ticker);
+        log.info("기업 데이터 저장 완료: {} (재무제표: {}, 주가: {})", ticker, fsSaved, stockSaved);
+
+        // 2. 데이터 저장이 완료되었으므로 '점수 계산' 등을 수행하라고 이벤트를 발행
+        eventPublisher.publishEvent(new CompanyFinancialsUpdatedEvent(ticker));
     }
 
     /*
      * 외부 API 호출
-     * DB 커넥션을 점유하지 않고 네트워크 통신만 수행한다. (Transaction 없음)
      * */
     public ExternalFinancialDataResponse fetchRawFinancialData(String ticker) {
         log.info("재무 데이터 수집 시작(Network I/O: {}", ticker);
@@ -76,30 +81,38 @@ public class FinancialDataSyncService {
 
     // --- 내부 헬퍼 메서드 ---
 
-    private void syncFinancialStatements(Company company) {
-        JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", company.getTicker());
-        JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", company.getTicker());
-        JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", company.getTicker());
+    private boolean syncFinancialStatements(Company company) {
+        try {
+            JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", company.getTicker());
+            JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", company.getTicker());
+            JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", company.getTicker());
 
-        ExternalFinancialDataResponse response = new ExternalFinancialDataResponse(income, balance, cash);
+            ExternalFinancialDataResponse response = new ExternalFinancialDataResponse(income, balance, cash);
 
-        // 데이터 유효성 검사 및 저장 위임 (DB I/O)
-        if (response.hasAllData()) {
-            financialStatementService.saveFinancialStatements(company, response);
-        } else {
-            log.warn("일부 재무제표 데이터가 누락되어 저장을 건너뜁니다. Ticker: {}", company.getTicker());
+            if (response.hasAllData()) {
+                financialStatementService.saveFinancialStatements(company, response);
+                return true;
+            } else {
+                log.warn("일부 재무제표 데이터 누락. Ticker: {}", company.getTicker());
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("재무제표 동기화 중 오류: {}", e.getMessage());
+            return false;
         }
     }
 
-    private void syncStockPrice(Company company) {
-        // 외부 API 호출 (Network I/O)
-        JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
-
-        // 저장 위임 (DB I/O)
-        if (stockData != null && !stockData.isEmpty()) {
-            stockPriceService.saveStockPriceHistory(company, stockData);
-        } else {
-            log.warn("주가 데이터가 비어있습니다. Ticker: {}", company.getTicker());
+    private boolean syncStockPrice(Company company) {
+        try {
+            JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
+            if(stockData != null && !stockData.isEmpty()) {
+                stockPriceService.saveStockPriceHistory(company, stockData);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            log.error("주가 데이터 동기화 중 오류: {}", e.getMessage());
+            return false;
         }
     }
 }

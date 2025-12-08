@@ -73,6 +73,16 @@ public class FinancialStatementService {
 
         if(exists) return false;
 
+        BigDecimal assets = parseBigDecimal(data.balanceNode, "totalAssets");
+        BigDecimal liabilities = parseBigDecimal(data.balanceNode, "totalLiabilities");
+        BigDecimal equity = parseBigDecimal(data.balanceNode, "totalShareholderEquity");
+
+        // [중요 수정] 자본(Equity) 데이터가 누락되거나 0인 경우, (자산 - 부채) 공식으로 보정
+        if (equity.compareTo(BigDecimal.ZERO) == 0 && assets.compareTo(BigDecimal.ZERO) > 0) {
+            equity = assets.subtract(liabilities);
+            log.debug("자본 데이터 보정됨 (Assets - Liabilities): {} -> {}", company.getTicker(), equity);
+        }
+
         FinancialStatement fs = FinancialStatement.builder()
                 .company(company)
                 .year(year)

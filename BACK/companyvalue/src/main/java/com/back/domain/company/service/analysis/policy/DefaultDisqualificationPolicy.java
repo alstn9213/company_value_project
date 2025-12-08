@@ -10,26 +10,31 @@ import java.math.RoundingMode;
 @Component
 public class DefaultDisqualificationPolicy implements DisqualificationPolicy{
 
+    private static final BigDecimal MAX_DEBT_RATIO = new BigDecimal("400");
+
     @Override
     public boolean isDisqualified(FinancialStatement fs) {
+        BigDecimal assets = fs.getTotalAssets();
         BigDecimal equity = fs.getTotalEquity();
         BigDecimal liabilities = fs.getTotalLiabilities();
 
         // 자본 잠식 체크
         if(equity.compareTo(BigDecimal.ZERO) <= 0) return true;
 
-        return isDebtRatioExceeded(fs, liabilities, equity);
-    }
+        // 2. 부채 비율 확인 (Liabilities / Equity * 100 > 400%)
+        if (equity.compareTo(BigDecimal.ZERO) == 0) {
+            // 자본이 0인데 부채가 있으면 부채비율 무한대 -> 실격
+            if (liabilities.compareTo(BigDecimal.ZERO) > 0) {
+                return true;
+            }
+            // 자본도 0이고 부채도 0이면 (데이터 없음) -> 통과시킴 (점수는 낮게 나오겠지만 실격은 아님)
+            return false;
+        }
 
-    private boolean isDebtRatioExceeded(FinancialStatement fs, BigDecimal liabilities, BigDecimal equity) {
+        // 안전한 나눗셈 (RoundingMode 필수)
         BigDecimal debtRatio = liabilities.divide(equity, 4, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(100));
+                .multiply(new BigDecimal("100"));
 
-        boolean isFinance = ScoringConstants.SECTOR_FINANCIAL.equalsIgnoreCase(fs.getCompany().getSector());
-        double limit = isFinance
-                ? ScoringConstants.DEBT_RATIO_LIMIT_FINANCIAL
-                : ScoringConstants.DEBT_RATIO_LIMIT_GENERAL;
-
-        return debtRatio.doubleValue() > limit;
+        return debtRatio.compareTo(MAX_DEBT_RATIO) > 0;
     }
 }
