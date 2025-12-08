@@ -2,7 +2,6 @@ package com.back.domain.company.dto.response;
 
 import com.back.domain.company.entity.Company;
 
-// 1. 기업 기본 정보
 public record CompanySummaryResponse(
         String ticker,
         String name,

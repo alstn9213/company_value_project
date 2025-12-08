@@ -5,7 +5,6 @@ import com.back.domain.macro.entity.MacroEconomicData;
 
 import java.time.LocalDate;
 
-// 5. 거시 경제 지표
 public record MacroDataResponse(
         LocalDate date,
         Double fedFundsRate, // 기준금리
