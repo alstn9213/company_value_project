@@ -1,12 +1,8 @@
-import { HelpCircle } from "lucide-react";
-import { useState } from "react";
+import { HelpCircle, TrendingUp } from "lucide-react";
+import { FINANCIAL_TERMS, TermDefinition } from "../constants/financialTerms";
 import { formatCurrency } from "../../../utils/formatters";
-import TermHelpModal from "./TermHelpModal";
-import { FINANCIAL_TERMS } from "../constants/financialTerms";
 
 interface FinancialData {
-  year: number;
-  quarter: number;
   revenue: number;
   operatingProfit: number;
   netIncome: number;
@@ -16,164 +12,164 @@ interface FinancialData {
   totalEquity: number;
   researchAndDevelopment: number;
   capitalExpenditure: number;
+  year: number;
+  quarter: number;
 }
 
 interface Props {
   financial: FinancialData;
 }
 
-const FinancialSummary = ({financial}: Props) => {
-  const [selectedTermKey, setSelectedTermKey] = useState<string | null>(null);
+const FinancialSummary = ({ financial }: Props) => {
+  if (!financial) {
+    return (
+      <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full flex items-center justify-center text-slate-500">
+        재무 데이터가 없습니다.
+      </div>
+    );
+  }
 
-  const FinancialCard = ({
-    label,
-    value,
-    termKey,
-    color = "text-slate-200",
-    isHighlight = false,
-  }: {
-    label: string;
-    value: number;
-    termKey: keyof typeof FINANCIAL_TERMS;
-    color?: string;
-    isHighlight?: boolean;
-  }) => (
-    <div
-      onClick={() => setSelectedTermKey(termKey as string)}
-      className={`relative p-4 rounded-xl border border-transparent transition-all duration-200 cursor-pointer group
-        ${
-          isHighlight
-            ? "bg-slate-800/80 hover:bg-slate-700 hover:border-slate-600"
-            : "bg-slate-800/30 hover:bg-slate-800 hover:border-slate-700"
-        }
-      `}
-    >
-      <div className="flex justify-between items-start mb-1">
-        <div className="flex items-center gap-1.5 text-slate-400 text-sm group-hover:text-white transition-colors">
-          {label}
-          {/* 호버 시 물음표 아이콘 등장 */}
-          <HelpCircle
-            size={14}
-            className="opacity-0 -translate-y-1 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 text-emerald-400"
+  return (
+    <div className="bg-card border border-slate-700/50 rounded-xl p-6 shadow-lg backdrop-blur-sm">
+      <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+        <TrendingUp size={20} className="text-blue-400" />
+        재무 요약 ({financial.year}년 {financial.quarter}분기 기준)
+      </h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
+        {/* 1. 손익계산서 (Income Statement) */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+            손익계산서
+          </h4>
+          <FinancialRow
+            label="매출액"
+            value={financial.revenue}
+            term={FINANCIAL_TERMS.revenue}
+            isMain
+          />
+          <FinancialRow
+            label="영업이익"
+            value={financial.operatingProfit}
+            term={FINANCIAL_TERMS.operatingProfit}
+            highlight
+          />
+          <FinancialRow
+            label="당기순이익"
+            value={financial.netIncome}
+            term={FINANCIAL_TERMS.netIncome}
+          />
+          <FinancialRow
+            label="R&D 투자"
+            value={financial.researchAndDevelopment}
+            term={FINANCIAL_TERMS.researchAndDevelopment}
+          />
+        </div>
+
+        {/* 2. 재무상태표 (Balance Sheet) */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+            재무상태표
+          </h4>
+          <FinancialRow
+            label="자산 총계"
+            value={financial.totalAssets}
+            term={FINANCIAL_TERMS.totalAssets}
+          />
+          <FinancialRow
+            label="부채 총계"
+            value={financial.totalLiabilities}
+            term={FINANCIAL_TERMS.totalLiabilities}
+            color="text-red-400"
+          />
+          <FinancialRow
+            label="자본 총계"
+            value={financial.totalEquity}
+            term={FINANCIAL_TERMS.totalEquity}
+            color="text-blue-400"
+          />
+        </div>
+
+        {/* 3. 현금흐름표 (Cash Flow) */}
+        <div className="space-y-4">
+          <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
+            현금흐름
+          </h4>
+          <FinancialRow
+            label="영업활동 현금흐름"
+            value={financial.operatingCashFlow}
+            term={FINANCIAL_TERMS.operatingCashFlow}
+            highlight
+          />
+          <FinancialRow
+            label="설비 투자 (CapEx)"
+            value={financial.capitalExpenditure}
+            term={FINANCIAL_TERMS.capitalExpenditure}
           />
         </div>
       </div>
-      <div className={`text-lg font-mono font-bold tracking-tight ${color}`}>
-        {formatCurrency(value)}
-      </div>
-      
-      {/* 클릭 유도 힌트 (모바일 등에서 유용) */}
-      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-slate-500 bg-slate-900/80 px-1.5 py-0.5 rounded border border-slate-700 pointer-events-none">
-        클릭해서 설명보기
-      </div>
     </div>
   );
+};
 
+const FinancialRow = ({
+  label,
+  value,
+  term,
+  isMain = false,
+  highlight = false,
+  color,
+}: {
+  label: string;
+  value: number;
+  term?: TermDefinition;
+  isMain?: boolean;
+  highlight?: boolean;
+  color?: string;
+}) => {
   return (
-    <>
-      <div className="bg-card border border-slate-700/50 rounded-xl p-6 shadow-lg backdrop-blur-sm h-full">
-        <div className="flex justify-between items-end mb-6 border-b border-slate-800 pb-4">
-          <div>
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              📊 최신 재무제표
-            </h3>
-            <p className="text-slate-500 text-xs mt-1">
-              {financial.year}년 {financial.quarter}분기 기준 (단위: USD)
-            </p>
-          </div>
-          <span className="text-xs text-emerald-400/80 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/20">
-            Tip: 항목을 클릭해보세요
-          </span>
-        </div>
-
-        <div className="space-y-6">
-          {/* 1. 손익 계산서 (수익성) */}
-          <div>
-            <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 pl-1">Profitability (수익성)</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FinancialCard
-                label="매출액"
-                value={financial.revenue}
-                termKey="revenue"
-                color="text-white"
-                isHighlight
-              />
-              <FinancialCard
-                label="영업이익"
-                value={financial.operatingProfit}
-                termKey="operatingProfit"
-                color="text-blue-300"
-                isHighlight
-              />
-              <FinancialCard
-                label="당기순이익"
-                value={financial.netIncome}
-                termKey="netIncome"
-                color="text-emerald-300"
-              />
-              <FinancialCard
-                label="영업현금흐름"
-                value={financial.operatingCashFlow}
-                termKey="operatingCashFlow"
-                color="text-yellow-300"
-              />
-            </div>
-          </div>
-
-          {/* 구분선 */}
-          <div className="h-px bg-slate-800 w-full" />
-
-          {/* 2. 재무상태표 (안정성) */}
-          <div>
-            <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 pl-1">Financial Position (재무상태)</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <FinancialCard
-                label="자산 총계"
-                value={financial.totalAssets}
-                termKey="totalAssets"
-              />
-              <FinancialCard
-                label="부채 총계"
-                value={financial.totalLiabilities}
-                termKey="totalLiabilities"
-                color="text-red-300"
-              />
-              <FinancialCard
-                label="자본 총계"
-                value={financial.totalEquity}
-                termKey="totalEquity"
-                color="text-indigo-300"
-              />
-            </div>
-          </div>
-
-          {/* 3. 투자 활동 (미래 성장) */}
-          <div>
-            <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 pl-1">Investment (미래투자)</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <FinancialCard
-                label="R&D 투자비용"
-                value={financial.researchAndDevelopment}
-                termKey="researchAndDevelopment"
-                color="text-purple-300"
-              />
-              <FinancialCard
-                label="설비 투자(CapEx)"
-                value={financial.capitalExpenditure}
-                termKey="capitalExpenditure"
-                color="text-orange-300"
-              />
-            </div>
-          </div>
-        </div>
+    <div className="flex justify-between items-center group relative">
+      {/* 라벨 + 툴팁 트리거 */}
+      <div className="flex items-center gap-1.5 cursor-help">
+        <span
+          className={`
+            border-b border-dotted border-slate-600 transition-colors
+            ${isMain ? "text-white font-bold" : "text-slate-400"}
+            ${highlight ? "text-slate-200" : ""}
+            group-hover:border-slate-400 group-hover:text-white
+          `}
+        >
+          {label}
+        </span>
+        <HelpCircle
+          size={12}
+          className="text-slate-600 group-hover:text-slate-400 transition-colors"
+        />
       </div>
 
-      {/* 용어 설명 모달 연결 */}
-      <TermHelpModal
-        termKey={selectedTermKey}
-        onClose={() => setSelectedTermKey(null)}
-      />
-    </>
+      {/* 값 표시 */}
+      <span
+        className={`font-mono tracking-tight ${
+          isMain ? "text-lg font-bold" : "text-base"
+        } ${color ? color : "text-slate-200"}`}
+      >
+        {formatCurrency(value)}
+      </span>
+
+      {/* 툴팁 (Hover 시 등장) - ScoreAnalysis와 동일한 스타일 */}
+      {term && (
+        <div className="absolute bottom-full left-0 mb-2 w-72 p-4 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl backdrop-blur-md z-50 hidden group-hover:block animate-in fade-in zoom-in-95 duration-200 pointer-events-none">
+          <h4 className="font-bold text-slate-100 mb-2 text-sm">
+            {term.title}
+          </h4>
+          <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+            {term.description}
+          </p>
+          {/* 말풍선 꼬리 */}
+          <div className="absolute top-full left-6 -mt-1.5 border-4 border-transparent border-t-slate-700" />
+        </div>
+      )}
+    </div>
   );
 };
 

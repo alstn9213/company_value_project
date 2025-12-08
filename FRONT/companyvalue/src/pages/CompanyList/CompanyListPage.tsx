@@ -60,9 +60,16 @@ const CompanyListPage = () => {
   });
 
   // 현재 표시할 데이터 결정
-  const companies = debouncedSearch ? searchData : pageData?.content;
-  const isLoading = debouncedSearch ? isSearchLoading : isPageLoading;
+  const companies = debouncedSearch
+    ? searchData
+    : pageData?.content;
+
+  const isLoading = debouncedSearch
+    ? isSearchLoading
+    : isPageLoading;
+
   const isEmpty = !isLoading && (!companies || companies.length === 0);
+  
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-10">
       {/* --- [섹션 1] Top 5 추천 기업 (가로 스크롤 카드) --- */}

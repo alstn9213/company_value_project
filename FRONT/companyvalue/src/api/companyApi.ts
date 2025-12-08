@@ -12,7 +12,7 @@ export const companyApi = {
       });
       if (page === 0) {
           // 더미 데이터 객체를 리스트 배열로 변환
-          const dummyList: Company[] = Object.values(DUMMY_COMPANIES).map(d => d.info);
+          const dummyList: Company[] = Object.values(DUMMY_COMPANIES).map(d => d.companySummary);
           
           return {
             ...response.data,
@@ -26,7 +26,7 @@ export const companyApi = {
       // (옵션) 서버가 꺼져있을 때 더미 데이터라도 보여주려면 에러 처리에서 리턴
       console.error("서버 연결 실패, 더미 데이터만 반환합니다.", error);
       if (page === 0) {
-        const dummyList: Company[] = Object.values(DUMMY_COMPANIES).map(d => d.info);
+        const dummyList: Company[] = Object.values(DUMMY_COMPANIES).map(d => d.companySummary);
         return {
           content: dummyList,
           totalPages: 1,
@@ -49,7 +49,7 @@ export const companyApi = {
     });
     const lowerKeyword = keyword.toLowerCase();
     const matchedDummies = Object.values(DUMMY_COMPANIES)
-      .map(d => d.info)
+      .map(d => d.companySummary)
       .filter(c =>
         c.name.toLowerCase().includes(lowerKeyword) ||
         c.ticker.toLowerCase().includes(lowerKeyword)

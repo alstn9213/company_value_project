@@ -1,6 +1,7 @@
-import { AlertTriangle, TrendingUp } from "lucide-react";
+import { AlertTriangle, HelpCircle, TrendingUp } from "lucide-react";
 import ScoreRadarChart from "../../../components/charts/ScoreRadarChart";
 import { getScoreColor } from "../../../utils/formatters";
+import { SCORE_TERMS, TermDefinition } from "../constants/financialTerms";
 
 interface CompanyScore {
   ticker: string;
@@ -66,24 +67,28 @@ const ScoreAnalysis = ({score}: Props) => {
             value={score.stabilityScore}
             max={40}
             color="bg-blue-500"
+            term={SCORE_TERMS.stability}
           />
           <ScoreRow
             label="수익성 (ROE/마진)"
             value={score.profitabilityScore}
             max={30}
             color="bg-emerald-500"
+            term={SCORE_TERMS.profitability}
           />
           <ScoreRow
             label="내재가치 (PER/PBR)"
             value={score.valuationScore}
             max={20}
             color="bg-purple-500"
+            term={SCORE_TERMS.valuation}
           />
           <ScoreRow
             label="미래투자 (R&D)"
             value={score.investmentScore}
             max={10}
             color="bg-orange-500"
+            term={SCORE_TERMS.investment}
           />
         </div>
       </div>
@@ -97,28 +102,50 @@ const ScoreRow = ({
   value,
   max,
   color = "bg-blue-500",
+  term,
 }: {
   label: string;
   value: number;
   max: number;
   color?: string;
+  term?: TermDefinition;
 }) => (
-  <div className="flex flex-col gap-1.5">
+  // group 클래스를 추가하여 호버 상태를 자식 요소가 감지할 수 있게 함
+  <div className="flex flex-col gap-1.5 group relative">
     <div className="flex justify-between items-center text-xs">
-      <span className="text-slate-400 font-medium">{label}</span>
+      {/* 라벨에 마우스를 올리면 툴팁이 뜨도록 설정 */}
+      <div className="flex items-center gap-1.5 cursor-help">
+        <span className="text-slate-400 font-medium border-b border-dotted border-slate-600 group-hover:text-white group-hover:border-slate-400 transition-colors">
+          {label}
+        </span>
+        {/* 작은 물음표 아이콘 (선택 사항) */}
+        <HelpCircle size={12} className="text-slate-600 group-hover:text-slate-400 transition-colors" />
+      </div>
+      
       <span className="text-slate-300 font-mono">
         <span className="text-white font-bold">{value}</span> / {max}
       </span>
     </div>
-    
+
     {/* 프로그레스 바 배경 */}
     <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-      {/* 실제 게이지 */}
       <div
         className={`h-full rounded-full transition-all duration-1000 ease-out ${color}`}
         style={{ width: `${Math.min((value / max) * 100, 100)}%` }}
       />
     </div>
+
+    {/* 툴팁 (Hover 시 등장) */}
+    {term && (
+      <div className="absolute bottom-full left-0 mb-2 w-72 p-4 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl backdrop-blur-md z-50 hidden group-hover:block animate-in fade-in zoom-in-95 duration-200">
+        <h4 className="font-bold text-slate-100 mb-2 text-sm">{term.title}</h4>
+        <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+          {term.description}
+        </p>
+        {/* 말풍선 꼬리 */}
+        <div className="absolute top-full left-6 -mt-1.5 border-4 border-transparent border-t-slate-700" />
+      </div>
+    )}
   </div>
 );
 
