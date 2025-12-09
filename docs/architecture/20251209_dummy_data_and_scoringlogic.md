@@ -55,7 +55,7 @@ long totalShares = 100_000_000L;
 double targetPrice = (netIncome * 4 / totalShares) * profile.peRatio;
 ```
 
-### 2\) ValuationStrategy.java (전략 패턴)
+### 2) ValuationStrategy.java (전략 패턴)
 
 ```java
 // Fallback 로직 추가
