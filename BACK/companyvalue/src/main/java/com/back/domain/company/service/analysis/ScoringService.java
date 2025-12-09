@@ -5,7 +5,6 @@ import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoringConstants;
-import com.back.domain.company.service.analysis.policy.DisqualificationPolicy;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.InvestmentStrategy;
 import com.back.domain.company.service.analysis.strategy.ProfitabilityStrategy;
@@ -21,6 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+
+import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
 
 @Slf4j
 @Service
@@ -38,7 +41,6 @@ public class ScoringService {
     private final InvestmentStrategy investmentStrategy;
 
     // Policies (비즈니스 규칙 정책)
-    private final DisqualificationPolicy disqualificationPolicy;
     private final PenaltyPolicy penaltyPolicy;
 
     @Transactional
@@ -52,20 +54,17 @@ public class ScoringService {
         int valuation = valuationStrategy.calculate(fs, overview);
         int investment = investmentStrategy.calculate(fs, overview);
 
-        int totalScore = stability + profitability + valuation + investment;
-        String grade = "F";
-        boolean isOpportunity = false;
+        int baseScore = stability + profitability + valuation + investment;
+        int penalty = penaltyPolicy.calculatePenalty(fs, macro);
 
-        // 과락 및 페널티 적용 (Policy Pattern 활용)
-        if(disqualificationPolicy.isDisqualified(fs)) totalScore = 0;
-        else {
-            int penalty = penaltyPolicy.calculatePenalty(fs, macro);
-            totalScore = Math.max(0, Math.min(100, totalScore - penalty)); // 0~100 범위 보정
-            grade = calculateGrade(totalScore);
+        int totalScore = Math.max(0, Math.min(100, baseScore - penalty));
+        String grade = calculateGrade(totalScore);
 
-            // 기회 여부: 페널티가 존재하지만(경기 침체 등) 가치 점수가 높은 경우
-            isOpportunity = (penalty > 0) && (valuation >= ScoringConstants.OPPORTUNITY_VALUATION_THRESHOLD);
-        }
+        // 페널티는 존재하지만, 기업 자체의 가치는 훌륭해서(PBR, PER이 높음) 저점 매수하기 좋을 경우
+        // 단, 자본 잠식은 걸러냄
+        boolean isOpportunity = (penalty > 0)
+                && (valuation >= OPPORTUNITY_VALUATION_THRESHOLD)
+                && (fs.getTotalEquity().compareTo(BigDecimal.ZERO) > 0);
 
         saveScore(fs, totalScore, stability, profitability, valuation, investment, grade, isOpportunity);
     }
@@ -84,10 +83,10 @@ public class ScoringService {
     // --- 내부 메서드 ---
 
     private String calculateGrade(int score) {
-        if(score >= ScoringConstants.GRADE_S_THRESHOLD) return "S";
-        if(score >= ScoringConstants.GRADE_A_THRESHOLD) return "A";
-        if(score >= ScoringConstants.GRADE_B_THRESHOLD) return "B";
-        if(score >= ScoringConstants.GRADE_C_THRESHOLD) return "C";
+        if(score >= GRADE_S_THRESHOLD) return "S";
+        if(score >= GRADE_A_THRESHOLD) return "A";
+        if(score >= GRADE_B_THRESHOLD) return "B";
+        if(score >= GRADE_C_THRESHOLD) return "C";
         return "D";
     }
 

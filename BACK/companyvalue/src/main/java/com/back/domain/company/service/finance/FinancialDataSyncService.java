@@ -79,7 +79,7 @@ public class FinancialDataSyncService {
     }
 
 
-    // --- 내부 헬퍼 메서드 ---
+    // --- 내부 메서드 ---
 
     private boolean syncFinancialStatements(Company company) {
         try {

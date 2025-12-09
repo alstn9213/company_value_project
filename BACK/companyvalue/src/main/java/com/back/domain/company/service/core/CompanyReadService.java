@@ -30,7 +30,7 @@ public class CompanyReadService {
     @Transactional(readOnly = true)
     public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
         Sort sortObj = Sort.by(Sort.Direction.ASC, "name"); // 기본: 이름순
-        if ("score".equals(sort)) {
+        if("score".equals(sort)) {
             sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
         }
 

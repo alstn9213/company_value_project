@@ -11,7 +11,7 @@ public class ValuationStrategy implements ScoringStrategy {
     public int calculate(FinancialStatement fs, JsonNode overview) {
 
         int score = 0;
-        if (overview == null) return 0;
+        if(overview == null) return 0;
 
         try {
             double per = parseDouble(overview, "PERatio");
@@ -30,6 +30,7 @@ public class ValuationStrategy implements ScoringStrategy {
         } catch (Exception e) {
             return 0;
         }
+
         return score;
     }
 
@@ -41,6 +42,7 @@ public class ValuationStrategy implements ScoringStrategy {
                 return 0.0;
             }
         }
+
         return 0.0;
     }
 }

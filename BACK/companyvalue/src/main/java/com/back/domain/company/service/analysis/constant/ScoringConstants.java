@@ -13,6 +13,8 @@ public class ScoringConstants {
     // --- 페널티(Penalty) 점수 및 기준 ---
     public static final int PENALTY_SCORE_MACRO = 10;               // 장단기 금리차 역전 페널티 점수
     public static final int PENALTY_SCORE_RISKY_INVESTMENT = 15;    // 위험 투자 페널티 점수
+    public static final int PENALTY_SCORE_CAPITAL_IMPAIRMENT = 40;  // 자본잠식 시 -40점 (매우 큰 페널티)
+    public static final int PENALTY_SCORE_EXCESSIVE_DEBT = 20;      // 부채비율 400% 초과 시 -20점
 
     public static final double HIGH_INTEREST_RATE_THRESHOLD = 4.0;  // 고금리 기준 (4.0%)
     public static final double HIGH_DEBT_RATIO_GENERAL = 200.0;     // 고부채 기준 (일반)

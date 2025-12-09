@@ -20,20 +20,15 @@ public class ScoringTestController {
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     * 서버 실행 시 이 로그가 찍히는지 반드시 확인하세요.
-     * 안 찍힌다면 파일 위치가 잘못되었거나 빌드가 안 된 것입니다.
-     */
     @PostConstruct
     public void init() {
         log.info("=============================================");
         log.info(">>> [Test] ScoringTestController가 정상적으로 로드되었습니다.");
-        log.info(">>> 테스트 URL: http://localhost:8080/api/test/re-score");
+        log.info(">>> 테스트 URL: http://localhost:8080/test/re-score");
         log.info("=============================================");
     }
 
     /**
-     * 브라우저에서 바로 실행할 수 있도록 @GetMapping으로 변경했습니다.
      * URL: http://localhost:8080/test/re-score
      */
     @GetMapping("/test/re-score")
@@ -41,12 +36,12 @@ public class ScoringTestController {
         List<Company> companies = companyRepository.findAll();
         log.info(">>> [Test] 수동 점수 재계산 요청 받음! 대상 기업 수: {}개", companies.size());
 
-        if (companies.isEmpty()) {
+        if(companies.isEmpty()) {
             return "오류: DB에 저장된 기업이 하나도 없습니다. 기업 데이터부터 넣어야 합니다.";
         }
 
         int count = 0;
-        for (Company company : companies) {
+        for(Company company : companies) {
             // 이벤트를 발행하여 리스너(CompanyEventListener)를 깨웁니다.
             eventPublisher.publishEvent(new CompanyFinancialsUpdatedEvent(company.getTicker()));
             count++;
