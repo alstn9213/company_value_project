@@ -15,7 +15,7 @@ interface Props {
   data: StockHistory[];
 }
 
-const StockPriceChart = ({data}: Props) => {
+const StockPriceChart = ({ data }: Props) => {
   // 데이터가 없을 경우 예외 처리
   if (!data || data.length === 0) {
     return (
@@ -37,8 +37,8 @@ const StockPriceChart = ({data}: Props) => {
   const fillColor = isRising ? "#10b981" : "#ef4444";
 
   return (
-    <div className="w-full h-[350px] bg-slate-800/30 rounded-xl p-4 border border-slate-700/50">
-      <div className="flex justify-between items-start mb-4 pl-2">
+    <div className="w-full h-[350px] bg-slate-800/30 rounded-xl p-4 border border-slate-700/50 flex flex-col">
+      <div className="flex justify-between items-start mb-4 pl-2 shrink-0">
         <h3 className="text-lg font-bold text-slate-200 border-l-4 border-emerald-500 pl-2">
           📈 주가 변동 (1년)
         </h3>
@@ -46,54 +46,60 @@ const StockPriceChart = ({data}: Props) => {
           <span className="text-2xl font-bold text-white">
             {formatCurrency(latestPrice)}
           </span>
-          <span className={`text-sm block ${isRising ? "text-emerald-400" : "text-red-400"}`}>
+          <span
+            className={`text-sm block ${
+              isRising ? "text-emerald-400" : "text-red-400"
+            }`}
+          >
             현재가
           </span>
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={fillColor} stopOpacity={0.3} />
-              <stop offset="95%" stopColor={fillColor} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-          <XAxis
-            dataKey="date"
-            stroke="#94a3b8"
-            tick={{ fontSize: 12 }}
-            tickFormatter={(val) => dayjs(val).format("MM/DD")} // 월/일만 표시
-            minTickGap={30}
-          />
-          <YAxis
-            stroke="#94a3b8"
-            domain={["auto", "auto"]} // 데이터 범위에 맞춰 자동 스케일링
-            tick={{ fontSize: 12 }}
-            width={50}
-            tickFormatter={(val) => `$${val}`}
-          />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "#1e293b",
-              borderColor: "#475569",
-              color: "#f1f5f9",
-            }}
-            formatter={(value: number) => [`$${value}`, "주가"]}
-            labelFormatter={(label) => dayjs(label).format("YYYY년 MM월 DD일")}
-          />
-          <Area
-            type="monotone"
-            dataKey="close"
-            stroke={strokeColor}
-            strokeWidth={2}
-            fillOpacity={1}
-            fill="url(#colorPrice)"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+      <div className="flex-1 w-full min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={fillColor} stopOpacity={0.3} />
+                <stop offset="95%" stopColor={fillColor} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+            <XAxis
+              dataKey="date"
+              stroke="#94a3b8"
+              tick={{ fontSize: 12 }}
+              tickFormatter={(val) => dayjs(val).format("MM/DD")}
+              minTickGap={30}
+            />
+            <YAxis
+              stroke="#94a3b8"
+              domain={["auto", "auto"]}
+              tick={{ fontSize: 12 }}
+              width={50}
+              tickFormatter={(val) => `$${val}`}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#1e293b",
+                borderColor: "#475569",
+                color: "#f1f5f9",
+              }}
+              formatter={(value: number) => [`$${value}`, "주가"]}
+              labelFormatter={(label) => dayjs(label).format("YYYY년 MM월 DD일")}
+            />
+            <Area
+              type="monotone"
+              dataKey="close"
+              stroke={strokeColor}
+              strokeWidth={2}
+              fillOpacity={1}
+              fill="url(#colorPrice)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

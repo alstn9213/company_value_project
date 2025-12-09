@@ -40,7 +40,7 @@ const CompanyDetailPage = () => {
           <ScoreAnalysis score={score} />
         </div>
         {/* 우측: 차트 및 재무제표 */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-12">
           <StockChartSection ticker={ticker!} />
           <FinancialSummary financial={latestFinancial} />
         </div>
