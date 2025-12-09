@@ -12,4 +12,7 @@ public interface StockPriceHistoryRepository extends JpaRepository<StockPriceHis
     List<StockPriceHistory> findByCompanyOrderByRecordedDateAsc(Company company);
 
     boolean existsByCompanyAndRecordedDate(Company company, LocalDate date);
+
+    // 해당 기업의 가장 최근 주가 1개 조회 (점수 계산용)
+    StockPriceHistory findTopByCompanyOrderByRecordedDateDesc(Company company);
 }
