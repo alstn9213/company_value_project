@@ -34,9 +34,9 @@ public class ScoringTestController {
 
     /**
      * 브라우저에서 바로 실행할 수 있도록 @GetMapping으로 변경했습니다.
-     * URL: http://localhost:8080/api/test/re-score
+     * URL: http://localhost:8080/test/re-score
      */
-    @GetMapping("/api/test/re-score")
+    @GetMapping("/test/re-score")
     public String forceReCalculateScores() {
         List<Company> companies = companyRepository.findAll();
         log.info(">>> [Test] 수동 점수 재계산 요청 받음! 대상 기업 수: {}개", companies.size());
