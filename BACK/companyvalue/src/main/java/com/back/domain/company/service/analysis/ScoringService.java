@@ -4,6 +4,8 @@ import com.back.domain.company.dto.response.CompanyScoreResponse;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.entity.StockPriceHistory;
+import com.back.domain.company.repository.StockPriceHistoryRepository;
 import com.back.domain.company.service.analysis.constant.ScoringConstants;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.InvestmentStrategy;
@@ -33,6 +35,7 @@ public class ScoringService {
     private final CompanyScoreRepository companyScoreRepository;
     private final MacroRepository macroRepository;
     private final CompanyRepository companyRepository;
+    private final StockPriceHistoryRepository stockPriceHistoryRepository;
 
     // Strategies (점수 계산 전략)
     private final StabilityStrategy stabilityStrategy;
@@ -40,7 +43,7 @@ public class ScoringService {
     private final ValuationStrategy valuationStrategy;
     private final InvestmentStrategy investmentStrategy;
 
-    // Policies (비즈니스 규칙 정책)
+    // Policies (페널티 정책)
     private final PenaltyPolicy penaltyPolicy;
 
     @Transactional
@@ -48,10 +51,14 @@ public class ScoringService {
         MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
                 .orElseThrow(() -> new RuntimeException("거시 경제 데이터가 없습니다."));
 
+        BigDecimal currentPrice = BigDecimal.ZERO;
+        StockPriceHistory latestStock = stockPriceHistoryRepository.findTopByCompanyOrderByRecordedDateDesc(fs.getCompany());
+        if(latestStock != null) currentPrice = latestStock.getClosePrice();
+
         // 기본 점수 계산 (Strategy Pattern 활용)
         int stability = stabilityStrategy.calculate(fs, overview);
         int profitability = profitabilityStrategy.calculate(fs, overview);
-        int valuation = valuationStrategy.calculate(fs, overview);
+        int valuation = valuationStrategy.calculate(fs, overview, currentPrice);
         int investment = investmentStrategy.calculate(fs, overview);
 
         int baseScore = stability + profitability + valuation + investment;

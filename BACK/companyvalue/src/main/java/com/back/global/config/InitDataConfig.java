@@ -43,27 +43,21 @@ public class InitDataConfig {
             List<Company> companies = createCompanyList();
 
             for (Company companyData : companies) {
-                // 1. 기업 조회 혹은 생성
+                // 기업 조회 혹은 생성
                 Company company = companyRepository.findByTicker(companyData.getTicker())
                         .orElseGet(() -> {
                             log.info("[InitData] 신규 기업 생성: {}", companyData.getName());
                             return companyRepository.save(companyData);
                         });
 
-                // 2. 재무 데이터 존재 여부 확인 (하나라도 있으면 스킵)
+                // 재무 데이터 존재 여부 확인 (하나라도 있으면 스킵)
                 boolean hasFinancials = financialStatementRepository.existsByCompany(company);
-
-                if (!hasFinancials && !"AAPL".equals(company.getTicker())) {
+                if(!hasFinancials && !"AAPL".equals(company.getTicker())) {
                     log.info("[InitData] {}의 재무/주가 데이터를 생성합니다...", company.getName());
-
                     SectorProfile profile = SectorProfile.getProfile(company.getSector());
-
-                    // 재무제표 생성
                     List<FinancialStatement> financials = generateFinancials(company, profile);
-                    financialStatementRepository.saveAll(financials);
-
-                    // 주가 데이터 생성
                     List<StockPriceHistory> stockHistory = generateStockPrices(company, financials, profile);
+                    financialStatementRepository.saveAll(financials);
                     stockPriceHistoryRepository.saveAll(stockHistory);
                 } else if ("AAPL".equals(company.getTicker())) {
                     log.info("[InitData] {}은 실제 API 데이터를 사용하기 위해 더미 생성을 건너뜁니다.", company.getName());
@@ -114,6 +108,10 @@ public class InitDataConfig {
         List<FinancialStatement> list = new ArrayList<>();
         Random random = new Random();
 
+        // 기업 고유 역량 (Quality) 부여: 0.5(부실) ~ 1.5(우량)
+        // 이 값이 높을수록 이익률은 높고 부채비율은 낮아짐
+        double companyQuality = 0.5 + random.nextDouble();
+
         // 초기 연 매출 설정 (섹터별 기본값 + 랜덤 변동)
         double currentAnnualRevenue = profile.baseRevenue * (0.8 + random.nextDouble() * 0.4);
 
@@ -121,8 +119,8 @@ public class InitDataConfig {
             int year = START_DATE.getYear() + (i / 4);
             int quarter = (i % 4) + 1;
 
-            // 성장 적용 (분기별 성장 + 약간의 노이즈)
-            double growthFactor = 1 + (profile.growthRate / 4.0) + (random.nextGaussian() * 0.01);
+            // 성장 적용 (분기별 성장 + Quality 반영 + 노이즈 확대)
+            double growthFactor = 1 + (profile.growthRate / 4.0 * companyQuality) + (random.nextGaussian() * 0.02);
             currentAnnualRevenue *= growthFactor;
 
             // 분기 매출 (계절성 반영: 4분기에 매출 증가 등)
@@ -131,13 +129,25 @@ public class InitDataConfig {
                     .setScale(2, RoundingMode.HALF_UP);
 
             // 이익 계산
+            // Quality가 좋을수록 마진이 높음.
+            double adjustedMargin = profile.operatingMargin * companyQuality;
+            double marginNoise = random.nextGaussian() * 0.05;
             BigDecimal operatingProfit = revenue.multiply(BigDecimal.valueOf(profile.operatingMargin + random.nextGaussian() * 0.02));
-            BigDecimal netIncome = operatingProfit.multiply(BigDecimal.valueOf(0.75)); // 법인세 등 차감 가정
+            // 어닝 쇼크 구현 (10% 확률로 이익 급감 혹은 적자 전환)
+            if (random.nextDouble() < 0.1) {
+                operatingProfit = operatingProfit.multiply(BigDecimal.valueOf(-0.5));
+                log.debug("[InitData] {} - 어닝 쇼크 발생 (Year: {}, Q: {})", company.getName(), year, quarter);
+            }
 
+            // 법인세 등 차감 가정
+            BigDecimal netIncome = operatingProfit.multiply(BigDecimal.valueOf(0.75));
             // 재무상태표 계산 (자산 = 부채 + 자본)
-            // 자산 회전율을 통해 자산 규모 추정 (Asset Turnover)
             BigDecimal totalAssets = revenue.multiply(BigDecimal.valueOf(4.0)).multiply(BigDecimal.valueOf(profile.assetTurnoverMultiplier));
-            BigDecimal totalLiabilities = totalAssets.multiply(BigDecimal.valueOf(profile.debtRatio));
+
+            // 자산 회전율을 통해 자산 규모 추정 (Asset Turnover)
+            // Quality가 높을수록(1.5에 가까울수록) 부채비율이 낮아지도록 설정 (DebtMultiplier 작아짐)
+            double debtMultiplier = 2.0 - companyQuality;
+            BigDecimal totalLiabilities = totalAssets.multiply(BigDecimal.valueOf(profile.debtRatio * debtMultiplier));
             BigDecimal totalEquity = totalAssets.subtract(totalLiabilities);
 
             // 현금흐름 및 투자
@@ -166,12 +176,15 @@ public class InitDataConfig {
     private List<StockPriceHistory> generateStockPrices(Company company, List<FinancialStatement> financials, SectorProfile profile) {
         List<StockPriceHistory> history = new ArrayList<>();
         Random random = new Random();
+        // 주식수(100억주 가정)
+        long totalShares = 100_000_000L;
 
         // 초기 주가 설정
-        // 첫 분기 순이익 연환산 -> PER 적용 -> 적정 시총 -> 임의의 주식수(100만주 가정)로 나눠 주가 산출
         BigDecimal initialNetIncome = financials.get(0).getNetIncome();
-        double annualEPS = initialNetIncome.doubleValue() * 4 / 1_000_000.0; // 주당 순이익
-        double currentPrice = Math.max(10.0, annualEPS * profile.peRatio); // 최소 $10 보장
+        // EPS 계산: 연간 환산 순이익 / 주식 수
+        // 연간 환산 순이익 = 분기 순이익 * 4
+        double annualEPS = initialNetIncome.doubleValue() * 4 / (double) totalShares;
+        double currentPrice = Math.max(5.0, annualEPS * profile.peRatio); // 최소 $5 보장
 
         // 날짜별 루프
         LocalDate currentDate = START_DATE;
@@ -192,13 +205,12 @@ public class InitDataConfig {
                     }
                 }
 
-                // 적정 주가(Fair Value) 계산: (최근 분기 순이익 * 4) / 100만주 * PER
-                double targetPrice = (currentFS.getNetIncome().doubleValue() * 4 / 1_000_000.0) * profile.peRatio;
+                // 적정 주가(Fair Value): (최근 분기 순이익 * 4) / 1억주 * PER
+                double targetPrice = (currentFS.getNetIncome().doubleValue() * 4 / (double) totalShares) * profile.peRatio;
 
                 // 주가 변동 로직:
                 // 1. Drift: 적정 주가로 수렴하려는 힘 (Mean Reversion)
                 double drift = (targetPrice - currentPrice) * 0.005; // 천천히 따라감
-
                 // 2. Volatility: 랜덤 등락 (섹터별 변동성 + 시장 노이즈)
                 double shock = currentPrice * random.nextGaussian() * (profile.volatility / Math.sqrt(252));
 

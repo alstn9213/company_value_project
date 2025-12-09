@@ -2,21 +2,43 @@ package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.core.util.Json;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public class ValuationStrategy implements ScoringStrategy {
 
     @Override
     public int calculate(FinancialStatement fs, JsonNode overview) {
+        return calculate(fs, overview, BigDecimal.ZERO);
+    }
 
+    public int calculate(FinancialStatement fs, JsonNode overview, BigDecimal currentPrice) {
         int score = 0;
-        if(overview == null) return 0;
+        double per = 0.0;
+        double pbr = 0.0;
+
+        // 외부 API의 pbr, per
+        if(overview != null && overview.has("PERatio")) {
+            per = parseDouble(overview, "PERatio");
+            pbr = parseDouble(overview, "PriceToBookRatio");
+
+        // 더미 데이터의 pbr, per 계산
+        } else if (currentPrice != null && currentPrice.compareTo(BigDecimal.ZERO) > 0) {
+            double assumedShares = 100_000_000.0; // 더미 발행 주식 수
+            double annualNetIncome = fs.getNetIncome().doubleValue() * 4;
+            double eps = annualNetIncome / assumedShares;
+
+            if (eps > 0) per = currentPrice.doubleValue() / eps;
+
+            // PBR = 주가 / BPS (주당 순자산)
+            double bps = fs.getTotalEquity().doubleValue() / assumedShares;
+            if (bps > 0) pbr = currentPrice.doubleValue() / bps;
+        }
 
         try {
-            double per = parseDouble(overview, "PERatio");
-            double pbr = parseDouble(overview, "PriceToBookRatio");
-
             // PER 평가
             if(0 < per && per < 15) score += 10;
             else if(15 <= per && per < 25) score += 7;
