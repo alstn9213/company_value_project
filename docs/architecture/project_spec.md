@@ -19,8 +19,8 @@
 | **Network**    | **Spring WebClient**         | Alpha Vantage/FRED의 대용량 JSON 비동기 처리     |
 | **Security**   | **Spring Security, JWT**     | Stateless한 인증 방식 및 확장성 고려             |
 | **Frontend**   | **React, TypeScript, Vite**  | 빠른 렌더링과 타입 안정성 확보                   |
-| **Style**      | **Tailwind CSS 4**           | 유틸리티 퍼스트 CSS를 통한 빠른 UI 개발          |
-| **State**      | **Zustand, TanStack Query**  | 전역 상태 관리 및 효율적인 서버 상태 동기화      |
+| **Style**      | **Tailwind CSS**           | 유틸리티 퍼스트 CSS를 통한 빠른 UI 개발          |
+| **State**      | **Zustand**  | 전역 상태 관리 및 효율적인 서버 상태 동기화      |
 | **Infra**      | **GCP, Docker Compose**      | 컨테이너 기반의 일관된 배포 환경 구성            |
 
 ### 2.2. 데이터 파이프라인
@@ -75,12 +75,6 @@
 2.  **고금리 시기 위험 투자 감점 (-15점):**
     - 시장 금리가 4.0% 이상인 고금리 상황에서, 부채비율이 과도하게 높음에도 무리한 투자(매출 대비 10% 이상)를 감행하는 기업을 식별하여 감점.
     - **고부채 기준:** 일반 기업 200% 초과, **금융업 1000% 초과**로 구분.
-3.  **과락(Disqualification) - 0점(F등급) 처리:**
-    - 다음 조건 충족 시 총점과 관계없이 **0점(F등급)** 처리하여 포트폴리오 편입을 원천 차단합니다.
-      1.  **자본 잠식:** 자본총계(Total Equity)가 0 이하인 경우.
-      2.  **재무 위험:** 부채비율이 허용 한도를 초과하는 경우.
-          - **일반 기업:** 400% 초과
-          - **금융 기업:** 1500% 초과
 
 ### 4.3. 거시 경제 대시보드
 
@@ -119,30 +113,4 @@
 
 ---
 
-## 6. 구현 현황
 
-- **Backend API:** 100% 구현 (Auth, Company, Macro, Watchlist, Score Domain)
-- **Frontend UI:** 100% 구현 (로그인, 회원가입, 대시보드, 기업 목록/검색, 상세 분석, 관심종목)
-- **Infrastructure:** Docker Compose 기반 Local/GCP 배포 환경 구성 완료
-
----
-
-## 배포 이후 업데이트 상황
-
-### 20251205
-
-- swagger 구현
-- 기업 상세 페이지 코드 리팩토링
-- 배포 이후에도 로컬에서 실행할 수 있도록 설정 수정
-- 기업 상세 페이지에 경제 및 회계 용어 모달 창 구현
-
-### 20251207
-
-- 백엔드 디렉토리 구조 재설계
-- 백엔드 company(stock, finance) 리팩토링
-
-### 20251208
-
-- 백엔드 watchlist, macro, SchedulingService 리팩토링
-- 프론트엔드 회계 용어 호버창 구현
-- 프론트엔드의 회사 더미데이터를 백엔드로 이동

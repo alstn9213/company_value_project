@@ -5,7 +5,7 @@
 
 ### 1.1. 기술 스택
 * **Backend:** Java 17, Spring Boot 3.x, Spring Data JPA, Spring Security
-* **Database:** MariaDB (MySQL Compatible)
+* **Database:** MariaDB
 * **Frontend:** React.js, Recharts (데이터 시각화), Axios
 * **HTTP Client:** **Spring WebClient** (비동기 통신 및 대용량 JSON 처리)
 * **Security:** JWT (Json Web Token) 기반 인증

@@ -34,15 +34,21 @@
 
 ### Backend
 
-<img src="https://img.shields.io/badge/Java-17-orange?logo=java&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20Boot-3.5-green?logo=springboot&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20Data%20JPA-gray?logo=spring&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20WebClient-gray?logo=spring&style=flat-square" />
+<img src="https://img.shields.io/badge/Java-17-orange?logo=java&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20Boot-3.5-green?logo=springboot&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&style=flat-square" /> 
+<br>
+<img src="https://img.shields.io/badge/Spring%20Data%20JPA-gray?logo=spring&style=flat-square" /> <img src="https://img.shields.io/badge/Spring%20WebClient-gray?logo=spring&style=flat-square" />
 
 ### Frontend
 
-<img src="https://img.shields.io/badge/React-18-blue?logo=react&style=flat-square" /> <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&style=flat-square" /> <img src="https://img.shields.io/badge/Vite-Build-646CFF?logo=vite&style=flat-square" /> <img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?logo=tailwindcss&style=flat-square" /> <img src="https://img.shields.io/badge/Zustand-State-orange?logo=react&style=flat-square" />
+<img src="https://img.shields.io/badge/React-18-blue?logo=react&style=flat-square" /> <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&style=flat-square" /> <img src="https://img.shields.io/badge/Vite-Build-646CFF?logo=vite&style=flat-square" /> 
+<br>
+<img src="https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?logo=tailwindcss&style=flat-square" /> <img src="https://img.shields.io/badge/Zustand-State-orange?logo=react&style=flat-square" />
 
 ### Data & Infrastructure
 
-<img src="https://img.shields.io/badge/MariaDB-10.6-003545?logo=mariadb&style=flat-square" /> <img src="https://img.shields.io/badge/Redis-Cache-red?logo=redis&style=flat-square" /> <img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&style=flat-square" /> <img src="https://img.shields.io/badge/GCP-Compute_Engine-4285F4?logo=googlecloud&style=flat-square" />
+<img src="https://img.shields.io/badge/MariaDB-10.6-003545?logo=mariadb&style=flat-square" /> <img src="https://img.shields.io/badge/Redis-Cache-red?logo=redis&style=flat-square" /> 
+<br>
+<img src="https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&style=flat-square" /> <img src="https://img.shields.io/badge/GCP-Compute_Engine-4285F4?logo=googlecloud&style=flat-square" />
 
 ---
 
@@ -55,7 +61,8 @@
 > 본 프로젝트는 학생 포트폴리오 용도로 운영되며, **API 비용 절감 및 Free Tier 제한(분당 5회)** 준수를 위해 다음과 같은 운영 정책을 적용 중입니다.
 >
 > 1. **GCP Free Tier:** 인스턴스 사양 제한으로 초기 로딩 시 약간의 지연이 발생할 수 있습니다.
-> 2. **데이터 수집 제한:** API 쿼터 보호를 위해 전체 시장 데이터 대신 **대표 기업(AAPL)**에 대해서만 재무/주가 데이터를 갱신하고 있습니다. (실무 환경 전환 시 필터 해제 가능)
+> 2. **데이터 수집 제한:** API 쿼터 보호를 위해 전체 시장 데이터 대신 **대표 기업(AAPL)**에 대해서만 재무/주가 데이터를 갱신하고 있습니다.
+> 3. **더미 데이터:** APPL을 제외한 기업은 시연을 위해 생성한 가상의 회사들이며, 최대한 현실 회사와 흡사하도록 분산 가중치를 주어 랜덤으로 재무 정보를 생성하는 로직을 구현했습니다.
 
 ---
 
@@ -121,6 +128,34 @@ npm run dev
 ![alt text](images/image.png)
 ![alt text](images/image-1.png)
 ---
+
+## 프로젝트 구조
+
+```
+company_value_project
+├── BACK
+│   └── companyvalue
+│       ├── src/main/java/com/back
+│       │   ├── domain          # 도메인별 비즈니스 로직 (DDD)
+│       │   │   ├── auth        # 인증/인가
+│       │   │   ├── company     # 기업, 재무, 점수, 주가
+│       │   │   ├── macro       # 거시경제
+│       │   │   ├── member      # 회원
+│       │   │   ├── time        # 공통 시간 엔티티
+│       │   │   └── watchlist   # 관심종목
+│       │   ├── global          # 전역 설정 (Config, Error, Security)
+│       │   └── infra           # 외부 인프라 (외부 API, 스케줄러)
+│       └── resources           # 설정 파일 및 정적 리소스(React Build)
+└── FRONT
+    └── companyvalue
+        ├── src
+        │   ├── api             # Axios API 호출 정의
+        │   ├── components      # 재사용 가능한 UI 컴포넌트
+        │   ├── pages           # 라우트 페이지
+        │   ├── stores          # Zustand 상태 관리
+        │   └── types           # TypeScript 타입 정의
+        └── public              # 정적 자산
+```
 
 ## 👨‍💻 Developer
 
