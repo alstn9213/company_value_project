@@ -18,7 +18,7 @@ const CompanyListPage = () => {
   const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [sortOption, setSortOption] = useState("name");
+  const [sortOption, setSortOption] = useState("score");
 
   // 검색어 디바운스 처리(입력 멈추고 0.5초 뒤 반영)
   useEffect(() => {

@@ -31,7 +31,7 @@ public class CompanyController {
             @Parameter(description = "페이지 크기", example = "12")
             @RequestParam(defaultValue = "12") int size,
             @Parameter(description = "정렬 기준 (name 또는 score)", example = "score")
-            @RequestParam(defaultValue = "name") String sort
+            @RequestParam(defaultValue = "score") String sort
     ) {
         return ResponseEntity.ok(companyReadService.getAllCompanies(page, size, sort));
     }
