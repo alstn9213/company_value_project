@@ -128,11 +128,12 @@ public class InitDataConfig {
             BigDecimal revenue = BigDecimal.valueOf(currentAnnualRevenue / 4.0 * seasonalFactor)
                     .setScale(2, RoundingMode.HALF_UP);
 
-            // 이익 계산
-            // Quality가 좋을수록 마진이 높음.
-            double adjustedMargin = profile.operatingMargin * companyQuality;
-            double marginNoise = random.nextGaussian() * 0.05;
-            BigDecimal operatingProfit = revenue.multiply(BigDecimal.valueOf(profile.operatingMargin + random.nextGaussian() * 0.02));
+            // --- 이익 계산 ---
+            double adjustedMargin = profile.operatingMargin * companyQuality; // Quality가 좋을수록 마진이 높음.
+            double marginNoise = random.nextGaussian() * 0.05; // 마진 변동 폭 (약 5% 표준편차)
+            double finalMargin = adjustedMargin + marginNoise; // 최종 마진율
+            BigDecimal operatingProfit = revenue.multiply(BigDecimal.valueOf(finalMargin));
+
             // 어닝 쇼크 구현 (10% 확률로 이익 급감 혹은 적자 전환)
             if (random.nextDouble() < 0.1) {
                 operatingProfit = operatingProfit.multiply(BigDecimal.valueOf(-0.5));
