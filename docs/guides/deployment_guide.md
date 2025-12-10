@@ -13,15 +13,15 @@
 
 ---
 
-## 1\. 프로젝트 코드 수정 (Local)
+## 1. 프로젝트 코드 수정 (Local)
 
-배포 전, 프론트엔드와 백엔드가 서로 '한 몸'이 되도록 코드를 약간 수정해야 합니다.
+배포 전, 프론트엔드와 백엔드가 서로 '한 몸'이 되도록 코드를 수정해야 합니다.
 
 ### A. Frontend 수정 (`FRONT/companyvalue`)
 
 1.  **API 주소 변경 (`src/api/axiosClient.ts`)**
 
-    - 통합 배포 시 브라우저는 현재 접속한 주소(예: `http://34.xx.xx.xx:8080`)를 기준으로 API를 찾습니다. 따라서 절대 경로(`http://...`) 대신 \*\*빈 문자열(상대 경로)\*\*을 사용합니다.
+    - 통합 배포 시 브라우저는 현재 접속한 주소(예: `http://34.xx.xx.xx:8080`)를 기준으로 API를 찾습니다. 따라서 절대 경로(`http://...`) 대신 **빈 문자열(상대 경로)**을 사용합니다.
 
 ```typescript
 // src/api/axiosClient.ts
@@ -45,7 +45,7 @@ npm run build
 
 프론트엔드 빌드 결과물을 백엔드가 인식할 수 있는 폴더로 옮깁니다.
 
-- **복사 할 곳:** `FRONT/companyvalue/dist/*` (안에 있는 모든 파일 및 폴더)
+- **복사:** `FRONT/companyvalue/dist/*` (안에 있는 모든 파일 및 폴더)
 - **붙여넣을 곳:** `BACK/companyvalue/src/main/resources/static/`
   - _Tip: `static` 폴더가 없다면 새로 생성하세요._
   - _결과 확인: `static/index.html`이 존재해야 합니다._
@@ -176,21 +176,21 @@ docker-compose up -d --build
 
 ---
 
-## 4\. 운영 및 관리
+## 4. 운영 및 관리
 
 - **재배포 시:**
 
   1. 코드 수정 후 cmd 창 오픈. 이후 두가지 상황에 따라 다름
 
   - 백엔드만 수정했을 경우
-
     1. `cd BACK/companyvalue`
     2. `./gradlew clean build -x test`
 
-  - 프론트 엔드 코드도 수정했을 경우
+  - 프론트 엔드 코드 수정시
     1. `npm run build`
-    2. `resources/static` 폴더 안의 파일들 복사
-    3. `./gradlew build`.
+    2. `FRONT/companyvalue/dist/*` 폴더 안의 파일들 복사
+    -> **붙여넣을 곳:** `BACK/companyvalue/src/main/resources/static/`
+    3. 백엔드 파일에서 `./gradlew build` -> 새로운 JAR 파일 생성
 
   2.  구글 클라우드 ssh 브라우저에서 새로운 JAR 파일 업로드.
 
