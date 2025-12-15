@@ -72,7 +72,7 @@ jobs:
               --name app-server \
               --network host \
               -e SPRING_DATASOURCE_URL="jdbc:mariadb://127.0.0.1:3306/value" \
-              -e SPRING_DATASOURCE_USERNAME="root" \
+              -e SPRING_DATASOURCE_USERNAME="alstn9213" \
               -e SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}" \  
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \               
               -e API_ALPHAVANTAGE_KEY="${{ secrets.ALPHA_API_KEY }}" \            
