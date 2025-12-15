@@ -1,61 +1,61 @@
-# 깃허브 액션으로 자동 배포
+# 깃허브 액션 자동 배포
 
-전체적인 흐름은 
-**GitHub Actions (CI 도구)가 코드를 감지**
--> **React 빌드 & Spring Boot 통합** 
--> **Docker 이미지 생성** 
--> **Google Artifact Registry 저장** 
--> **Cloud Run 배포** 
-순서로 진행됩니다.
+1.  **GitHub Actions**: 코드 빌드 -\> 도커 이미지 생성 -\> \*\*Docker Hub(무료 저장소)\*\*에 업로드.
+2.  **GitHub Actions**: 내 서버에 **SSH**로 접속.
+3.  **내 서버**: Docker Hub에서 최신 이미지를 받아와서(`pull`) 기존 거 끄고 새로 실행(`run`).
 
 -----
 
-### 1단계: Google Cloud Platform (GCP) 사전 설정
+### 1단계: 서버 준비 (GCP Compute Engine)
 
-GCP 콘솔에서 배포를 위한 권한과 저장소를 만들어야 합니다.
+가장 먼저 배포할 컴퓨터(서버)가 있어야 합니다.
 
-1.  **프로젝트 생성 및 API 활성화**:
-      * GCP 콘솔에서 `Cloud Run Admin API`, `Artifact Registry API`를 검색해 활성화합니다.
-2.  **Artifact Registry 저장소 생성**:
-      * Docker 이미지를 저장할 공간입니다.
-      * **Artifact Registry** -> **리포지토리 만들기** -> 형식: **Docker**, 리전: `asia-northeast3` (서울)을 추천합니다.
-      * 이때 생성된 저장소 주소를 기억해 두세요 (예: `asia-northeast3-docker.pkg.dev/project-id/my-repo`).
-3.  **서비스 계정(Service Account) 생성 및 키 발급**:
-      * GitHub Actions가 내 GCP에 접근할 수 있도록 열쇠를 만듭니다.
-      * **IAM 및 관리** -> **서비스 계정** -> **서비스 계정 만들기**. 
-      (만약 ...compute@developer.gserviceaccount.com 처럼 생긴 **"Compute Engine default service account"** 이 있다면 이걸 써도 무방)
-      * **권한 부여**: `Cloud Run 관리자`, `서비스 계정 사용자`, `Artifact Registry 작성자` 역할을 부여합니다.
-      * **키 생성**: 해당 서비스 계정의 '키' 탭 -> 키 추가 -> 새 키 만들기 -> **JSON** 선택.
-      * 다운로드된 JSON 파일의 **전체 내용**을 복사합니다.
+1.  **GCP 콘솔** \> **Compute Engine** \> **VM 인스턴스** \> **인스턴스 만들기**.
+2.  **설정 (무료 등급 기준)**:
+      * **리전**: `us-west1` (오리건) 등 *미국 리전*을 선택해야 e2-micro 무료 혜택을 받기 쉽습니다. (서울 리전은 유료지만 속도가 빠릅니다. 선택은 자유입니다.)
+      * **머신 유형**: `e2-micro` (공유 코어, 메모리 1GB).
+      * **부팅 디스크**: Ubuntu 22.04 LTS (추천).
+      * **방화벽**: `HTTP 트래픽 허용`, `HTTPS 트래픽 허용` 체크.
+3.  **만들기** 클릭.
+4.  **고정 IP 설정 (선택)**: 서버를 껐다 켜도 주소가 안 바뀌게 하려면 **VPC 네트워크** \> **IP 주소**에서 해당 VM의 IP를 '고정'으로 예약하세요.
+5.  **포트 열기**: 8080포트로 접속해야 하므로, **VPC 네트워크** \> **방화벽** \> **방화벽 규칙 만들기**에서 `tcp:8080`을 허용하는 규칙을 추가해야 합니다. (대상 태그를 지정하고 VM에도 같은 태그를 달아주세요.)
 
-### 2단계: GitHub 저장소 Secret 설정
+### 2단계: 서버에 Docker 설치
 
-GitHub가 방금 만든 GCP 키를 사용할 수 있도록 등록합니다.
+만들어진 서버에 SSH 버튼을 눌러 접속한 뒤, 도커를 설치합니다.
 
-1.  GitHub 리포지토리의 **Settings** -> **Secrets and variables** -> **Actions**로 이동합니다.
-2.  **New repository secret**을 클릭합니다.
-3.  `GCP_CREDENTIALS`라는 이름으로 아까 복사한 **JSON 키 전체 내용**을 붙여넣습니다.
-4.  추가로 `GCP_PROJECT_ID` (내 프로젝트 ID)도 Secret으로 등록하면 관리가 편합니다.
-  (Google Cloud Console에 접속하고, 왼쪽 상단 로고 옆에 뜨는 프로젝트를 클릭해서 들어가면 나오는 프로젝트 ID를 복사해서 gitbub actions의 New repository secret에 붙여넣기 하면된다.)
-  
-### 3단계: GitHub Actions 워크플로우 작성 (`deploy.yml`)
+```bash
+# 서버 터미널에서 실행
+sudo apt-get update
+sudo apt-get install -y docker.io
+sudo usermod -aG docker $USER
+# (설치 후 exit 명령어로 나갔다가 다시 SSH 접속해야 권한 적용됨)
+```
 
-프로젝트 최상단에 `.github/workflows/deploy.yml` 파일을 생성하고 아래 내용을 작성합니다. 이 스크립트는 **프론트엔드를 빌드해서 백엔드 정적 리소스 폴더로 복사한 뒤, 하나의 JAR로 만드는 과정**을 포함합니다.
+### 3단계: GitHub Secrets 설정
+
+GitHub가 내 서버에 로그인하고, Docker Hub에 이미지를 올릴 수 있도록 열쇠를 줍니다.
+
+1.  **[Docker Hub](https://hub.docker.com/)** 회원가입 후 **Create Repository** 클릭 (이름 예: `value-pick`, Public/Private 상관없음).
+2.  **SSH 키 생성**: 내 컴퓨터(로컬)에서 SSH 키 쌍을 만듭니다.
+      * `ssh-keygen -t rsa -b 4096 -f my-key`
+      * `my-key`(개인키)와 `my-key.pub`(공개키)가 생깁니다.
+      * **서버 등록**: `my-key.pub`의 내용을 복사해서, GCP VM 인스턴스 상세 정보의 **"SSH 키"** 항목에 추가하고 저장합니다.
+3.  **GitHub 저장소 Settings** \> **Secrets** \> **Actions**에 다음 변수들을 등록합니다.
+      * `DOCKER_USERNAME`: Docker Hub 아이디
+      * `DOCKER_PASSWORD`: Docker Hub 비밀번호
+      * `SERVER_HOST`: 내 서버 IP 주소 (예: 34.12.34.56)
+      * `SSH_PRIVATE_KEY`: 아까 만든 `my-key` 파일의 **전체 내용** (개인키)
+
+### 4단계: 워크플로우 작성 (`.github/workflows/deploy-ssh.yml`)
+
 
 ```yaml
-name: Build and Deploy to Cloud Run
+name: Deploy to VM via SSH
 
 on:
   push:
-    branches: [ "main" ] # main 브랜치에 push될 때 실행
-
-env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }} # Secret에 등록한 프로젝트 ID
-  GAR_LOCATION: asia-northeast3 # 아까 설정한 리전 (서울)
-  REPOSITORY: my-repo # Artifact Registry 리포지토리 이름 (1단계에서 만든 이름)
-  IMAGE: company-value-app # 생성할 이미지 이름
-  SERVICE: company-value-service # Cloud Run 서비스 이름
-  REGION: asia-northeast3
+    branches: [ "main" ]
 
 jobs:
   build-and-deploy:
@@ -65,84 +65,85 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Java 17 세팅 (build.gradle 참고)
+      # 1. Java 17 세팅
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. Node.js 세팅 (React 빌드용)
+      # 2. Node.js 세팅
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. 프론트엔드 빌드 (경로 주의: FRONT/companyvalue)
-      - name: Install and Build Frontend
+      # 3. 프론트엔드 빌드 & 통합
+      - name: Build Frontend & Copy
         working-directory: ./FRONT/companyvalue
         run: |
           npm ci
           npm run build
+          mkdir -p ../../BACK/companyvalue/src/main/resources/static
+          cp -r dist/* ../../BACK/companyvalue/src/main/resources/static/
 
-      # 4. 빌드된 프론트엔드 리소스를 백엔드로 이동 (통합 배포의 핵심)
-      # Vite 빌드 결과물(dist)을 Spring Boot의 static 폴더로 복사합니다.
-      - name: Copy Frontend to Backend Static Resources
-        run: |
-          mkdir -p ./BACK/companyvalue/src/main/resources/static
-          cp -r ./FRONT/companyvalue/dist/* ./BACK/companyvalue/src/main/resources/static/
-
-      # 5. Spring Boot 빌드 (테스트 제외 옵션 -x test는 선택사항)
-      - name: Build with Gradle
+      # 4. 백엔드(Spring Boot) 빌드
+      - name: Build Backend (Gradle)
         working-directory: ./BACK/companyvalue
         run: |
           chmod +x gradlew
           ./gradlew clean build -x test
 
-      # 6. GCP 인증
-      - name: Google Auth
-        id: auth
-        uses: 'google-github-actions/auth@v2'
+      # 5. Docker Hub 로그인
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 7. Docker 인증
-      - name: Docker Auth
-        id: docker-auth
-        uses: 'docker/login-action@v3'
+      # 6. Docker 이미지 빌드 & Push
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
         with:
-          registry: ${{ env.GAR_LOCATION }}-docker.pkg.dev
-          username: _json_key
-          password: ${{ secrets.GCP_CREDENTIALS }}
+          context: ./BACK/companyvalue
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
 
-      # 8. Docker 이미지 빌드 및 Push
-      # Dockerfile 위치가 BACK/companyvalue/Dockerfile 이므로 context를 지정해야 함
-      - name: Build and Push Container
-        run: |
-          docker build -t "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ github.sha }}" ./BACK/companyvalue
-          docker push "${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ github.sha }}"
-
-      # 9. Cloud Run 배포
-      - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v2
+      # 7. 서버에 SSH 접속해서 배포 명령 실행
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          service: ${{ env.SERVICE }}
-          region: ${{ env.REGION }}
-          image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE }}:${{ github.sha }}
-          flags: '--allow-unauthenticated' # 외부 접속 허용 (포트폴리오용)
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.DOCKER_USERNAME }} # 혹은 GCP VM의 사용자명 (보통 구글계정 아이디 앞부분)
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # 최신 이미지 다운로드
+            docker pull ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
+            
+            # 기존 컨테이너가 있으면 중지하고 삭제
+            docker stop app-server || true
+            docker rm app-server || true
+            
+            # 새 컨테이너 실행 (환경변수 주입)
+            ocker run -d \
+              --name app-server \
+              --network host \
+              -e SPRING_DATASOURCE_URL="jdbc:mariadb://127.0.0.1:3306/value" \
+              -e SPRING_DATASOURCE_USERNAME="root" \
+              -e SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}" \  
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \               
+              -e API_ALPHAVANTAGE_KEY="${{ secrets.ALPHA_API_KEY }}" \            
+              -e API_FRED_KEY="${{ secrets.FRED_API_KEY }}" \            
+              ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
+            
+            # 불필요한 이미지 정리
+            docker image prune -f
 ```
 
-### 4단계: Dockerfile 점검
+### 핵심 포인트
 
-`BACK/companyvalue/Dockerfile`은 `jar` 파일을 복사해서 실행하는 구조이므로, 위 GitHub Actions의 5번 단계에서 `build`가 성공적으로 끝나면 `build/libs` 폴더에 JAR가 생성되고, Dockerfile이 이를 잘 가져갈 것입니다.
+1.  **Docker Hub 활용**: GitHub Actions에서 만든 결과물(이미지)을 Docker Hub라는 '중간 창고'에 보관합니다.
+2.  **SSH Action**: `appleboy/ssh-action`이라는 라이브러리를 써서, 마치 님이 집에서 터미널로 접속하듯 GitHub가 서버에 접속합니다.
+3.  **Docker 명령어**: 서버에 접속해서는 "야, 창고(Docker Hub)에서 최신 버전 가져와서 갈아끼워\!"라고 명령만 내립니다.
 
-**수정할 점:**
-현재 Dockerfile의 `ARG JAR_FILE=build/libs/*.jar` 부분은 빌드 컨텍스트에 따라 경로가 맞지 않을 수 있습니다. GitHub Actions에서 `docker build` 명령을 `./BACK/companyvalue` 폴더를 기준으로 실행하므로(위 스크립트 8번 과정), 현재 Dockerfile은 수정 없이 그대로 사용 가능합니다.
-
-### 5단계: 주의사항 및 팁 (포트폴리오용)
-
-1.  **React 라우팅 처리**: 통합 배포 시, React에서 사용하는 라우터(`react-router-dom`)가 새로고침 시 404 에러를 낼 수 있습니다. Spring Boot의 `WebController`나 설정에서 `/error` 또는 존재하지 않는 경로는 `index.html`로 포워딩해주는 처리가 필요할 수 있습니다.
-2.  **포트 설정**: Cloud Run은 기본적으로 `8080` 포트를 사용합니다. Spring Boot의 `application.yml`이나 `env` 설정에서 포트를 변경하지 않았다면(기본 8080) 문제없이 작동합니다.
-3.  **환경 변수 관리**: DB 접속 정보(MariaDB, Redis) 등 민감한 정보는 `application.properties`에 직접 적지 마시고, Cloud Run 배포 설정(콘솔 화면)의 **"변수 및 보안 비밀"** 탭에서 환경 변수(`SPRING_DATASOURCE_URL`, `REDIS_HOST` 등)로 주입해 주어야 합니다.
-
-이 설정대로 진행하시면 `git push` 한 번으로 프론트/백엔드가 통합된 최신 버전이 GCP 서버에 자동으로 배포됩니다.
+이 방식은 **완전히 무료**(e2-micro 사용 시)이며, 특정 클라우드 서비스(Cloud Run 등)에 종속되지 않는 가장 **개발자스러운 배포 방법**입니다.
