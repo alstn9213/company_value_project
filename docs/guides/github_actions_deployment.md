@@ -1,8 +1,7 @@
 # 깃허브 액션 자동 배포
 
-1.  **GitHub Actions**: 코드 빌드 -\> 도커 이미지 생성 -\> \*\*Docker Hub(무료 저장소)\*\*에 업로드.
-2.  **GitHub Actions**: 내 서버에 **SSH**로 접속.
-3.  **내 서버**: Docker Hub에서 최신 이미지를 받아와서(`pull`) 기존 거 끄고 새로 실행(`run`).
+github actions를 사용하면 깃허브에 push할 때 배포까지 자동으로 됩니다.
+
 
 -----
 
@@ -38,7 +37,7 @@ GitHub가 내 서버에 로그인하고, Docker Hub에 이미지를 올릴 수 �
 
 1.  **[Docker Hub](https://hub.docker.com/)** 회원가입 후 **Create Repository** 클릭 (이름 예: `value-pick`, Public/Private 상관없음).
 2.  **SSH 키 생성**: 내 컴퓨터(로컬)에서 SSH 키 쌍을 만듭니다.
-      * `ssh-keygen -t rsa -b 4096 -f my-key`
+      * 내 로컬 컴퓨터의 powershell에서 명령어 `ssh-keygen -t rsa -b 4096 -f my-key`를 치고 파일을 다운받습니다.
       * `my-key`(개인키)와 `my-key.pub`(공개키)가 생깁니다.
       * **서버 등록**: `my-key.pub`의 내용을 복사해서, GCP VM 인스턴스 상세 정보의 **"SSH 키"** 항목에 추가하고 저장합니다.
 3.  **GitHub 저장소 Settings** \> **Secrets** \> **Actions**에 다음 변수들을 등록합니다.
