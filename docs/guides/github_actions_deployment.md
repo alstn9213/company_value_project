@@ -39,7 +39,16 @@ GitHub가 내 서버에 로그인하고, Docker Hub에 이미지를 올릴 수 �
 2.  **SSH 키 생성**: 내 컴퓨터(로컬)에서 SSH 키 쌍을 만듭니다.
       * 내 로컬 컴퓨터의 powershell에서 명령어 `ssh-keygen -t rsa -b 4096 -f my-key`를 치고 파일을 다운받습니다.
       * `my-key`(개인키)와 `my-key.pub`(공개키)가 생깁니다.
-      * **서버 등록**: `my-key.pub`의 내용을 복사해서, GCP VM 인스턴스 상세 정보의 **"SSH 키"** 항목에 추가하고 저장합니다.
+      * **서버 등록**: `my-key.pub`의 내용을 복사해서, GCP VM 인스턴스 상세 정보의 **"SSH 키"** 항목에 추가하고 저장합니다. 
+      
+```
+# VM 접속 후
+nano ~/.ssh/authorized_keys
+# 복사한 공개키 붙여넣기 후 저장
+chmod 600 ~/.ssh/authorized_keys # 권한 설정 중요
+chmod 700 ~/.ssh
+```
+
 3.  **GitHub 저장소 Settings** \> **Secrets** \> **Actions**에 다음 변수들을 등록합니다.
       * `DOCKER_USERNAME`: Docker Hub 아이디
       * `DOCKER_PASSWORD`: Docker Hub 비밀번호
@@ -113,7 +122,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.DOCKER_USERNAME }} # 혹은 GCP VM의 사용자명 (보통 구글계정 아이디 앞부분)
+          username: ${{ secrets.VM_USERNAME }} # GCP VM의 사용자명 (보통 구글계정 아이디 앞부분)
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # 최신 이미지 다운로드
