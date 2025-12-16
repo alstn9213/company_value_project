@@ -74,7 +74,9 @@ jobs:
               -e SPRING_DATASOURCE_URL="jdbc:mariadb://127.0.0.1:3306/value" \
               -e SPRING_DATASOURCE_USERNAME="alstn9213" \
               -e SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \  
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \
               -e API_ALPHAVANTAGE_KEY="${{ secrets.ALPHA_API_KEY }}" \
-              -e API_FRED_KEY="${{ secrets.FRED_API_KEY }}" \   
+              -e API_FRED_KEY="${{ secrets.FRED_API_KEY }}" \
               ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
+
+            docker image prune -f

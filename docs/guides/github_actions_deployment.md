@@ -2,7 +2,6 @@
 
 github actions를 사용하면 깃허브에 push할 때 배포까지 자동으로 됩니다.
 
-
 -----
 
 ### 1단계: 서버 준비 (GCP Compute Engine)
@@ -40,7 +39,7 @@ GitHub가 내 서버에 로그인하고, Docker Hub에 이미지를 올릴 수 �
       * 내 로컬 컴퓨터의 powershell에서 명령어 `ssh-keygen -t rsa -b 4096 -f my-key`를 치고 파일을 다운받습니다.
       * `my-key`(개인키)와 `my-key.pub`(공개키)가 생깁니다.
       * **서버 등록**: `my-key.pub`의 내용을 복사해서, GCP VM 인스턴스 상세 정보의 **"SSH 키"** 항목에 추가하고 저장합니다. 
-3. **서버(GCP VM)에 공개키 등록**
+3. **서버(GCP VM)에 공개키 등록하기**
 
 ```bash
 # VM 접속 후
@@ -55,6 +54,7 @@ chmod 700 ~/.ssh
       * `DOCKER_PASSWORD`: Docker Hub 비밀번호
       * `SERVER_HOST`: 내 서버 IP 주소 (예: 34.12.34.56)
       * `SSH_PRIVATE_KEY`: 아까 만든 `my-key` 파일의 **전체 내용** (개인키)
+      * `VM_USERNAME`: vm ssh로 들어가서 뜨는 사용자 Id
       * `API_KEY`: 프로젝트에서 사용된 각종 api 키를 각각 등록해야함
 
 ### 4단계: 워크플로우 작성 (`.github/workflows/deploy-ssh.yml`)
@@ -126,6 +126,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.VM_USERNAME }} # GCP VM의 사용자명 (보통 구글계정 아이디 앞부분)
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # / 뒤에 공백이 있으면 오류난다.
           script: |
             # 최신 이미지 다운로드
             docker pull ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
@@ -135,7 +136,7 @@ jobs:
             docker rm app-server || true
             
             # 새 컨테이너 실행 (환경변수 주입)
-            ocker run -d \
+            docker run -d \
               --name app-server \
               --network host \
               -e SPRING_DATASOURCE_URL="jdbc:mariadb://127.0.0.1:3306/value" \
