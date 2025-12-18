@@ -10,7 +10,8 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> findByTicker(String ticker);
-    List<Company> findByNameContaining(String keyword); // 검색용
+    // 검색 드롭다운
+    List<Company> findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(String ticker, String name);
     Page<Company> findAll(Pageable pageable);
 }
 

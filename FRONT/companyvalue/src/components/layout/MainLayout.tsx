@@ -148,7 +148,7 @@ const MainLayout = () => {
                 {/* 입력창 (테두리 제거, 배경 투명) */}
                 <input
                   type="text"
-                  placeholder="티커(AAPL) 또는 기업명 검색"
+                  placeholder="기업명 또는 티커(AAPL) 검색"
                   className="w-full bg-transparent border-none py-2.5 pl-2 pr-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-0"
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}

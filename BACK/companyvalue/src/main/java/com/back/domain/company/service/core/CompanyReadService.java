@@ -41,7 +41,8 @@ public class CompanyReadService {
     }
 
     public List<CompanySummaryResponse> searchCompanies(String keyword) {
-        return companyRepository.findByNameContaining(keyword).stream()
+        return companyRepository.findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(keyword, keyword)
+                .stream()
                 .map(CompanySummaryResponse::from)
                 .toList();
     }
