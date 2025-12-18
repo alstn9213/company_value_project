@@ -40,7 +40,7 @@ Docker 내부가 아닌 로컬 IDE(IntelliJ, Eclipse 등)에서 Spring Boot 애�
 
   * **Main Class**: `CompanyValueApplication`
   * **Server Port**: `8080`
-  * **DB Connection**: `jdbc:mariadb://localhost:3310/value` (application.properties 기본 설정 사용)
+  * **DB Connection**: `jdbc:mariadb://localhost:3306/value` (application.properties 기본 설정 사용)
 
 > **주의:** `docker-compose up` 명령어로 백엔드까지 띄우면 안 됩니다. (포트 충돌 및 디버깅 불가)
 

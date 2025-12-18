@@ -1,4 +1,6 @@
-GitHub Actions를 사용하면 코드를 깃허브에 `push`하는 것만으로 빌드부터 배포까지 자동으로 처리할 수 있습니다. 이번 포스팅에서는 GCP(Google Cloud Platform) VM 인스턴스에 Spring Boot와 React가 합쳐진 프로젝트를 Docker로 배포하는 과정을 정리해 보았습니다.
+# Github Actions로 자동 배포하기
+
+GitHub Actions를 사용하면 코드를 깃허브에 `push`하는 것만으로 빌드부터 배포까지 자동으로 처리할 수 있습니다. 
 
 ---
 

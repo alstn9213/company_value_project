@@ -80,7 +80,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 ---
 
-## 2\. 서버 환경 구축 (Google Compute Engine)
+## 2. 서버 환경 구축 (Google Compute Engine)
 
 ### A. VM 인스턴스 생성
 
@@ -94,9 +94,9 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 ### B. 네트워크 설정
 
 1.  **고정 IP 예약:**
-    - VPC 네트워크 \> IP 주소 \> 외부 IP의 점 3개 클릭 \> **[고정 IP 주소로 승격]**.
+    - VPC 네트워크 -> IP 주소 -> 외부 IP의 점 3개 클릭 -> **[고정 IP 주소로 승격]**.
 2.  **방화벽 규칙 (8080 포트 개방):**
-    - VPC 네트워크 \> 방화벽 \> [규칙 만들기].
+    - VPC 네트워크 -> 방화벽 -> [규칙 만들기].
     - 대상: `네트워크의 모든 인스턴스`, 소스 IPv4: `0.0.0.0/0`.
     - 프로토콜/포트: `tcp: 8080`.
 
@@ -150,7 +150,7 @@ DB_NAME=value
 
 1.  **파일 업로드 (GCP SSH 창):**
 
-    - SSH 창 우측 상단 톱니바퀴(`⚙️`) \> **[파일 업로드]** 클릭.
+    - SSH 창 우측 상단 톱니바퀴(`⚙️`) -> **[파일 업로드]** 클릭.
     - 로컬의 `BACK/companyvalue/build/libs/companyvalue-0.0.1-SNAPSHOT.jar` 선택.
 
 2.  **파일 이동 및 실행 (서버 터미널):**
@@ -167,7 +167,7 @@ docker-compose up -d --build
 3.  **확인:**
 
     - `docker logs -f company_backend` 명령어로 로그 확인.
-    - 브라우저에서 `http://[고정IP]:8080` 접속 시 리액트 화면이 나오면 성공\! 🚀
+    - 브라우저에서 `http://[고정IP]:8080` 접속 시 리액트 화면이 나오면 성공
 
 4.  테스트 컨트롤러 url로 api 호출해서 DB에 데이터 적재
 
