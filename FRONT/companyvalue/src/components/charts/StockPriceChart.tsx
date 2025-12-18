@@ -86,7 +86,10 @@ const StockPriceChart = ({ data }: Props) => {
                 borderColor: "#475569",
                 color: "#f1f5f9",
               }}
-              formatter={(value: number) => [`$${value}`, "주가"]}
+              formatter={(value: number | undefined) => [
+                value !== undefined ? `$${value}` : "-", 
+                "주가"
+              ]}
               labelFormatter={(label) => dayjs(label).format("YYYY년 MM월 DD일")}
             />
             <Area

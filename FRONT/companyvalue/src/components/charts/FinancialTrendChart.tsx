@@ -55,7 +55,7 @@ const FinancialTrendChart = ({ data }: Props) => {
               borderColor: "#475569",
               color: "#f1f5f9",
             }}
-            formatter={(value: number) => formatCurrency(value)}
+            formatter={(value: number | undefined) => formatCurrency(value)}
           />
           <Legend wrapperStyle={{ paddingTop: "20px" }} />
           <Bar
