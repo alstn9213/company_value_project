@@ -169,5 +169,6 @@ company_value_project
 ## 👨‍💻 Developer
 
 **alstn9213**
-<br> - GitHub: [https://github.com/alstn9213](https://github.com/alstn9213)
+<br> - GitHub: https://github.com/alstn9213
+<br> - Velog: https://velog.io/@kms0425/posts
 <br> - Email: alstn9213@naver.com

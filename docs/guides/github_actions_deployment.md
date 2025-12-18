@@ -126,7 +126,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.VM_USERNAME }} # GCP VM의 사용자명 (보통 구글계정 아이디 앞부분)
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # / 뒤에 공백이 있으면 오류난다.
+          
           script: |
             # 최신 이미지 다운로드
             docker pull ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
@@ -136,6 +136,7 @@ jobs:
             docker rm app-server || true
             
             # 새 컨테이너 실행 (환경변수 주입)
+            # / 뒤에 공백이 있으면 오류난다.
             docker run -d \
               --name app-server \
               --network host \

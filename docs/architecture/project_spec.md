@@ -30,7 +30,7 @@
     - **매주 일요일 02:00:** Alpha Vantage API를 통해 기업 재무제표 및 주가 지표 업데이트.
     - _(Note: 현재 데모 버전은 API Free Tier 제한 준수를 위해 대표 기업(AAPL)에 대해서만 배치 업데이트가 수행되도록 의도적으로 제한됨)_
 2.  **Processing & Scoring:**
-    - 수집된 Raw Data를 파싱하여 DB에 적재 후, `ScoringService`가 즉시 기업별 등급(S~F) 재산정.
+    - 수집된 Raw Data를 파싱하여 DB에 적재 후, `ScoringService`가 즉시 기업별 등급(S~D) 재산정.
 3.  **Caching Strategy (Redis):**
     - 변동 주기가 긴 거시 경제 데이터(`macro_latest`)와 기업 점수(`company_score`)에 Redis 캐싱을 적용하여 API 응답 속도 개선.
 

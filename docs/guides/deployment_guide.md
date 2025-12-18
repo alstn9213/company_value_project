@@ -1,6 +1,6 @@
-# 🚀 Value Pick 배포 가이드 (GCP 통합 배포)
+# Value Pick 배포 가이드 (GCP 통합 배포)
 
-## 🏗 아키텍처: Monolithic Deployment
+## 아키텍처: Monolithic Deployment
 
 프론트엔드(React) 빌드 결과물을 백엔드(Spring Boot)의 정적 리소스로 포함시켜, **하나의 JAR 파일로 배포**하는 전략입니다.
 
@@ -124,7 +124,7 @@ sudo timedatectl set-timezone Asia/Seoul
 
 ---
 
-## 3\. 배포 실행 (Deployment)
+## 3. 배포 실행 (Deployment)
 
 ### A. 프로젝트 설정
 
@@ -146,7 +146,7 @@ DB_NAME=value
 
 ### B. JAR 파일 전송 및 배포
 
-로컬에서 빌드한 \*\*'통합 JAR 파일'\*\*을 서버로 업로드합니다. (서버에서 빌드하지 마세요. 멈춥니다.)
+로컬에서 빌드한 **'통합 JAR 파일'**을 서버로 업로드합니다. (서버에서 빌드하지 마세요. 멈춥니다.)
 
 1.  **파일 업로드 (GCP SSH 창):**
 
@@ -201,5 +201,3 @@ docker-compose up -d --build
 - **데이터베이스 접속:**
 
   - 서버 내부: `docker exec -it company_mariadb mariadb -u root -p`
-
-  mv companyvalue-0.0.1-SNAPSHOT.jar ~/company_value_project/BACK/companyvalue/build/libs/app.jar
