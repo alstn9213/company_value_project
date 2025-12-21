@@ -193,7 +193,7 @@ const HomePage = () => {
                       x1={interval.start}
                       x2={interval.end}
                       fill="#ef4444"
-                      fillOpacity={0.1}
+                      fillOpacity={0.3}
                     />
                   ))}
 
