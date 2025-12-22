@@ -20,8 +20,16 @@ public enum ErrorCode {
     // Company
     COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "CP001", "해당 기업을 찾을 수 없습니다."),
 
+    // Macro
+    MACRO_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "MAC001", "거시 경제 데이터를 찾을 수 없습니다."),
+    BOND_YIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "MAC002", "채권 금리 데이터가 누락되었습니다."),
+
+    // Financial
+    INVALID_FINANCIAL_DATA(HttpStatus.BAD_REQUEST, "F001", "유효하지 않은 재무 데이터입니다 (매출액, 자본, 부채 누락 등)."),
+
     // Watchlist
     WATCHLIST_DUPLICATION(HttpStatus.BAD_REQUEST, "W001", "이미 관심 목록에 존재합니다.");
+
 
     private final HttpStatus status;
     private final String code;

@@ -5,17 +5,11 @@ public class ScoringConstants {
     // --- 업종 ---
     public static final String SECTOR_FINANCIAL = "Financial Services";
 
-    // -- 자본 잠식 기준 --
-    // 일반 기업의 자본 잠식 부채비율 기준 (400%)
-    public static final double DEBT_RATIO_LIMIT_GENERAL = 400.0;
-    // 금융업은 고객들의 예금도 부채로 포함
-    // 따라서 일반기업보다 자본 잠식 기준 완화(1500%)
-    public static final double DEBT_RATIO_LIMIT_FINANCIAL = 1500.0;
 
     // --- 페널티(Penalty) 점수 및 기준 ---
     public static final int PENALTY_SCORE_MACRO = 10;               // 장단기 금리차 역전 시
     public static final int PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE = 15; // 이자율이 높고 부채 비율도 높을 때
-    public static final int PENALTY_SCORE_RISKY_INVESTMENT = 10;    // 위험 투자 시
+    public static final int PENALTY_SCORE_RISKY_INVESTMENT = 5;    // 위험 투자 시
     public static final int PENALTY_SCORE_CAPITAL_IMPAIRMENT = 40;  // 자본잠식 시 (매우 큰 페널티)
     public static final int PENALTY_SCORE_EXCESSIVE_DEBT = 20;      // 부채비율 400% 초과 시
 
