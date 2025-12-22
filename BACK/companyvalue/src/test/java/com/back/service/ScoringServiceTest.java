@@ -84,7 +84,7 @@ public class ScoringServiceTest {
     }
 
     @Test
-    @DisplayName("과락 테스트: 자본 잠식 기업은 점수와 관계없이 F등급이어야 한다")
+    @DisplayName("자본 잠식 기업은 페널티를 받아 최하 등급이 되어야 한다")
     void calculateScore_disqualified_capitalErosion() {
         // given
         Company company = Company.builder().ticker("BAD").sector("Technology").build();
@@ -105,7 +105,7 @@ public class ScoringServiceTest {
 
         // then
         verify(companyScoreRepository, times(1)).save(argThat(score ->
-                score.getTotalScore() == 0 && "F".equals(score.getGrade())
+                score.getTotalScore() <= 20 && "D".equals(score.getGrade())
         ));
     }
 

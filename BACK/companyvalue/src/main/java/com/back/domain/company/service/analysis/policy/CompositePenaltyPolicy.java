@@ -17,11 +17,12 @@ public class CompositePenaltyPolicy implements PenaltyPolicy {
     @Override
     public int calculatePenalty(FinancialStatement fs, MacroEconomicData macro) {
         int totalPenalty = 0;
-        if(macro != null) {
-            totalPenalty += calculateMacroPenalty(macro);
-            totalPenalty += calculateRiskyInvestmentPenalty(fs, macro);
-        }
+        if(macro == null) return 0;
+
         totalPenalty += calculateFinancialStructurePenalty(fs);
+        totalPenalty += calculateMacroPenalty(macro);
+        totalPenalty += calculateRiskyInvestmentPenalty(fs, macro);
+
         return totalPenalty;
     }
 
@@ -60,7 +61,7 @@ public class CompositePenaltyPolicy implements PenaltyPolicy {
         return penalty;
     }
 
-    // 장단기 금리차 역전 페널티(경제 침체시 모든 기업에 감점)
+    // 장단기 금리차 역전시 모든 기업에 감점
     private int calculateMacroPenalty(MacroEconomicData macro) {
         if(macro.getUs10yTreasuryYield() != null && macro.getUs2yTreasuryYield() != null) {
             if(macro.getUs10yTreasuryYield() < macro.getUs2yTreasuryYield()) {
@@ -71,20 +72,22 @@ public class CompositePenaltyPolicy implements PenaltyPolicy {
         return 0;
     }
 
-    // 고금리인데 기업이 투자를 확대할 경우 감점
+    // 고금리 상황에서 부채비율 높은 기업 감점, 그런 기업이 투자까지 확대할 경우 추가로 감점
     private int calculateRiskyInvestmentPenalty(FinancialStatement fs, MacroEconomicData macro) {
         if(macro.getUs10yTreasuryYield() == null) return 0;
         if(macro.getUs10yTreasuryYield() < HIGH_INTEREST_RATE_THRESHOLD) return 0;
-
         if(exceedsDebtRatio(fs, HIGH_DEBT_RATIO_GENERAL, HIGH_DEBT_RATIO_FINANCIAL)) {
+            log.debug("페널티 적용: 고금리 상황의 고부채");
             if(isAggressiveInvestment(fs)) {
-                log.debug("페널티 적용: 고금리/고부채 하에서의 공격적 투자");
+                log.debug("페널티 적용: 고금리 상황의 공격적 투자");
                 return PENALTY_SCORE_RISKY_INVESTMENT;
             }
+            return PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE;
         }
         return 0;
     }
 
+    // 부채 비율 판별
     private boolean exceedsDebtRatio(FinancialStatement fs, double generalLimit, double financialLimit) {
         BigDecimal equity = fs.getTotalEquity();
         // 자본이 0이면 부채로 나눌 때 오류 발생하니까 false 반환
@@ -103,18 +106,21 @@ public class CompositePenaltyPolicy implements PenaltyPolicy {
         return debtRatio.doubleValue() > threshold;
     }
 
+    // 공격적인 투자 판별
     private boolean isAggressiveInvestment(FinancialStatement fs) {
         BigDecimal revenue = fs.getRevenue();
         if(revenue.compareTo(BigDecimal.ZERO) == 0) return false;
 
         BigDecimal invest = (
                 fs.getResearchAndDevelopment() != null
-                ? fs.getResearchAndDevelopment()
-                : BigDecimal.ZERO
-        )
-                .add(fs.getCapitalExpenditure() != null
-                        ? fs.getCapitalExpenditure()
-                        : BigDecimal.ZERO);
+                    ? fs.getResearchAndDevelopment()
+                    : BigDecimal.ZERO
+                )
+                .add(
+                  fs.getCapitalExpenditure() != null
+                    ? fs.getCapitalExpenditure()
+                    : BigDecimal.ZERO
+                );
 
         double investRatio = invest.divide(revenue, 4, RoundingMode.HALF_UP).doubleValue() * 100;
         return investRatio >= AGGRESSIVE_INVESTMENT_RATIO;
