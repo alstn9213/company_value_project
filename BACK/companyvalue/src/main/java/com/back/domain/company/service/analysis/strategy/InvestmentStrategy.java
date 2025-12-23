@@ -1,6 +1,7 @@
 package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -15,12 +16,13 @@ import java.math.RoundingMode;
 public class InvestmentStrategy implements ScoringStrategy {
 
     @Override
-    public int calculate(FinancialStatement fs, JsonNode overview) {
-        BigDecimal revenue = fs.getRevenue();
+    public int calculate(ScoringData data) {
+        FinancialStatement fs = data.fs();
+        BigDecimal revenue = data.fs().getRevenue();
 
         if(fs.getResearchAndDevelopment() == null) {
             log.error("{}의 R&D 데이터를 찾을 수 없습니다.", fs.getCompany().getName());
-            throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
+            throw new BusinessException(ErrorCode.INSUFFICIENT_DATA_FOR_SCORING);
         }
 
         if(revenue.compareTo(BigDecimal.ZERO) == 0) return 0;

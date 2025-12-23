@@ -6,6 +6,7 @@ import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.entity.StockPriceHistory;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
+import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.InvestmentStrategy;
 import com.back.domain.company.service.analysis.strategy.ProfitabilityStrategy;
@@ -59,12 +60,13 @@ public class ScoringService {
         }
 
         BigDecimal latestStockPrice = latestStock.getClosePrice();
+        ScoringData scoringData = new ScoringData(fs, overview, latestStockPrice);
 
         // 기본 점수 계산 (Strategy Pattern 활용)
-        int stability = stabilityStrategy.calculate(fs, overview);
-        int profitability = profitabilityStrategy.calculate(fs, overview);
-        int valuation = valuationStrategy.calculate(fs, overview, latestStockPrice);
-        int investment = investmentStrategy.calculate(fs, overview);
+        int stability = stabilityStrategy.calculate(scoringData);
+        int profitability = profitabilityStrategy.calculate(scoringData);
+        int valuation = valuationStrategy.calculate(scoringData);
+        int investment = investmentStrategy.calculate(scoringData);
         int baseScore = stability + profitability + valuation + investment;
         // 페널티
         int penalty = penaltyPolicy.calculatePenalty(fs, macro);

@@ -30,6 +30,9 @@ public enum ErrorCode {
     MACRO_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "MAC001", "거시 경제 데이터를 찾을 수 없습니다."),
     BOND_YIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "MAC002", "채권 금리 데이터가 누락되었습니다."),
 
+    // Scoring
+    INSUFFICIENT_DATA_FOR_SCORING(HttpStatus.BAD_REQUEST, "SC001", "평가를 진행하기 위한 데이터가 부족합니다. (재무제표 및 주가 데이터 누락)"),
+
     // Watchlist
     WATCHLIST_DUPLICATION(HttpStatus.BAD_REQUEST, "W001", "이미 관심 목록에 존재합니다.");
 

@@ -1,8 +1,7 @@
 package com.back.domain.company.service.analysis.strategy;
 
-import com.back.domain.company.entity.FinancialStatement;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.back.domain.company.service.analysis.dto.ScoringData;
 
 public interface ScoringStrategy {
-    int calculate(FinancialStatement fs, JsonNode overview);
+    int calculate(ScoringData data);
 }

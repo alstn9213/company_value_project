@@ -1,6 +1,7 @@
 package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,8 @@ public class StabilityStrategy implements ScoringStrategy {
     private static final String SECTOR_FINANCIAL = "Financial Services";
 
     @Override
-    public int calculate(FinancialStatement fs, JsonNode overview) {
+    public int calculate(ScoringData data) {
+        FinancialStatement fs = data.fs();
         BigDecimal totalLiabilities = fs.getTotalLiabilities();
         BigDecimal totalEquity = fs.getTotalEquity();
         int score = 0;

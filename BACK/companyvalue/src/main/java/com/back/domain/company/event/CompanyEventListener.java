@@ -5,6 +5,8 @@ import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.service.analysis.ScoringService;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import com.back.infra.external.DataFetchService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,11 +46,11 @@ public class CompanyEventListener {
 
     private void processScoring(String ticker) {
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new IllegalArgumentException("기업을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
         // 이벤트 시점에는 이미 SyncService에 의해 저장이 완료된 상태여야 함
         FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
-                .orElseThrow(() -> new IllegalStateException("재무제표 데이터가 없습니다. 점수를 계산할 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA));
 
         // Overview 데이터 조회 (점수 계산에 필요한 보조 데이터)
         JsonNode overview = fetchOverviewSafely(ticker);
