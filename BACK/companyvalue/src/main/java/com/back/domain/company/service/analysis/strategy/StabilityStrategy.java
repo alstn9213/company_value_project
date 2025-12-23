@@ -25,6 +25,7 @@ public class StabilityStrategy implements ScoringStrategy {
             boolean isFinance = SECTOR_FINANCIAL.equalsIgnoreCase(fs.getCompany().getSector());
 
             if(isFinance) {
+                // 금융업 기준
                 if(debtRatio.compareTo(BigDecimal.valueOf(800)) < 0) score += 20;
                 else if(debtRatio.compareTo(BigDecimal.valueOf(1000)) < 0) score += 10;
                 else if(debtRatio.compareTo(BigDecimal.valueOf(1200)) < 0) score += 5;

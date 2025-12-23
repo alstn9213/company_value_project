@@ -51,12 +51,13 @@ public class CompanyEventListener {
                 .orElseThrow(() -> new IllegalStateException("재무제표 데이터가 없습니다. 점수를 계산할 수 없습니다."));
 
         // Overview 데이터 조회 (점수 계산에 필요한 보조 데이터)
-        // 이 부분은 외부 API 호출이므로 네트워크 I/O가 발생합니다.
         JsonNode overview = fetchOverviewSafely(ticker);
 
         scoringService.calculateAndSaveScore(fs, overview);
         log.info(">>> [Event] 점수 계산 및 저장 완료: {}", ticker);
     }
+
+    // -- 내부 메서드 --
 
     private JsonNode fetchOverviewSafely(String ticker) {
         try {
@@ -67,7 +68,7 @@ public class CompanyEventListener {
         }
     }
 
-    // 가짜 기업용 더미 Overview 생성
+    // 가짜 기업용 더미 Overview 생성하는 내부 메서드
     private JsonNode createDummyOverview(String ticker) {
         ObjectNode node = objectMapper.createObjectNode();
         node.put("Symbol", ticker);

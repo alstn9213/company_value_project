@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     // 1. 비즈니스 로직 에러 처리 (미리 정의한 예외)
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        log.error("Handle BusinessException: {}", e.getErrorCode());
+        log.error("정의된 예외처리: {}", e.getErrorCode());
         return ResponseEntity
                 .status(e.getErrorCode().getStatus())
                 .body(ErrorResponse.of(e.getErrorCode()));
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     // 2. 그 외 모든 예상치 못한 에러 처리
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("Handle Exception: ", e); // 스택 트레이스 로깅
+        log.error("예상치 못한 에러: ", e);
         return ResponseEntity
                 .status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
                 .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR));

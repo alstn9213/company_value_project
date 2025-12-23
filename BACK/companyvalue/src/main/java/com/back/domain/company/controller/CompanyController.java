@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Company API", description = "기업 정보 및 재무 데이터 및 주가 차트 조회 API")
 public class CompanyController {
-
     private final StockService stockService;
     private final CompanyReadService companyReadService;
 

@@ -38,18 +38,19 @@ public class FinancialStatement {
     private BigDecimal capitalExpenditure;     // CapEx (자본지출)
 
     @Builder
-    public FinancialStatement(Company company,
-                              Integer year,
-                              Integer quarter,
-                              BigDecimal revenue,
-                              BigDecimal operatingProfit,
-                              BigDecimal netIncome,
-                              BigDecimal totalAssets,
-                              BigDecimal totalLiabilities,
-                              BigDecimal totalEquity,
-                              BigDecimal operatingCashFlow,
-                              BigDecimal researchAndDevelopment,
-                              BigDecimal capitalExpenditure
+    public FinancialStatement(
+            Company company,
+            Integer year,
+            Integer quarter,
+            BigDecimal revenue,
+            BigDecimal operatingProfit,
+            BigDecimal netIncome,
+            BigDecimal totalAssets,
+            BigDecimal totalLiabilities,
+            BigDecimal totalEquity,
+            BigDecimal operatingCashFlow,
+            BigDecimal researchAndDevelopment,
+            BigDecimal capitalExpenditure
     ) {
         this.company = company;
         this.year = year;

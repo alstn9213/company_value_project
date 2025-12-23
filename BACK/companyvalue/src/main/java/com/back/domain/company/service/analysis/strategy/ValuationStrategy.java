@@ -15,7 +15,7 @@ public class ValuationStrategy implements ScoringStrategy {
         return calculate(fs, overview, BigDecimal.ZERO);
     }
 
-    public int calculate(FinancialStatement fs, JsonNode overview, BigDecimal currentPrice) {
+    public int calculate(FinancialStatement fs, JsonNode overview, BigDecimal latestStockPrice) {
         int score = 0;
         double per = 0.0;
         double pbr = 0.0;
@@ -26,16 +26,16 @@ public class ValuationStrategy implements ScoringStrategy {
             pbr = parseDouble(overview, "PriceToBookRatio");
 
         // 더미 데이터의 pbr, per 계산
-        } else if (currentPrice != null && currentPrice.compareTo(BigDecimal.ZERO) > 0) {
+        } else if (latestStockPrice != null && latestStockPrice.compareTo(BigDecimal.ZERO) > 0) {
             double assumedShares = 100_000_000.0; // 더미 발행 주식 수
             double annualNetIncome = fs.getNetIncome().doubleValue() * 4;
             double eps = annualNetIncome / assumedShares;
 
-            if (eps > 0) per = currentPrice.doubleValue() / eps;
+            if (eps > 0) per = latestStockPrice.doubleValue() / eps;
 
             // PBR = 주가 / BPS (주당 순자산)
             double bps = fs.getTotalEquity().doubleValue() / assumedShares;
-            if (bps > 0) pbr = currentPrice.doubleValue() / bps;
+            if (bps > 0) pbr = latestStockPrice.doubleValue() / bps;
         }
 
         try {
@@ -48,13 +48,12 @@ public class ValuationStrategy implements ScoringStrategy {
             if(0 < pbr && pbr < 1.5) score += 10;
             else if(1.5 <= pbr && pbr < 3.0) score += 7;
             else if(3.0 <= pbr && pbr < 5.0) score += 3;
-
         } catch (Exception e) {
             return 0;
         }
-
         return score;
     }
+
 
     private double parseDouble(JsonNode node, String field) {
         if(node.has(field) && !node.get(field).asText().equalsIgnoreCase("None")) {
@@ -64,7 +63,8 @@ public class ValuationStrategy implements ScoringStrategy {
                 return 0.0;
             }
         }
-
         return 0.0;
     }
+
+
 }
