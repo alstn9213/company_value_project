@@ -27,16 +27,12 @@ public class CompanyEventListener {
     private final DataFetchService dataFetchService;
     private final ObjectMapper objectMapper;
 
-    /**
-     * 기업 재무 데이터 업데이트 이벤트 발생 시 실행됩니다.
-     * 여기서 Overview 데이터를 가져오고 점수를 계산합니다.
-     */
-
+    // 기업 재무 데이터 업데이트 이벤트 발생 시 실행되는 점수 계산 메서드
+    // Overview 데이터를 가져오고 점수 계산
     @EventListener
     public void handleFinancialsUpdated(CompanyFinancialsUpdatedEvent event) {
         String ticker = event.ticker();
         log.info(">>> [Event] 점수 계산 트리거 감지: {}", ticker);
-
         try {
             processScoring(ticker);
         } catch (Exception e) {
@@ -44,23 +40,22 @@ public class CompanyEventListener {
         }
     }
 
+    // -- 내부 메서드 --
+
+    // 점수 계산 내부 메서드
     private void processScoring(String ticker) {
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        // 이벤트 시점에는 이미 SyncService에 의해 저장이 완료된 상태여야 함
         FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA));
 
-        // Overview 데이터 조회 (점수 계산에 필요한 보조 데이터)
         JsonNode overview = fetchOverviewSafely(ticker);
-
         scoringService.calculateAndSaveScore(fs, overview);
         log.info(">>> [Event] 점수 계산 및 저장 완료: {}", ticker);
     }
 
-    // -- 내부 메서드 --
-
+    // 실제 Overview 정보를 가져오거나 더미 데이터를 생성하는 내부 메서드
     private JsonNode fetchOverviewSafely(String ticker) {
         try {
             return dataFetchService.getCompanyOverview(ticker);

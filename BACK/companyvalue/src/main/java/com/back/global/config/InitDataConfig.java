@@ -42,8 +42,7 @@ public class InitDataConfig {
             log.info("[InitData] 미국 기업 데이터 확인 및 생성을 시작합니다...");
             List<Company> companies = createCompanyList();
 
-            for (Company companyData : companies) {
-                // 기업 조회 혹은 생성
+            for(Company companyData : companies) {
                 Company company = companyRepository.findByTicker(companyData.getTicker())
                         .orElseGet(() -> {
                             log.info("[InitData] 신규 기업 생성: {}", companyData.getName());
@@ -55,21 +54,24 @@ public class InitDataConfig {
                 if(!hasFinancials && !"AAPL".equals(company.getTicker())) {
                     log.info("[InitData] {}의 재무/주가 데이터를 생성합니다...", company.getName());
                     SectorProfile profile = SectorProfile.getProfile(company.getSector());
-                    List<FinancialStatement> financials = generateFinancials(company, profile);
-                    List<StockPriceHistory> stockHistory = generateStockPrices(company, financials, profile);
+                    List<FinancialStatement> financials = generateFinancials(company, profile); // 더미 재무제표 생성
+                    List<StockPriceHistory> stockHistory = generateStockPrices(company, financials, profile); // 더미 주가 생성
                     financialStatementRepository.saveAll(financials);
                     stockPriceHistoryRepository.saveAll(stockHistory);
                 } else if ("AAPL".equals(company.getTicker())) {
-                    log.info("[InitData] {}은 실제 API 데이터를 사용하기 위해 더미 생성을 건너뜁니다.", company.getName());
+                    log.info("[InitData] {}은 실제 API 데이터를 사용하기때문에 더미 생성을 건너뜁니다.", company.getName());
                 }
             }
             log.info("[InitData] 데이터 초기화 로직 완료.");
         };
     }
 
+    // --- 내부 메서드 ---
+
+    // 기업 리스트 생성 내부 메서드(더미 & 실제)
     private List<Company> createCompanyList() {
         return List.of(
-                Company.builder().ticker("AAPL").name("Apple Inc.").sector("Technology").exchange("NASDAQ").build(),
+                Company.builder().ticker("AAPL").name("Apple Inc.").sector("Technology").exchange("NASDAQ").build(), // api로 불러올 실제 기업
                 createCompany("NXAI", "NextGen AI Solutions", "Technology", "NASDAQ"),
                 createCompany("QBIT", "Quantum Bit Computing", "Technology", "NASDAQ"),
                 createCompany("CYBR", "Cyber Shield Systems", "Technology", "NASDAQ"),
@@ -93,8 +95,7 @@ public class InitDataConfig {
         );
     }
 
-    // --- 헬퍼 메서드 ---
-
+    // 기업 생성 내부 메서드
     private Company createCompany(String ticker, String name, String sector, String exchange) {
         return Company.builder()
                 .ticker(ticker)
@@ -104,6 +105,7 @@ public class InitDataConfig {
                 .build();
     }
 
+    // 더미 기업들의 재무 제표 생성 내부 메서드
     private List<FinancialStatement> generateFinancials(Company company, SectorProfile profile) {
         List<FinancialStatement> list = new ArrayList<>();
         Random random = new Random();
@@ -115,7 +117,7 @@ public class InitDataConfig {
         // 초기 연 매출 설정 (섹터별 기본값 + 랜덤 변동)
         double currentAnnualRevenue = profile.baseRevenue * (0.8 + random.nextDouble() * 0.4);
 
-        for (int i = 0; i < YEARS_OF_DATA * 4; i++) { // 3년 * 4분기 = 12번 반복
+        for(int i = 0; i < YEARS_OF_DATA * 4; i++) { // 3년 * 4분기 = 12번 반복
             int year = START_DATE.getYear() + (i / 4);
             int quarter = (i % 4) + 1;
 
@@ -135,12 +137,12 @@ public class InitDataConfig {
             BigDecimal operatingProfit = revenue.multiply(BigDecimal.valueOf(finalMargin));
 
             // 어닝 쇼크 구현 (10% 확률로 이익 급감 혹은 적자 전환)
-            if (random.nextDouble() < 0.1) {
+            if(random.nextDouble() < 0.1) {
                 operatingProfit = operatingProfit.multiply(BigDecimal.valueOf(-0.5));
                 log.debug("[InitData] {} - 어닝 쇼크 발생 (Year: {}, Q: {})", company.getName(), year, quarter);
             }
 
-            // 법인세 등 차감 가정
+            // 법인세 등 차감
             BigDecimal netIncome = operatingProfit.multiply(BigDecimal.valueOf(0.75));
             // 재무상태표 계산 (자산 = 부채 + 자본)
             BigDecimal totalAssets = revenue.multiply(BigDecimal.valueOf(4.0)).multiply(BigDecimal.valueOf(profile.assetTurnoverMultiplier));
@@ -152,7 +154,7 @@ public class InitDataConfig {
             BigDecimal totalEquity = totalAssets.subtract(totalLiabilities);
 
             // 현금흐름 및 투자
-            BigDecimal operatingCashFlow = operatingProfit.multiply(BigDecimal.valueOf(1.1)); // 보통 이익보다 현금흐름이 큼
+            BigDecimal operatingCashFlow = operatingProfit.multiply(BigDecimal.valueOf(1.1)); // 일반적으로 이익보다 현금흐름이 큼
             BigDecimal rnd = revenue.multiply(BigDecimal.valueOf(profile.rndRatio));
             BigDecimal capex = revenue.multiply(BigDecimal.valueOf(profile.capexRatio));
 
@@ -174,6 +176,7 @@ public class InitDataConfig {
         return list;
     }
 
+    // 더미 기업들의 주가 생성 내부 메서드
     private List<StockPriceHistory> generateStockPrices(Company company, List<FinancialStatement> financials, SectorProfile profile) {
         List<StockPriceHistory> history = new ArrayList<>();
         Random random = new Random();
@@ -229,7 +232,7 @@ public class InitDataConfig {
         return history;
     }
 
-    // 분기 종료일
+    // 분기 종료일 내부 메서드
     private LocalDate getQuarterEndDate(FinancialStatement fs) {
         int month = fs.getQuarter() * 3;
         // 해당 년도 해당 분기의 마지막 날 대략 계산 (3/31, 6/30...)

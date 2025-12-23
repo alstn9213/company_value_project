@@ -27,27 +27,7 @@ public class FinancialDataSyncService {
     private final StockPriceService stockPriceService;
     private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     * 모든 회사의 재무 및 주가 데이터를 외부에서 가져와 저장합니다.
-     */
-    @Transactional
-    public void synchronizeAll() {
-        log.info("모든 기업 데이터 동기화 시작");
-        List<Company> companies = companyRepository.findAll();
-
-        for (Company company : companies) {
-            try {
-                synchronizeCompany(company.getTicker());
-            } catch (Exception e) {
-                log.error("데이터 동기화 실패 - Ticker: {}, Error: {}", company.getTicker(), e.getMessage());
-            }
-        }
-        log.info("모든 기업 데이터 동기화 완료");
-    }
-
-    /**
-     * 특정 기업의 재무제표 및 주가 데이터를 동기화하고, 완료 이벤트를 발행합니다.
-     */
+    // 특정 기업의 재무제표 및 주가 데이터를 동기화하고, 완료 이벤트를 발행하는 메서드
     @Transactional
     public void synchronizeCompany(String ticker) {
         log.info("기업 데이터 동기화 시작: {}", ticker);
@@ -55,41 +35,24 @@ public class FinancialDataSyncService {
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다: " + ticker));
 
-        // 1. 재무제표 및 주가 데이터 수집 및 저장
         boolean fsSaved = syncFinancialStatements(company);
         boolean stockSaved = syncStockPrice(company);
 
         log.info("기업 데이터 저장 완료: {} (재무제표: {}, 주가: {})", ticker, fsSaved, stockSaved);
 
-        // 2. 데이터 저장이 완료되었으므로 '점수 계산' 등을 수행하라고 이벤트를 발행
+        // 데이터 저장이 완료되면, 점수 계산 이벤트 발행
         eventPublisher.publishEvent(new CompanyFinancialsUpdatedEvent(ticker));
-    }
-
-    /*
-     * 외부 API 호출
-     * */
-    public ExternalFinancialDataResponse fetchRawFinancialData(String ticker) {
-        log.info("재무 데이터 수집 시작(Network I/O: {}", ticker);
-
-        JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
-        JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", ticker);
-        JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", ticker);
-
-        return new ExternalFinancialDataResponse(income, balance, cash);
     }
 
 
     // --- 내부 메서드 ---
 
+    // 특정 기업의 재무 정보가 있는가 확인하는 내부 메서드
     private boolean syncFinancialStatements(Company company) {
         try {
-            JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", company.getTicker());
-            JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", company.getTicker());
-            JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", company.getTicker());
+            ExternalFinancialDataResponse response = fetchRawFinancialData(company.getTicker());
 
-            ExternalFinancialDataResponse response = new ExternalFinancialDataResponse(income, balance, cash);
-
-            if (response.hasAllData()) {
+            if(response.hasAllData()) {
                 financialStatementService.saveFinancialStatements(company, response);
                 return true;
             } else {
@@ -102,6 +65,18 @@ public class FinancialDataSyncService {
         }
     }
 
+    // api로 특정 기업의 재무 정보를 가져오는 내부 메서드
+    public ExternalFinancialDataResponse fetchRawFinancialData(String ticker) {
+        log.info("재무 데이터 수집 시작(Network I/O: {}", ticker);
+
+        JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
+        JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", ticker);
+        JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", ticker);
+
+        return new ExternalFinancialDataResponse(income, balance, cash);
+    }
+
+    // 특정 기업의 주가 정보가 있는지 확인하는 내부 메서드
     private boolean syncStockPrice(Company company) {
         try {
             JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
@@ -115,4 +90,6 @@ public class FinancialDataSyncService {
             return false;
         }
     }
+
+
 }
