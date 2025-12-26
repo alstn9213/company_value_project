@@ -13,11 +13,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -26,16 +21,21 @@ import java.util.List;
 public class StockService {
 
     private final StockPriceHistoryRepository stockRepository;
+    private final StockPriceImportService stockPriceImportService;
     private final CompanyRepository companyRepository;
     private final DataFetchService dataFetchService;
 
+    // DB에서 주가 데이터를 가져오는 메서드.
+    // 특정 기업의 주가 차트용
     @Transactional
     @Cacheable(value = "stock_history", key = "#ticker", unless = "#result == null || #result.isEmpty()")
     public List<StockHistoryResponse> getStockHistory(String ticker) {
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 기업입니다."));
+
+        JsonNode json = dataFetchService.getDailyStockHistory(ticker);
         List<StockPriceHistory> histories = stockRepository.findByCompanyOrderByRecordedDateAsc(company);
-        if (histories.isEmpty()) histories = fetchAndSaveStockHistory(company);
+        if(histories.isEmpty()) histories = stockPriceImportService.fetchAndSaveStockHistory(company, json);
 
         // Entity -> DTO 변환하여 반환 (이 결과가 Redis에 저장됨)
         return histories.stream()
@@ -43,44 +43,4 @@ public class StockService {
                 .toList();
     }
 
-    private List<StockPriceHistory> fetchAndSaveStockHistory(Company company) {
-        try {
-            JsonNode json = dataFetchService.getDailyStockHistory(company.getTicker());
-            JsonNode timeSeries = json.path("Time Series (Daily)");
-            if(timeSeries.isMissingNode()) {
-                log.warn("API 호출 실패 또는 제한 도달: {}", company.getTicker());
-                return Collections.emptyList();
-            }
-            List<StockPriceHistory> newHistories = new ArrayList<>();
-            Iterator<String> dates = timeSeries.fieldNames();
-
-            int limit = 365; // 최근 1년(약 250~300 거래일) 데이터만 저장
-            int count = 0;
-            while (dates.hasNext() && count < limit) {
-                String dateStr = dates.next();
-                JsonNode dayData = timeSeries.get(dateStr);
-
-                LocalDate date = LocalDate.parse(dateStr);
-                BigDecimal close = new BigDecimal(dayData.path("4. close").asText());
-
-                // DB에 저장
-                StockPriceHistory history = StockPriceHistory.builder()
-                        .company(company)
-                        .recordedDate(date)
-                        .closePrice(close)
-                        .build();
-
-                newHistories.add(history);
-                count++;
-            }
-
-            Collections.reverse(newHistories); // 날짜 오름차순 정렬 (API는 내림차순으로 줌)
-
-            return stockRepository.saveAll(newHistories);
-
-        } catch (Exception e) {
-            log.error("주가 데이터 처리 중 오류: {}", e.getMessage());
-            return Collections.emptyList();
-        }
-    }
 }

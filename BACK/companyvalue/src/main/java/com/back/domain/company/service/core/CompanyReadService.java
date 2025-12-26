@@ -40,6 +40,7 @@ public class CompanyReadService {
                 .map(CompanySummaryResponse::from);
     }
 
+    // top 10 회사 나열용 메서드
     public List<CompanySummaryResponse> searchCompanies(String keyword) {
         return companyRepository.findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(keyword, keyword)
                 .stream()

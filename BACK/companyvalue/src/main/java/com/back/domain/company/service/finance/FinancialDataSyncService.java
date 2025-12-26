@@ -3,7 +3,7 @@ package com.back.domain.company.service.finance;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.event.CompanyFinancialsUpdatedEvent;
 import com.back.domain.company.repository.CompanyRepository;
-import com.back.domain.company.service.stock.StockPriceService;
+import com.back.domain.company.service.stock.StockPriceImportService;
 import com.back.infra.external.DataFetchService;
 import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -24,7 +22,7 @@ public class FinancialDataSyncService {
     private final CompanyRepository companyRepository;
     private final DataFetchService dataFetchService;
     private final FinancialStatementService  financialStatementService;
-    private final StockPriceService stockPriceService;
+    private final StockPriceImportService stockPriceService;
     private final ApplicationEventPublisher eventPublisher;
 
     // 특정 기업의 재무제표 및 주가 데이터를 동기화하고, 완료 이벤트를 발행하는 메서드
@@ -81,7 +79,7 @@ public class FinancialDataSyncService {
         try {
             JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
             if(stockData != null && !stockData.isEmpty()) {
-                stockPriceService.saveStockPriceHistory(company, stockData);
+                stockPriceService.fetchAndSaveStockHistory(company, stockData);
                 return true;
             }
             return false;
