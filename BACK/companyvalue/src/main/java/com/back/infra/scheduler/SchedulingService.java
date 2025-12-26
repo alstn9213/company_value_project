@@ -60,8 +60,8 @@ public class SchedulingService {
         log.info(">>> [Scheduler] 기업 재무 정보 및 점수 일괄 업데이트 종료");
     }
 
-    // --- 내부 메서드 ---
-    // 전체 기업 정보 최신화 내부 메서드
+    // --- 헬퍼 메서드 ---
+    // 전체 기업 정보 최신화 헬퍼 메서드
     public void executeAllCompaniesUpdate() {
         List<Company> companies = companyRepository.findAll();
         log.info(">>> [Scheduler] 대상 기업 수: {}", companies.size());

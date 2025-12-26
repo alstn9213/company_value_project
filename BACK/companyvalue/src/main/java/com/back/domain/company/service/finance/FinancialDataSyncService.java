@@ -4,6 +4,8 @@ import com.back.domain.company.entity.Company;
 import com.back.domain.company.event.CompanyFinancialsUpdatedEvent;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.service.stock.StockPriceImportService;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import com.back.infra.external.DataFetchService;
 import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,61 +33,51 @@ public class FinancialDataSyncService {
         log.info("기업 데이터 동기화 시작: {}", ticker);
 
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다: " + ticker));
+                .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        boolean fsSaved = syncFinancialStatements(company);
-        boolean stockSaved = syncStockPrice(company);
+        syncFinancialStatements(company);
+        syncStockPrice(company);
 
-        log.info("기업 데이터 저장 완료: {} (재무제표: {}, 주가: {})", ticker, fsSaved, stockSaved);
+        log.info("기업 데이터 저장 완료: {})", ticker);
 
         // 데이터 저장이 완료되면, 점수 계산 이벤트 발행
         eventPublisher.publishEvent(new CompanyFinancialsUpdatedEvent(ticker));
     }
 
 
-    // --- 내부 메서드 ---
-
-    // 특정 기업의 재무 정보가 있는가 확인하는 내부 메서드
-    private boolean syncFinancialStatements(Company company) {
+    // --- 헬퍼 메서드 ---
+    // 특정 기업의 재무 정보를 가져오고 누락된 데이터가 있는지 확인하는 헬퍼 메서드
+    private void syncFinancialStatements(Company company) {
         try {
-            ExternalFinancialDataResponse response = fetchRawFinancialData(company.getTicker());
-
-            if(response.hasAllData()) {
-                financialStatementService.saveFinancialStatements(company, response);
-                return true;
-            } else {
-                log.warn("일부 재무제표 데이터 누락. Ticker: {}", company.getTicker());
-                return false;
+            ExternalFinancialDataResponse response = dataFetchService.getCombinedFinancialData(company.getTicker());
+            if (!response.hasAllData()) {
+                log.warn("필수 재무제표 데이터가 누락되었습니다. Ticker: {}", company.getTicker());
+                throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
             }
+            financialStatementService.saveFinancialStatements(company, response);
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("재무제표 동기화 중 오류: {}", e.getMessage());
-            return false;
+            log.error("재무제표 동기화 중 알 수 없는 오류 발생: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // api로 특정 기업의 재무 정보를 가져오는 내부 메서드
-    public ExternalFinancialDataResponse fetchRawFinancialData(String ticker) {
-        log.info("재무 데이터 수집 시작(Network I/O: {}", ticker);
 
-        JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
-        JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", ticker);
-        JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", ticker);
-
-        return new ExternalFinancialDataResponse(income, balance, cash);
-    }
-
-    // 특정 기업의 주가 정보가 있는지 확인하는 내부 메서드
-    private boolean syncStockPrice(Company company) {
+    // 특정 기업의 주가 정보를 가져오고 누락된 데이터가 있는지 확인하는 헬퍼 메서드
+    private void syncStockPrice(Company company) {
         try {
             JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
-            if(stockData != null && !stockData.isEmpty()) {
-                stockPriceService.fetchAndSaveStockHistory(company, stockData);
-                return true;
+            if (stockData == null || stockData.isEmpty()) {
+                log.warn("주가 데이터가 존재하지 않습니다. Ticker: {}", company.getTicker());
+                throw new BusinessException(ErrorCode.LATEST_STOCK_NOT_FOUND);
             }
-            return false;
+            stockPriceService.fetchAndSaveStockHistory(company, stockData);
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("주가 데이터 동기화 중 오류: {}", e.getMessage());
-            return false;
+            log.error("주가 데이터 동기화 중 오류 알 수 없는 오류 발생: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 

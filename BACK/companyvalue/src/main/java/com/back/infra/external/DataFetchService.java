@@ -1,5 +1,6 @@
 package com.back.infra.external;
 
+import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,23 +29,37 @@ public class DataFetchService {
     @Value("${api.fred.key}")
     private String fredKey;
 
+    // api 호출 제한 설정
+    // 기본값은 false (제한 없음)
+    @Value("${api.alpha-vantage.dev-mode-limit:false}")
+    private boolean isDevModeLimit;
+
 
     // --- api 호출 메서드 ---
     // 1. Alpha Vantage API 호출 (기업 정보)
-    // 재무 제표
-    public JsonNode getCompanyFinancials(String function, String symbol) {
-        return callAlphaVantage(function, symbol);
+
+    //  3가지 재무제표를 가져오는 메서드
+    public ExternalFinancialDataResponse getCombinedFinancialData(String ticker) {
+        log.info("Alpha Vantage API 통합 호출 시작: {}", ticker);
+
+        JsonNode income = getCompanyFinancials("INCOME_STATEMENT", ticker);
+        JsonNode balance = getCompanyFinancials("BALANCE_SHEET", ticker);
+        JsonNode cash = getCompanyFinancials("CASH_FLOW", ticker);
+
+        return new ExternalFinancialDataResponse(income, balance, cash);
     }
 
-    //기업 개요 및 투자 지표 가져오기 (PER, PBR, 배당수익률 등)
+
+    // 기업 개요 및 투자 지표 가져오는 메서드 (PER, PBR, 배당수익률 등)
     public JsonNode getCompanyOverview(String symbol) {
         return callAlphaVantage("OVERVIEW", symbol);
     }
 
-    // 일별 주가 데이터 (차트용)
+    // 일별 주가 데이터 가져오는 메서드 (차트용)
     public JsonNode getDailyStockHistory(String symbol) {
         return callAlphaVantage("TIME_SERIES_DAILY", symbol);
     }
+
 
     // 2. FRED API 호출 (거시 경제 정보)
     public JsonNode getMacroIndicator(String seriesId) {
@@ -62,13 +77,12 @@ public class DataFetchService {
         return parseJson(response);
     }
 
-    // --- 내부 메서드 ---
-
-    // 기업 정보 호출 내부 메서드
+    // --- 헬퍼 메서드 ---
+    // 기업 정보 호출 헬퍼 메서드
     private JsonNode callAlphaVantage(String function, String symbol) {
-        if(!"AAPL".equals(symbol)) {
-            log.warn("API 호출 차단됨 (무료 한도 보호): {}", symbol);
-            return objectMapper.createObjectNode(); // 빈 JSON 반환
+        if(isDevModeLimit && !"AAPL".equals(symbol)) {
+            log.info("[개발 모드] API 호출 횟수 절약을 위해 '{}' 요청을 건너뜁니다. (설정: api.alpha-vantage.dev-mode-limit=true)", symbol);
+            return objectMapper.createObjectNode(); // 빈 객체생성
         }
 
         String response = webClient.get()
@@ -83,7 +97,13 @@ public class DataFetchService {
 
         return parseJson(response);
     }
-    // JSON String -> JsonNode 변환 내부 메서드
+
+    // 재무제표 가져오는 헬퍼 메서드
+    private JsonNode getCompanyFinancials(String function, String symbol) {
+        return callAlphaVantage(function, symbol);
+    }
+
+    // JSON String -> JsonNode 변환 헬퍼 메서드
     private JsonNode parseJson(String jsonResponse) {
         try {
             return objectMapper.readTree(jsonResponse);

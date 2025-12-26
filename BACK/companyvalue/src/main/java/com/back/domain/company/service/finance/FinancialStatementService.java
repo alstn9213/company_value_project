@@ -49,7 +49,7 @@ public class FinancialStatementService {
             // 3가지 데이터가 모두 존재해야 신뢰할 수 있는 재무제표로 간주
             if(data.hasAllData()) {
                 boolean saved = saveFinancialStatementIfNew(company, dateStr, data);
-                if (saved) savedCount++;
+                if(saved) savedCount++;
             }
         }
 
@@ -58,7 +58,7 @@ public class FinancialStatementService {
         }
     }
 
-    // --- 내부 메서드 ---
+    // --- 헬퍼 메서드 ---
 
     private boolean saveFinancialStatementIfNew(Company company, String dateStr, FinancialDataMap data) {
         LocalDate date = LocalDate.parse(dateStr);
@@ -77,7 +77,7 @@ public class FinancialStatementService {
         BigDecimal liabilities = parseBigDecimal(data.balanceNode, "totalLiabilities");
         BigDecimal equity = parseBigDecimal(data.balanceNode, "totalShareholderEquity");
 
-        // [중요 수정] 자본(Equity) 데이터가 누락되거나 0인 경우, (자산 - 부채) 공식으로 보정
+        // 자본(Equity) 데이터가 누락되거나 0인 경우, (자산 - 부채) 공식으로 보정
         if (equity.compareTo(BigDecimal.ZERO) == 0 && assets.compareTo(BigDecimal.ZERO) > 0) {
             equity = assets.subtract(liabilities);
             log.debug("자본 데이터 보정됨 (Assets - Liabilities): {} -> {}", company.getTicker(), equity);
