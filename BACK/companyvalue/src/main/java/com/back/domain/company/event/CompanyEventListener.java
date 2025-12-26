@@ -40,9 +40,9 @@ public class CompanyEventListener {
         }
     }
 
-    // -- 내부 메서드 --
+    // -- 헬퍼 메서드 --
 
-    // 점수 계산 내부 메서드
+    // 점수 계산 헬퍼 메서드
     private void processScoring(String ticker) {
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
@@ -55,7 +55,7 @@ public class CompanyEventListener {
         log.info(">>> [Event] 점수 계산 및 저장 완료: {}", ticker);
     }
 
-    // 실제 Overview 정보를 가져오거나 더미 데이터를 생성하는 내부 메서드
+    // 실제 Overview 정보를 가져오거나 더미 데이터를 생성하는 헬퍼 메서드
     private JsonNode fetchOverviewSafely(String ticker) {
         try {
             return dataFetchService.getCompanyOverview(ticker);
@@ -65,7 +65,7 @@ public class CompanyEventListener {
         }
     }
 
-    // 가짜 기업용 더미 Overview 생성하는 내부 메서드
+    // 가짜 기업용 더미 Overview 생성하는 헬퍼 메서드
     private JsonNode createDummyOverview(String ticker) {
         ObjectNode node = objectMapper.createObjectNode();
         node.put("Symbol", ticker);
