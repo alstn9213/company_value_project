@@ -16,6 +16,7 @@ public record MacroDataResponse(
 ) {
     public static MacroDataResponse from(MacroEconomicData macro) {
         // null 방지 로직
+        //
         double y10 = macro.getUs10yTreasuryYield() != null ? macro.getUs10yTreasuryYield() : 0.0;
         double y2 = macro.getUs2yTreasuryYield() != null ? macro.getUs2yTreasuryYield() : 0.0;
 

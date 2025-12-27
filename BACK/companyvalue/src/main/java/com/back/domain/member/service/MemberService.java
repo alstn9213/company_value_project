@@ -20,7 +20,7 @@ public class MemberService {
 
     @Transactional
     public void registerMember(SignUpRequest request) {
-        if (memberRepository.existsByEmail(request.email())) {
+        if(memberRepository.existsByEmail(request.email())) {
             throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
         }
 

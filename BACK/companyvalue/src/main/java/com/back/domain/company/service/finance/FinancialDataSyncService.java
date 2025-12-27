@@ -46,7 +46,9 @@ public class FinancialDataSyncService {
 
 
     // --- 헬퍼 메서드 ---
-    // 특정 기업의 재무 정보를 가져오고 누락된 데이터가 있는지 확인한 후 DB에 저장하는 헬퍼 메서드
+    // 특정 기업의 재무 정보를 가져오고
+    // 누락된 데이터가 있는지 확인한 후
+    // DB에 저장하는 헬퍼 메서드
     private void syncFinancialStatements(Company company) {
         try {
             ExternalFinancialDataResponse response = dataFetchService.getCombinedFinancialData(company.getTicker());
