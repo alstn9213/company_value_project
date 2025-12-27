@@ -6,7 +6,7 @@ import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.entity.StockPriceHistory;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
-import com.back.domain.company.service.analysis.constant.ScoringConstants;
+import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.InvestmentStrategy;
 import com.back.domain.company.service.analysis.strategy.ProfitabilityStrategy;
@@ -16,6 +16,8 @@ import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.CompanyScoreRepository;
 import com.back.domain.macro.repository.MacroRepository;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +39,7 @@ public class ScoringService {
     private final CompanyRepository companyRepository;
     private final StockPriceHistoryRepository stockPriceHistoryRepository;
 
-    // Strategies (점수 계산 전략)
+    // Strategies (점수 계산 전략들)
     private final StabilityStrategy stabilityStrategy;
     private final ProfitabilityStrategy profitabilityStrategy;
     private final ValuationStrategy valuationStrategy;
@@ -49,22 +51,28 @@ public class ScoringService {
     @Transactional
     public void calculateAndSaveScore(FinancialStatement fs, JsonNode overview) {
         MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
-                .orElseThrow(() -> new RuntimeException("거시 경제 데이터가 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND));
 
-        BigDecimal currentPrice = BigDecimal.ZERO;
         StockPriceHistory latestStock = stockPriceHistoryRepository.findTopByCompanyOrderByRecordedDateDesc(fs.getCompany());
-        if(latestStock != null) currentPrice = latestStock.getClosePrice();
+        if(latestStock == null) {
+            log.error("{}의 최근 주가 데이터가 없습니다.", fs.getCompany().getName());
+            throw new BusinessException(ErrorCode.LATEST_STOCK_NOT_FOUND);
+        }
+
+        BigDecimal latestStockPrice = latestStock.getClosePrice();
+        ScoringData scoringData = new ScoringData(fs, overview, latestStockPrice);
 
         // 기본 점수 계산 (Strategy Pattern 활용)
-        int stability = stabilityStrategy.calculate(fs, overview);
-        int profitability = profitabilityStrategy.calculate(fs, overview);
-        int valuation = valuationStrategy.calculate(fs, overview, currentPrice);
-        int investment = investmentStrategy.calculate(fs, overview);
-
+        int stability = stabilityStrategy.calculate(scoringData);
+        int profitability = profitabilityStrategy.calculate(scoringData);
+        int valuation = valuationStrategy.calculate(scoringData);
+        int investment = investmentStrategy.calculate(scoringData);
         int baseScore = stability + profitability + valuation + investment;
+        // 페널티
         int penalty = penaltyPolicy.calculatePenalty(fs, macro);
-
+        // 총점 계산
         int totalScore = Math.max(0, Math.min(100, baseScore - penalty));
+        // 등급 매기기
         String grade = calculateGrade(totalScore);
 
         // 페널티는 존재하지만, 기업 자체의 가치는 훌륭해서(PBR, PER이 높음) 저점 매수하기 좋을 경우
@@ -80,7 +88,7 @@ public class ScoringService {
     @Cacheable(value = "company_score", key = "#ticker", unless = "#result == null")
     public CompanyScoreResponse getScoreByTicker(String ticker) {
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
         return companyScoreRepository.findByCompany(company)
                 .map(CompanyScoreResponse::from)
@@ -89,6 +97,7 @@ public class ScoringService {
 
     // --- 내부 메서드 ---
 
+    // 회사 등급 매기는 내부 메서드
     private String calculateGrade(int score) {
         if(score >= GRADE_S_THRESHOLD) return "S";
         if(score >= GRADE_A_THRESHOLD) return "A";
@@ -97,6 +106,7 @@ public class ScoringService {
         return "D";
     }
 
+    // 점수 저장하는 내부 메서드
     private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
         CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
                 .orElseGet(() -> CompanyScore.builder()

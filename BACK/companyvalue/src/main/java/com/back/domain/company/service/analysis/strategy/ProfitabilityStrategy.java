@@ -1,6 +1,7 @@
 package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,8 @@ import java.math.RoundingMode;
 public class ProfitabilityStrategy implements ScoringStrategy {
 
     @Override
-    public int calculate(FinancialStatement fs, JsonNode overview) {
+    public int calculate(ScoringData data) {
+        FinancialStatement fs = data.fs();
         int score = 0;
         BigDecimal netIncome = fs.getNetIncome();
         BigDecimal equity = fs.getTotalEquity();

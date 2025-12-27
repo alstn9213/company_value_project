@@ -1,5 +1,6 @@
 package com.back.infra.external;
 
+import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,36 +29,60 @@ public class DataFetchService {
     @Value("${api.fred.key}")
     private String fredKey;
 
-    // ==========================================
+    // api 호출 제한 설정
+    // 기본값은 false (제한 없음)
+    @Value("${api.alpha-vantage.dev-mode-limit:false}")
+    private boolean isDevModeLimit;
+
+
+    // --- api 호출 메서드 ---
     // 1. Alpha Vantage API 호출 (기업 정보)
-    // ==========================================
-    /**
-     * 재무제표 데이터 가져오기 (INCOME_STATEMENT, BALANCE_SHEET, CASH_FLOW)
-     */
-    public JsonNode getCompanyFinancials(String function, String symbol) {
-        return callAlphaVantage(function, symbol);
+
+    //  3가지 재무제표를 가져오는 메서드
+    public ExternalFinancialDataResponse getCombinedFinancialData(String ticker) {
+        log.info("Alpha Vantage API 통합 호출 시작: {}", ticker);
+
+        JsonNode income = getCompanyFinancials("INCOME_STATEMENT", ticker);
+        JsonNode balance = getCompanyFinancials("BALANCE_SHEET", ticker);
+        JsonNode cash = getCompanyFinancials("CASH_FLOW", ticker);
+
+        return new ExternalFinancialDataResponse(income, balance, cash);
     }
 
-    /**
-     * 기업 개요 및 투자 지표 가져오기 (PER, PBR, 배당수익률 등)
-     * Function: OVERVIEW
-     */
+
+    // 기업 개요 및 투자 지표 가져오는 메서드 (PER, PBR, 배당수익률 등)
     public JsonNode getCompanyOverview(String symbol) {
         return callAlphaVantage("OVERVIEW", symbol);
     }
 
-    /**
-     * 일별 주가 데이터 (차트용) - TIME_SERIES_DAILY
-     */
+    // 일별 주가 데이터 가져오는 메서드 (차트용)
     public JsonNode getDailyStockHistory(String symbol) {
         return callAlphaVantage("TIME_SERIES_DAILY", symbol);
     }
 
-    // 공통 호출 메서드 추출
+
+    // 2. FRED API 호출 (거시 경제 정보)
+    public JsonNode getMacroIndicator(String seriesId) {
+        String response = webClient.get()
+                .uri(fredBaseUrl, uriBuilder -> uriBuilder
+                        .queryParam("series_id", seriesId)
+                        .queryParam("api_key", fredKey)
+                        .queryParam("file_type", "json") // JSON 포맷 요청
+                        .queryParam("observation_start", "2000-01-01")
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        return parseJson(response);
+    }
+
+    // --- 헬퍼 메서드 ---
+    // 기업 정보 호출 헬퍼 메서드
     private JsonNode callAlphaVantage(String function, String symbol) {
-        if(!"AAPL".equals(symbol)) {
-            log.warn("API 호출 차단됨 (무료 한도 보호): {}", symbol);
-            return objectMapper.createObjectNode(); // 빈 JSON 반환
+        if(isDevModeLimit && !"AAPL".equals(symbol)) {
+            log.info("[개발 모드] API 호출 횟수 절약을 위해 '{}' 요청을 건너뜁니다. (설정: api.alpha-vantage.dev-mode-limit=true)", symbol);
+            return objectMapper.createObjectNode(); // 빈 객체생성
         }
 
         String response = webClient.get()
@@ -73,26 +98,12 @@ public class DataFetchService {
         return parseJson(response);
     }
 
-    // ==========================================
-    // 2. FRED API 호출 (거시 경제 정보)
-    // ==========================================
-    public JsonNode getMacroIndicator(String seriesId) {
-        // 요청 URL 만들기: base-url + ?series_id=...&api_key=...&file_type=json
-        String response = webClient.get()
-                .uri(fredBaseUrl, uriBuilder -> uriBuilder
-                        .queryParam("series_id", seriesId)
-                        .queryParam("api_key", fredKey)
-                        .queryParam("file_type", "json") // JSON 포맷 요청
-                        .queryParam("observation_start", "2000-01-01")
-                        .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-        return parseJson(response);
+    // 재무제표 가져오는 헬퍼 메서드
+    private JsonNode getCompanyFinancials(String function, String symbol) {
+        return callAlphaVantage(function, symbol);
     }
 
-    // JSON String -> JsonNode 변환 메서드
+    // JSON String -> JsonNode 변환 헬퍼 메서드
     private JsonNode parseJson(String jsonResponse) {
         try {
             return objectMapper.readTree(jsonResponse);

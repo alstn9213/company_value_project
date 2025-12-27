@@ -31,7 +31,6 @@ public class SchedulingService {
     private final FinancialDataSyncService financialDataSyncService;
     private final MacroDataService macroDataService;
 
-    // 점수 여부 확인용 (최적화를 위해)
     private final FinancialStatementRepository financialStatementRepository;
     private final CompanyScoreRepository companyScoreRepository;
 
@@ -56,34 +55,33 @@ public class SchedulingService {
     @Scheduled(cron = "0 0 2 * * SUN")
     @CacheEvict(value = "company_score", allEntries = true) // 모든 기업 점수 캐시 삭제
     public void updateFinancialsAndScores() {
-        log.info(">>> [Scheduler] 기업 재무/점수 일괄 업데이트 시작 (캐시 초기화 포함)");
+        log.info(">>> [Scheduler] 기업 재무 정보 및 점수 일괄 업데이트 시작 (캐시 초기화 포함)");
         executeAllCompaniesUpdate();
-        log.info(">>> [Scheduler] 기업 재무/점수 일괄 업데이트 종료");
+        log.info(">>> [Scheduler] 기업 재무 정보 및 점수 일괄 업데이트 종료");
     }
 
+    // --- 헬퍼 메서드 ---
+    // 전체 기업 정보 최신화 헬퍼 메서드
     public void executeAllCompaniesUpdate() {
         List<Company> companies = companyRepository.findAll();
         log.info(">>> [Scheduler] 대상 기업 수: {}", companies.size());
 
         for(Company company : companies) {
             String ticker = company.getTicker();
+            // --- 재무 정보와 점수가 이미 있다면 스킵 ---
             boolean hasFinancials = financialStatementRepository
                     .findTopByCompanyOrderByYearDescQuarterDesc(company)
                     .isPresent();
             boolean hasScore = companyScoreRepository.findByCompany(company).isPresent();
-
             if(hasFinancials && hasScore) continue;
 
+            // 데이터 동기화 요청
             try {
-                // 데이터 동기화 요청
                 // 내부에서 데이터 저장이 완료되면 Event가 발행되어, Listener가 점수를 계산함
                 financialDataSyncService.synchronizeCompany(ticker);
 
                 // API Rate Limit 조절 (API 호출이 일어났을 경우를 대비)
-                // 실제 호출 여부와 관계없이 안전하게 대기 (또는 SyncService 반환값으로 제어 가능)
-                if(!hasFinancials) {
-                    Thread.sleep(12000);
-                }
+                if(!hasFinancials) Thread.sleep(12000); // 실제 호출 여부와 관계없이 안전하게 대기
 
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();

@@ -3,7 +3,9 @@ package com.back.domain.company.service.finance;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.event.CompanyFinancialsUpdatedEvent;
 import com.back.domain.company.repository.CompanyRepository;
-import com.back.domain.company.service.stock.StockPriceService;
+import com.back.domain.company.service.stock.StockPriceImportService;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import com.back.infra.external.DataFetchService;
 import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -24,95 +24,64 @@ public class FinancialDataSyncService {
     private final CompanyRepository companyRepository;
     private final DataFetchService dataFetchService;
     private final FinancialStatementService  financialStatementService;
-    private final StockPriceService stockPriceService;
+    private final StockPriceImportService stockPriceService;
     private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     * 모든 회사의 재무 및 주가 데이터를 외부에서 가져와 저장합니다.
-     */
-    @Transactional
-    public void synchronizeAll() {
-        log.info("모든 기업 데이터 동기화 시작");
-        List<Company> companies = companyRepository.findAll();
-
-        for (Company company : companies) {
-            try {
-                synchronizeCompany(company.getTicker());
-            } catch (Exception e) {
-                log.error("데이터 동기화 실패 - Ticker: {}, Error: {}", company.getTicker(), e.getMessage());
-            }
-        }
-        log.info("모든 기업 데이터 동기화 완료");
-    }
-
-    /**
-     * 특정 기업의 재무제표 및 주가 데이터를 동기화하고, 완료 이벤트를 발행합니다.
-     */
+    // 특정 기업의 재무제표 및 주가 데이터를 동기화하고, 완료 이벤트를 발행하는 메서드
     @Transactional
     public void synchronizeCompany(String ticker) {
         log.info("기업 데이터 동기화 시작: {}", ticker);
 
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다: " + ticker));
+                .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        // 1. 재무제표 및 주가 데이터 수집 및 저장
-        boolean fsSaved = syncFinancialStatements(company);
-        boolean stockSaved = syncStockPrice(company);
+        syncFinancialStatements(company);
+        syncStockPrice(company);
 
-        log.info("기업 데이터 저장 완료: {} (재무제표: {}, 주가: {})", ticker, fsSaved, stockSaved);
+        log.info("기업 데이터 저장 완료: {})", ticker);
 
-        // 2. 데이터 저장이 완료되었으므로 '점수 계산' 등을 수행하라고 이벤트를 발행
+        // 데이터 저장이 완료되면, 점수 계산 이벤트 발행
         eventPublisher.publishEvent(new CompanyFinancialsUpdatedEvent(ticker));
     }
 
-    /*
-     * 외부 API 호출
-     * */
-    public ExternalFinancialDataResponse fetchRawFinancialData(String ticker) {
-        log.info("재무 데이터 수집 시작(Network I/O: {}", ticker);
 
-        JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", ticker);
-        JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", ticker);
-        JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", ticker);
-
-        return new ExternalFinancialDataResponse(income, balance, cash);
-    }
-
-
-    // --- 내부 메서드 ---
-
-    private boolean syncFinancialStatements(Company company) {
+    // --- 헬퍼 메서드 ---
+    // 특정 기업의 재무 정보를 가져오고
+    // 누락된 데이터가 있는지 확인한 후
+    // DB에 저장하는 헬퍼 메서드
+    private void syncFinancialStatements(Company company) {
         try {
-            JsonNode income = dataFetchService.getCompanyFinancials("INCOME_STATEMENT", company.getTicker());
-            JsonNode balance = dataFetchService.getCompanyFinancials("BALANCE_SHEET", company.getTicker());
-            JsonNode cash = dataFetchService.getCompanyFinancials("CASH_FLOW", company.getTicker());
-
-            ExternalFinancialDataResponse response = new ExternalFinancialDataResponse(income, balance, cash);
-
-            if (response.hasAllData()) {
-                financialStatementService.saveFinancialStatements(company, response);
-                return true;
-            } else {
-                log.warn("일부 재무제표 데이터 누락. Ticker: {}", company.getTicker());
-                return false;
+            ExternalFinancialDataResponse response = dataFetchService.getCombinedFinancialData(company.getTicker());
+            if (!response.hasAllData()) {
+                log.warn("필수 재무제표 데이터가 누락되었습니다. Ticker: {}", company.getTicker());
+                throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
             }
+            financialStatementService.saveFinancialStatements(company, response);
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("재무제표 동기화 중 오류: {}", e.getMessage());
-            return false;
+            log.error("재무제표 동기화 중 알 수 없는 오류 발생: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private boolean syncStockPrice(Company company) {
+
+    // 특정 기업의 주가 정보를 가져오고 누락된 데이터가 있는지 확인한 후 DB에 저장하는 헬퍼 메서드
+    private void syncStockPrice(Company company) {
         try {
             JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
-            if(stockData != null && !stockData.isEmpty()) {
-                stockPriceService.saveStockPriceHistory(company, stockData);
-                return true;
+            if (stockData == null || stockData.isEmpty()) {
+                log.warn("주가 데이터가 존재하지 않습니다. Ticker: {}", company.getTicker());
+                throw new BusinessException(ErrorCode.LATEST_STOCK_NOT_FOUND);
             }
-            return false;
+            stockPriceService.fetchAndSaveStockHistory(company, stockData);
+        } catch (BusinessException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("주가 데이터 동기화 중 오류: {}", e.getMessage());
-            return false;
+            log.error("주가 데이터 동기화 중 오류 알 수 없는 오류 발생: {}", e.getMessage(), e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }
