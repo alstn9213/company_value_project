@@ -1,37 +1,44 @@
-package com.back.infra.scheduler;
+package com.back.infra.scheduler.controller;
 
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.event.CompanyFinancialsUpdatedEvent;
 import com.back.domain.company.repository.CompanyRepository;
-import jakarta.annotation.PostConstruct;
+import com.back.infra.scheduler.service.CompanyBatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/test/company")
 @RequiredArgsConstructor
-public class ScoringTestController {
+public class CompanyTestController {
 
+    private final CompanyBatchService companyBatchService;
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    @PostConstruct
-    public void init() {
-        log.info("=============================================");
-        log.info(">>> [Test] ScoringTestController가 정상적으로 로드되었습니다.");
-        log.info(">>> 테스트 URL: http://localhost:8080/test/re-score");
-        log.info("=============================================");
+    /**
+     * 모든 기업의 재무 정보 업데이트 (API 호출)
+     * URL: http://localhost:8080/test/company/schedule/run
+     */
+    @GetMapping("/schedule/run")
+    public String runScheduleManually() {
+        log.info(">>> [Test] 모든 기업 데이터 수동 업데이트 요청");
+        companyBatchService.executeAllCompaniesUpdate();
+        return "모든 기업 업데이트 요청 완료 (로그 확인 필요).";
     }
 
     /**
-     * URL: http://localhost:8080/test/re-score
+     * 저장된 데이터를 기반으로 점수만 다시 계산
+     * URL: http://localhost:8080/test/company/re-score
      */
-    @GetMapping("/test/re-score")
+    @GetMapping("/re-score")
     public String forceReCalculateScores() {
         List<Company> companies = companyRepository.findAll();
         log.info(">>> [Test] 수동 점수 재계산 요청 받음! 대상 기업 수: {}개", companies.size());
@@ -42,7 +49,6 @@ public class ScoringTestController {
 
         int count = 0;
         for(Company company : companies) {
-            // 이벤트를 발행하여 리스너(CompanyEventListener)를 깨웁니다.
             eventPublisher.publishEvent(new CompanyFinancialsUpdatedEvent(company.getTicker()));
             count++;
         }

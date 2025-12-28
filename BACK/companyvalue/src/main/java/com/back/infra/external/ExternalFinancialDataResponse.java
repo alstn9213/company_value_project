@@ -1,4 +1,4 @@
-package com.back.infra.external.dto;
+package com.back.infra.external;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

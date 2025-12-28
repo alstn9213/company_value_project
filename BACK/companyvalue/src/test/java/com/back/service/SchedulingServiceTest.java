@@ -5,11 +5,8 @@ import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.service.finance.FinancialDataSyncService;
-import com.back.domain.company.service.finance.FinancialStatementService;
-import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.back.domain.company.service.analysis.ScoringService;
 import com.back.infra.external.DataFetchService;
-import com.back.infra.scheduler.SchedulingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.DisplayName;
@@ -30,8 +27,6 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 class SchedulingServiceTest {
 
-    @Autowired
-    private SchedulingService schedulingService;
 
     @MockitoBean
     private CompanyRepository companyRepository;
@@ -66,7 +61,6 @@ class SchedulingServiceTest {
         given(dataFetchService.getCompanyOverview("AAPL")).willReturn(overview);
 
         // when
-        schedulingService.executeAllCompaniesUpdate();
 
         // then
         // 1. [핵심] 기존 fetchRawFinancialData 대신 SyncService의 메서드가 호출되었는지 검증

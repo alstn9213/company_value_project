@@ -3,7 +3,7 @@ package com.back.domain.company.service.finance;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.repository.FinancialStatementRepository;
-import com.back.infra.external.dto.ExternalFinancialDataResponse;
+import com.back.infra.external.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
