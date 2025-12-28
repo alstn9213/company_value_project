@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 class SchedulingServiceTest {
 
-
     @Autowired
     private CompanyBatchService companyBatchService;
 

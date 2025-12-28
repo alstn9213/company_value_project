@@ -10,4 +10,7 @@ public record ScoringData(
         JsonNode overview,
         BigDecimal latestStockPrice
 ) {
+    ScoringData(FinancialStatement fs, BigDecimal latestStockPrice) {
+
+    }
 }
