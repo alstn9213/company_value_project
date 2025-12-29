@@ -1,6 +1,5 @@
 package com.back.infra.external;
 
-import com.back.infra.external.dto.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
