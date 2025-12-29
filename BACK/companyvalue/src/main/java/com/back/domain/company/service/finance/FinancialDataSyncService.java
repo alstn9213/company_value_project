@@ -7,7 +7,7 @@ import com.back.domain.company.service.stock.StockPriceImportService;
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;
 import com.back.infra.external.DataFetchService;
-import com.back.infra.external.dto.ExternalFinancialDataResponse;
+import com.back.infra.external.ExternalFinancialDataResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +31,11 @@ public class FinancialDataSyncService {
     @Transactional
     public void synchronizeCompany(String ticker) {
         log.info("기업 데이터 동기화 시작: {}", ticker);
-
         Company company = companyRepository.findByTicker(ticker)
                 .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        syncFinancialStatements(company);
-        syncStockPrice(company);
+        syncFinancialStatements(company); // 헬퍼 메서드로 재무 정보 동기화
+        syncStockPrice(company); // 헬퍼 메서드로 주가 정보 동기화
 
         log.info("기업 데이터 저장 완료: {})", ticker);
 
@@ -66,7 +65,9 @@ public class FinancialDataSyncService {
     }
 
 
-    // 특정 기업의 주가 정보를 가져오고 누락된 데이터가 있는지 확인한 후 DB에 저장하는 헬퍼 메서드
+    // 특정 기업의 주가 정보를 가져오고
+    // 누락된 데이터가 있는지 확인한 후
+    // DB에 저장하는 헬퍼 메서드
     private void syncStockPrice(Company company) {
         try {
             JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
