@@ -20,7 +20,7 @@ public class ScoreController {
     private final CompanyScoreRepository companyScoreRepository;
     private final ScoringService scoringService;
 
-    // 1. 상위 10개 우량 기업 조회
+    // 상위 10개 우량 기업 조회
     @GetMapping("/top")
     public ResponseEntity<List<CompanyScoreResponse>> getTopRankedCompanies() {
         List<CompanyScoreResponse> topCompanies = companyScoreRepository.findTop10ByOrderByTotalScoreDesc()
@@ -30,7 +30,7 @@ public class ScoreController {
         return ResponseEntity.ok(topCompanies);
     }
 
-    // 2. 특정 기업 점수 상세 조회
+    // 특정 기업 점수 상세 조회
     @GetMapping("/{ticker}")
     public ResponseEntity<CompanyScoreResponse> getCompanyScore(@PathVariable String ticker) {
         // 서비스 호출 (여기서 캐싱된 DTO를 가져옴)
