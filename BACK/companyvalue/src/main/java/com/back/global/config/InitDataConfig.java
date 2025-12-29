@@ -8,6 +8,7 @@ import com.back.domain.company.repository.CompanyRepository;
 
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
+import com.back.domain.macro.service.MacroDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -30,6 +31,7 @@ public class InitDataConfig {
     private final CompanyRepository companyRepository;
     private final FinancialStatementRepository financialStatementRepository;
     private final StockPriceHistoryRepository stockPriceHistoryRepository;
+    private final MacroDataService macroDataService;
 
     private static final int YEARS_OF_DATA = 3;
     private static final LocalDate END_DATE = LocalDate.now();
@@ -39,6 +41,8 @@ public class InitDataConfig {
     @Bean
     public CommandLineRunner initData() {
         return args -> {
+            log.info("[InitData] 거시 경제 데이터 초기화를 시도합니다...");
+            macroDataService.initHistoricalMacroData();
             log.info("[InitData] 미국 기업 데이터 확인 및 생성을 시작합니다...");
             List<Company> companies = createCompanyList();
 
