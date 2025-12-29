@@ -10,5 +10,5 @@ public record ScoringData(
         JsonNode overview,
         BigDecimal latestStockPrice
 ) {
-    
+
 }
