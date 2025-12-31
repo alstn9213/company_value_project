@@ -1,7 +1,6 @@
-package com.back.global.config;
+package com.back.global.config.init;
 
 import com.back.domain.macro.service.MacroDataService;
-import com.back.global.config.init.CompanyDataInitializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;

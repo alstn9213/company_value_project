@@ -26,12 +26,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ScoringService {
 
     private final CompanyScoreRepository companyScoreRepository;
@@ -47,6 +49,23 @@ public class ScoringService {
 
     // Policies (페널티 정책)
     private final PenaltyPolicy penaltyPolicy;
+
+    public List<CompanyScoreResponse> getTopRankedCompanies() {
+        return companyScoreRepository.findTop10ByOrderByTotalScoreDesc()
+                .stream()
+                .map(CompanyScoreResponse::from)
+                .toList();
+    }
+
+    @Cacheable(value = "company_score", key = "#ticker", unless = "#result == null")
+    public CompanyScoreResponse getScoreByTicker(String ticker) {
+        Company company = companyRepository.findByTicker(ticker)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+
+        return companyScoreRepository.findByCompany(company)
+                .map(CompanyScoreResponse::from)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+    }
 
     @Transactional
     public void calculateAndSaveScore(FinancialStatement fs, JsonNode overview) {
@@ -84,20 +103,11 @@ public class ScoringService {
         saveScore(fs, totalScore, stability, profitability, valuation, investment, grade, isOpportunity);
     }
 
-    @Transactional(readOnly = true)
-    @Cacheable(value = "company_score", key = "#ticker", unless = "#result == null")
-    public CompanyScoreResponse getScoreByTicker(String ticker) {
-        Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        return companyScoreRepository.findByCompany(company)
-                .map(CompanyScoreResponse::from)
-                .orElse(null);
-    }
 
-    // --- 내부 메서드 ---
+    // --- 헬퍼 메서드 ---
 
-    // 회사 등급 매기는 내부 메서드
+    // 회사 등급 매기는 헬퍼 메서드
     private String calculateGrade(int score) {
         if(score >= GRADE_S_THRESHOLD) return "S";
         if(score >= GRADE_A_THRESHOLD) return "A";
@@ -106,7 +116,7 @@ public class ScoringService {
         return "D";
     }
 
-    // 점수 저장하는 내부 메서드
+    // 점수 저장하는 헬퍼 메서드
     private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
         CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
                 .orElseGet(() -> CompanyScore.builder()

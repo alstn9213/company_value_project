@@ -17,27 +17,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScoreController {
 
-    private final CompanyScoreRepository companyScoreRepository;
     private final ScoringService scoringService;
 
     // 상위 10개 우량 기업 조회
     @GetMapping("/top")
     public ResponseEntity<List<CompanyScoreResponse>> getTopRankedCompanies() {
-        List<CompanyScoreResponse> topCompanies = companyScoreRepository.findTop10ByOrderByTotalScoreDesc()
-                .stream()
-                .map(CompanyScoreResponse::from)
-                .toList();
-        return ResponseEntity.ok(topCompanies);
+        return ResponseEntity.ok(scoringService.getTopRankedCompanies());
     }
 
     @GetMapping("/{ticker}")
     public ResponseEntity<CompanyScoreResponse> getCompanyScore(@PathVariable String ticker) {
-        // 서비스 호출 (여기서 캐싱된 DTO를 가져옴)
-        CompanyScoreResponse result = scoringService.getScoreByTicker(ticker);
-
-        if (result == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(scoringService.getScoreByTicker(ticker));
     }
 }
