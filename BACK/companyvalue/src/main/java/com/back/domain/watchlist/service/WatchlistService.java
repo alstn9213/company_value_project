@@ -8,6 +8,8 @@ import com.back.domain.member.repository.MemberRepository;
 import com.back.domain.watchlist.dto.WatchlistResponse;
 import com.back.domain.watchlist.entity.Watchlist;
 import com.back.domain.watchlist.repository.WatchlistRepository;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,10 +38,10 @@ public class WatchlistService {
     public void addWatchlist(Long memberId, String ticker) {
         Member member = getMember(memberId);
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        if (watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
-            throw new IllegalArgumentException("이미 관심 목록에 존재합니다.");
+        if(watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
+            throw new BusinessException(ErrorCode.WATCHLIST_DUPLICATION);
         }
 
         watchlistRepository.save(Watchlist.builder()
@@ -60,10 +62,7 @@ public class WatchlistService {
         watchlistRepository.deleteById(watchlistId);
     }
 
-    /*
-    * [내부 메서드]
-    * */
-
+    // 헬퍼 메서드
     private WatchlistResponse convertToDto(Watchlist watchlist) {
         Company company = watchlist.getCompany();
         CompanyScore score = company.getCompanyScore();

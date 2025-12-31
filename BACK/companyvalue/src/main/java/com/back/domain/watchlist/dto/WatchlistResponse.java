@@ -6,4 +6,6 @@ public record WatchlistResponse(
         String name,
         Integer currentScore,
         String currentGrade
-) {}
+) {
+
+}
