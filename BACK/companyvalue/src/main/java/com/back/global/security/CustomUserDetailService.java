@@ -27,7 +27,7 @@ public class CustomUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
     }
 
-    // DB의 Member를 Security의 UserDetails로 변환
+    // DB의 Member를 Security의 UserDetails로 변환하는 헬퍼 메서드
     private UserDetails createUserDetails(Member member) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().getKey());
 
