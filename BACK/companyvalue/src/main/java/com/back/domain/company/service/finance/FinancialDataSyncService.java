@@ -71,7 +71,7 @@ public class FinancialDataSyncService {
     private void syncStockPrice(Company company) {
         try {
             JsonNode stockData = dataFetchService.getDailyStockHistory(company.getTicker());
-            if (stockData == null || stockData.isEmpty()) {
+            if(stockData == null || stockData.isEmpty()) {
                 log.warn("주가 데이터가 존재하지 않습니다. Ticker: {}", company.getTicker());
                 throw new BusinessException(ErrorCode.LATEST_STOCK_NOT_FOUND);
             }

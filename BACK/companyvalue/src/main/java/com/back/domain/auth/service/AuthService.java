@@ -24,12 +24,13 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public TokenResponse login(LoginRequest request) {
-        // 1. ID/PW를 기반으로 AuthenticationToken 생성
+        // ID/PW를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.email(), request.password());
-        // 2. 실제 검증 (사용자 비밀번호 체크)
+        // 실제 검증 (사용자 비밀번호 체크)
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
+
+        // 인증 정보를 기반으로 JWT 토큰 생성
         Member member = memberRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
