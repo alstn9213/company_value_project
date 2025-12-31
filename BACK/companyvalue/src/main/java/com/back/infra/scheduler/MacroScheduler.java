@@ -15,9 +15,9 @@ public class MacroScheduler {
     private final MacroDataService macroDataService;
 
     // ==========================================
-    // 거시 경제 지표 자동 업데이트 (매일 아침 8시)
+    // 거시 경제 지표 자동 업데이트 (매일 새벽 1시)
     // ==========================================
-    @Scheduled(cron = "0 0 8 * * *")
+    @Scheduled(cron = "0 0 1 * * *")
     @CacheEvict(value = {"macro_latest", "macro_history"}, allEntries = true)
     public void updateMacroData() {
         log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 시작 (캐시 초기화 포함)");

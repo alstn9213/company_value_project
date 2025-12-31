@@ -83,13 +83,10 @@ public class FinancialStatementService {
         LocalDate date = LocalDate.parse(dateStr);
         int year = date.getYear();
         int quarter = (date.getMonthValue() - 1) / 3 + 1; // 월 -> 분기 변환 (예: 9월 -> 3분기)
+        boolean exist = financialStatementRepository.existsByCompanyAndYearAndQuarter(company, year, quarter);
 
-        // --- 중복 방지: 이미 해당 연도/분기의 데이터가 있는지 확인 ---
-        boolean exists = financialStatementRepository
-                .findTopByCompanyOrderByYearDescQuarterDesc(company)
-                .filter(fs -> fs.getYear() == year && fs.getQuarter() == quarter)
-                .isPresent();
-        if(exists) return;
+        // 중복 방지
+        if(exist) return;
 
         BigDecimal assets = parseBigDecimal(data.balanceNode, "totalAssets");
         BigDecimal liabilities = parseBigDecimal(data.balanceNode, "totalLiabilities");
