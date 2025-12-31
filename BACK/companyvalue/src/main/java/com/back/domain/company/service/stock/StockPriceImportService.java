@@ -29,7 +29,7 @@ public class StockPriceImportService {
     @Transactional
     public List<StockPriceHistory> fetchAndSaveStockHistory(Company company, JsonNode stockDataNode) {
         if(stockDataNode == null || !stockDataNode.has("Time Series (Daily)")) {
-            log.warn("주가 데이터 형식이 올바르지 않거나 데이터가 없습니다. Ticker: {}", company.getTicker());
+            log.warn("[StockPriceImportService] 주가 데이터 형식이 올바르지 않거나 데이터가 없습니다. Ticker: {}", company.getTicker());
             return Collections.emptyList();
         }
 
@@ -78,9 +78,9 @@ public class StockPriceImportService {
     }
 
 
-    // --- 내부 메서드 ---
+    // --- 헬퍼 메서드 ---
 
-    // JSON 노드에서 BigDecimal 추출하는 내부 메서드
+    // JSON 노드에서 BigDecimal 추출하는 헬퍼 메서드
     private BigDecimal parseBigDecimal(JsonNode node, String fieldName) {
         if(node == null || !node.has(fieldName)) return BigDecimal.ZERO;
         String value = node.get(fieldName).asText();
