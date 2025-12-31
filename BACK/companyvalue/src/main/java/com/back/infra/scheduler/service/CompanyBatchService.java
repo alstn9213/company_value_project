@@ -20,7 +20,7 @@ public class CompanyBatchService {
     private final FinancialStatementRepository financialStatementRepository;
     private final CompanyScoreRepository companyScoreRepository;
 
-    // 전체 기업 정보 최신화 메서드
+    // 전체 기업 정보(재무제표, 점수) 최신화 메서드
     public void executeAllCompaniesUpdate() {
         List<Company> companies = companyRepository.findAll();
         log.info(">>> [Batch] 전체 기업 업데이트 시작 - 대상 기업 수: {}개", companies.size());

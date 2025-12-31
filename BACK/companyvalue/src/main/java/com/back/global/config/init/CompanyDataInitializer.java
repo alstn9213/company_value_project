@@ -28,7 +28,7 @@ public class CompanyDataInitializer {
         List<Company> companies = dummyDataGenerator.createCompanyList();
         for(Company companyData: companies) {
             Company company = getOrSaveCompany(companyData); // AAPL과 더미 회사들을 DB에 저장
-            if(shouldGenerateDummyData(company)) generateAndSaveDummyData(company); // 더미 재무 데이터 생성
+            if(shouldGenerateDummyData(company)) generateAndSaveDummyData(company); // 더미 재무정보, 주가 데이터 생성
         }
     }
 

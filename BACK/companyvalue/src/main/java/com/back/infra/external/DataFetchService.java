@@ -35,7 +35,7 @@ public class DataFetchService {
 
 
     // --- api 호출 메서드 ---
-    // 1. Alpha Vantage API 호출 (기업 정보)
+    // --- Alpha Vantage API 호출 (기업 정보) ---
 
     //  3가지 재무제표를 가져오는 메서드
     public ExternalFinancialDataResponse getCombinedFinancialData(String ticker) {
@@ -60,7 +60,7 @@ public class DataFetchService {
     }
 
 
-    // 2. FRED API 호출 (거시 경제 정보)
+    // --- FRED API 호출 (거시 경제 정보) ---
     public JsonNode getMacroIndicator(String seriesId) {
         String response = webClient.get()
                 .uri(fredBaseUrl, uriBuilder -> uriBuilder
