@@ -34,7 +34,7 @@ public class WatchlistService {
 
     }
 
-    @Transactional
+    @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
     public void addWatchlist(Long memberId, String ticker) {
         Member member = getMember(memberId);
         Company company = companyRepository.findByTicker(ticker)
@@ -50,19 +50,19 @@ public class WatchlistService {
                 .build());
     }
 
-    @Transactional
+    @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
     public void deleteWatchlist(Long memberId, Long watchlistId) {
         Member member = getMember(memberId);
 
         // 내 관심종목인지 확인 후 삭제 (보안 강화)
-        if (!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
-            throw new IllegalArgumentException("삭제 권한이 없거나 존재하지 않는 항목입니다.");
+        if(!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
+            throw new BusinessException(ErrorCode.WATCHLIST_ACCESS_DENIED);
         }
 
         watchlistRepository.deleteById(watchlistId);
     }
 
-    // 헬퍼 메서드
+    // Watchlist 엔티티를 WatchListResponse로 변환하는 헬퍼 메서드
     private WatchlistResponse convertToDto(Watchlist watchlist) {
         Company company = watchlist.getCompany();
         CompanyScore score = company.getCompanyScore();
@@ -80,8 +80,9 @@ public class WatchlistService {
         );
     }
 
+    // 회원이 있는지 확인하는 헬퍼 메서드
     private Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("회원 정보 없음"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 }

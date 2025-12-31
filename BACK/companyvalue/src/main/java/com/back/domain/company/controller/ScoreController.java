@@ -30,7 +30,6 @@ public class ScoreController {
         return ResponseEntity.ok(topCompanies);
     }
 
-    // 특정 기업 점수 상세 조회
     @GetMapping("/{ticker}")
     public ResponseEntity<CompanyScoreResponse> getCompanyScore(@PathVariable String ticker) {
         // 서비스 호출 (여기서 캐싱된 DTO를 가져옴)

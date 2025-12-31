@@ -23,7 +23,7 @@ public class CompanyDataInitializer {
 
     @Transactional
     public void initCompanyData() {
-        log.info("[InitData] 기업 데이터 확인 및 생성을 시작합니다...");
+        log.info("[CompanyDataInitializer] 기업 데이터 확인 및 생성을 시작합니다...");
         // --- 나중에 api로 호출할 기업 리스트를 먼저 DB에 적재한다. ---
         List<Company> companies = dummyDataGenerator.createCompanyList();
         for(Company companyData: companies) {
@@ -36,7 +36,7 @@ public class CompanyDataInitializer {
     private Company getOrSaveCompany(Company companyData) {
         return companyRepository.findByTicker(companyData.getTicker())
                 .orElseGet(() -> {
-                    log.info("[InitData] 신규 기업 등록: {}", companyData.getName());
+                    log.info("[CompanyDataInitializer] 신규 기업 등록: {}", companyData.getName());
                     return companyRepository.save(companyData);
                 });
     }
@@ -49,7 +49,7 @@ public class CompanyDataInitializer {
 
     // 더미 회사의 데이터를 생성하는 헬퍼메서드
     private void generateAndSaveDummyData(Company company) {
-        log.info("[InitData] {} - 더미 재무/주가 데이터 생성 중...", company.getName());
+        log.info("[CompanyDataInitializer] {} - 더미 재무/주가 데이터 생성 중...", company.getName());
 
         // Generator에게 데이터 '생성'만 요청
         var financials = dummyDataGenerator.generateFinancials(company);
