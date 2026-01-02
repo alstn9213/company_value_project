@@ -4,6 +4,7 @@ import com.back.domain.company.entity.Company;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
+import com.back.domain.company.service.analysis.ScoringService;
 import com.back.global.config.init.dto.CompanySeedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class CompanyDataInitializer {
     private final FinancialStatementRepository financialStatementRepository;
     private final StockPriceHistoryRepository stockPriceHistoryRepository;
     private final SeedDataLoader seedDataLoader;
+    private final ScoringService scoringService;
 
     @Transactional
     public void initCompanyData() {
@@ -56,6 +58,11 @@ public class CompanyDataInitializer {
                 );
             }
         }
+
+        log.info("[CompanyDataInitializer] 데이터 적재 완료. 기업 점수 산출을 시작합니다...");
+
+        scoringService.calculateAllScores();
+
         log.info("[CompanyDataInitializer] 초기화 완료. {}개 기업 등록됨.", seedDataList.size());
     }
 

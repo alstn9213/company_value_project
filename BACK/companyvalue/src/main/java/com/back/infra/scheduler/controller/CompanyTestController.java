@@ -21,9 +21,8 @@ public class CompanyTestController {
      * URL: http://localhost:8080/test/company/re-score
      */
     @PostMapping("/re-score")
-    public ResponseEntity<String> recalculateAllScores() {
+    public String recalculateAllScores() {
         log.info("관리자 요청에 의해 모든 기업의 점수 재산정을 시작합니다.");
-        scoringService.calculateAllScores();
-        return ResponseEntity.ok("모든 기업의 점수 재산정이 완료되었습니다.");
+        scoringService.calculateAndSaveScore();
     }
 }
