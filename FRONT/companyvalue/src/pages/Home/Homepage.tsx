@@ -147,90 +147,91 @@ const HomePage = () => {
             <h3 className="mb-6 text-lg font-bold text-slate-200">
               미국의 주요 금리 및 인플레이션 추이 (최근 10년)
             </h3>
-            {/* [수정 사항] 배포 환경 대응
-               - min-w-0: Flex/Grid 컨테이너 내부에서 너비 계산 오류 방지
-               - style={{ width: "100%", height: 500 }}: CSS 로딩 전 인라인 스타일로 크기 강제 확보
+            {/* [Best Practice Fix] Recharts 초기 렌더링 크기 오류 방지 (The width(-1) and height(-1) 에러 해결)
+               1. relative + h-[500px]: 부모 영역 높이 고정
+               2. absolute + inset-0: 자식 영역이 부모 영역을 강제로 꽉 채우도록 설정 (Flex 계산에서 격리)
             */}
-            {/* 차트 높이를 320px -> 500px로 늘려 기울기를 더 가파르게 표현 */}
-            <div className="h-[500px] w-full min-w-0" style={{ height: 500, width: "100%" }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={history}
-                  margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    stroke="#94a3b8"
-                    tick={{ fill: "#94a3b8", fontSize: 12 }}
-                    tickFormatter={(val) => val.substring(0, 4)}
-                    minTickGap={100} // 연도 중복 표시 방지를 위해 간격 확대
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    stroke="#94a3b8"
-                    tick={{ fill: "#94a3b8", fontSize: 12 }}
-                    domain={[0, 'auto']}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    stroke="#f87171"
-                    tick={{ fill: "#f87171", fontSize: 12 }}
-                    domain={['auto', 'auto']} // 데이터 범위에 맞춰 자동 스케일링 (기울기 강조)
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1e293b",
-                      borderColor: "#475569",
-                      color: "#f1f5f9",
-                    }}
-                    position={{ x: 0, y: 0 }} // 툴팁 위치를 상단 고정하여 그래프 가림 방지
-                  />
-                  <Legend wrapperStyle={{ paddingTop: "10px" }} />
-
-                  {/* 역전 구간 강조 (Red Zone) */}
-                  {inversionIntervals.map((interval, i) => (
-                    <ReferenceArea
-                      key={i}
-                      yAxisId="left"
-                      x1={interval.start}
-                      x2={interval.end}
-                      fill="#ef4444"
-                      fillOpacity={0.3}
+            <div className="relative h-[500px] w-full">
+              <div className="absolute inset-0">
+                <ResponsiveContainer width="100%" height="100%" debounce={50}>
+                  <LineChart
+                    data={history}
+                    margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      stroke="#94a3b8"
+                      tick={{ fill: "#94a3b8", fontSize: 12 }}
+                      tickFormatter={(val) => val.substring(0, 4)}
+                      minTickGap={100}
                     />
-                  ))}
+                    <YAxis
+                      yAxisId="left"
+                      stroke="#94a3b8"
+                      tick={{ fill: "#94a3b8", fontSize: 12 }}
+                      domain={[0, 'auto']}
+                    />
+                    <YAxis
+                      yAxisId="right"
+                      orientation="right"
+                      stroke="#f87171"
+                      tick={{ fill: "#f87171", fontSize: 12 }}
+                      domain={['auto', 'auto']}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1e293b",
+                        borderColor: "#475569",
+                        color: "#f1f5f9",
+                      }}
+                      position={{ x: 0, y: 0 }}
+                    />
+                    <Legend wrapperStyle={{ paddingTop: "10px" }} />
 
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="us10y"
-                    name="10년물 국채"
-                    stroke="#60a5fa"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="us2y"
-                    name="2년물 국채"
-                    stroke="#34d399"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="stepAfter"
-                    dataKey="inflation"
-                    name="CPI (물가)"
-                    stroke="#f87171"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+                    {inversionIntervals.map((interval, i) => (
+                      <ReferenceArea
+                        key={i}
+                        yAxisId="left"
+                        x1={interval.start}
+                        x2={interval.end}
+                        fill="#ef4444"
+                        fillOpacity={0.3}
+                      />
+                    ))}
+
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="us10y"
+                      name="10년물 국채"
+                      stroke="#60a5fa"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="us2y"
+                      name="2년물 국채"
+                      stroke="#34d399"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                    <Line
+                      yAxisId="right"
+                      type="stepAfter"
+                      dataKey="inflation"
+                      name="CPI (물가)"
+                      stroke="#f87171"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
+            
             <div className="mt-2 text-right text-xs text-slate-500">
               * 붉은색 영역: 장단기 금리차 역전 구간 (경제 침체 위험)
             </div>
@@ -323,7 +324,6 @@ const HomePage = () => {
     </div>
   );
 };
-
 // [내부 컴포넌트] 좌측 지표 아이템
 const IndicatorItem = ({
   label,
