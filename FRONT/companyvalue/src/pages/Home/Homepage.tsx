@@ -147,9 +147,15 @@ const HomePage = () => {
             <h3 className="mb-6 text-lg font-bold text-slate-200">
               미국의 주요 금리 및 인플레이션 추이 (최근 10년)
             </h3>
+            {/* 
+               배포 환경(Production)에서 CSS 로딩 지연으로 인해 ResponsiveContainer가 
+               높이/너비를 0으로 인식하여 에러가 발생하는 것을 방지하는 코드입니다.
+               1. style={{ height: 500 }} : Tailwind 클래스 로딩 전 강제 높이 지정
+               2. minWidth={0} : Flex/Grid 내부에서 초기 렌더링 시 너비 계산 오류 방지
+            */}
             {/* 차트 높이를 320px -> 500px로 늘려 기울기를 더 가파르게 표현 */}
-            <div className="h-[500px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
+            <div className="h-[500px] w-full" style={{ height: 500 }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <LineChart
                   data={history}
                   margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
