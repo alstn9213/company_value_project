@@ -71,8 +71,8 @@ public class ScoringService {
                                 () -> log.warn("재무 데이터 없음: {}", company.getTicker())
                         );
             } catch (Exception e) {
-                log.error("점수 계산 중 오류 발생 (Ticker: {}): {}", company.getTicker(), e.getMessage());
                 // 개별 기업 실패가 전체 프로세스를 멈추지 않도록 로그만 찍고 넘어감
+                log.error("점수 계산 중 오류 발생 (Ticker: {}): {}", company.getTicker(), e.getMessage());
             }
         }
         log.info("모든 기업 점수 계산 완료.");
@@ -135,11 +135,14 @@ public class ScoringService {
     // --- 헬퍼 메서드: 내부 데이터로 밸류 지표 계산 ---
     private JsonNode createCalculatedOverview(FinancialStatement fs, BigDecimal price) {
         ObjectNode overview = objectMapper.createObjectNode();
-        long totalShares = fs.getCompany().getTotalShares();
+        Long totalSharesObj = fs.getCompany().getTotalShares();
 
-        // 주식 수가 0이면 계산 불가 (방어 로직)
-        if(totalShares == 0) return overview;
+        // 주식 수가 null이거나 0이면 PER/PBR 계산 불가 (방어 로직)
+        if(totalSharesObj == null || totalSharesObj == 0) {
+            return overview;
+        }
 
+        long totalShares = totalSharesObj;
         BigDecimal shares = BigDecimal.valueOf(totalShares);
 
         // EPS (주당 순이익) = 순이익 / 주식수
@@ -168,10 +171,6 @@ public class ScoringService {
 
         return overview;
     }
-
-
-
-    // --- 헬퍼 메서드 ---
 
     // 회사 등급 매기는 헬퍼 메서드
     private String calculateGrade(int score) {

@@ -40,6 +40,7 @@ public class CompanyDataInitializer {
                     .name(seedData.name())
                     .sector(seedData.sector())
                     .exchange(seedData.exchange())
+                    .totalShares(seedData.totalShares())
                     .build());
 
             if(seedData.financials() != null) {
