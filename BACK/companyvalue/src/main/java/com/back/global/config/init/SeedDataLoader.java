@@ -49,7 +49,6 @@ public class SeedDataLoader implements CommandLineRunner {
         log.info("Seed Data 저장 완료. 기업 점수 계산을 시작합니다.");
 
         // 2. [중요] 저장된 데이터를 기반으로 점수 계산 트리거
-        // 기존 FinancialDataSyncService에서 하던 역할을 여기서 수행
         scoringService.calculateAllScores();
 
         log.info("초기 데이터 세팅 및 점수 계산 완료!");
