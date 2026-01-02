@@ -8,6 +8,8 @@ import com.back.domain.member.repository.MemberRepository;
 import com.back.domain.watchlist.dto.WatchlistResponse;
 import com.back.domain.watchlist.entity.Watchlist;
 import com.back.domain.watchlist.repository.WatchlistRepository;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,14 +34,14 @@ public class WatchlistService {
 
     }
 
-    @Transactional
+    @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
     public void addWatchlist(Long memberId, String ticker) {
         Member member = getMember(memberId);
         Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 기업입니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        if (watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
-            throw new IllegalArgumentException("이미 관심 목록에 존재합니다.");
+        if(watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
+            throw new BusinessException(ErrorCode.WATCHLIST_DUPLICATION);
         }
 
         watchlistRepository.save(Watchlist.builder()
@@ -48,22 +50,19 @@ public class WatchlistService {
                 .build());
     }
 
-    @Transactional
+    @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
     public void deleteWatchlist(Long memberId, Long watchlistId) {
         Member member = getMember(memberId);
 
         // 내 관심종목인지 확인 후 삭제 (보안 강화)
-        if (!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
-            throw new IllegalArgumentException("삭제 권한이 없거나 존재하지 않는 항목입니다.");
+        if(!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
+            throw new BusinessException(ErrorCode.WATCHLIST_ACCESS_DENIED);
         }
 
         watchlistRepository.deleteById(watchlistId);
     }
 
-    /*
-    * [내부 메서드]
-    * */
-
+    // Watchlist 엔티티를 WatchListResponse로 변환하는 헬퍼 메서드
     private WatchlistResponse convertToDto(Watchlist watchlist) {
         Company company = watchlist.getCompany();
         CompanyScore score = company.getCompanyScore();
@@ -81,8 +80,9 @@ public class WatchlistService {
         );
     }
 
+    // 회원이 있는지 확인하는 헬퍼 메서드
     private Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("회원 정보 없음"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 }

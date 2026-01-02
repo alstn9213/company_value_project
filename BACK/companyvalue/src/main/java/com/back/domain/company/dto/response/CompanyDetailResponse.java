@@ -13,10 +13,7 @@ public record CompanyDetailResponse(
         FinancialStatementResponse latestFinancial,
         List<FinancialStatementResponse> financialHistory
 ) {
-    public static CompanyDetailResponse of(Company company,
-                                           CompanyScore score,
-                                           List<FinancialStatement> history) {
-
+    public static CompanyDetailResponse of(Company company, CompanyScore score, List<FinancialStatement> history) {
         List<FinancialStatementResponse> historyDto = history.stream()
                 .map(FinancialStatementResponse::from)
                 .toList();

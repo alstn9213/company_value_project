@@ -6,4 +6,6 @@ import java.time.LocalDate;
 public record StockHistoryResponse(
         LocalDate date,
         BigDecimal close
-) {}
+) {
+
+}

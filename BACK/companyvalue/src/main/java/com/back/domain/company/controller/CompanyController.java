@@ -21,7 +21,6 @@ public class CompanyController {
     private final StockService stockService;
     private final CompanyReadService companyReadService;
 
-    // 1. 전체 기업 목록 조회
     @GetMapping
     @Operation(summary = "전체 기업 목록 조회", description = "페이징 처리된 기업 목록을 반환합니다. 이름순 또는 점수순 정렬이 가능합니다.")
     public ResponseEntity<Page<CompanySummaryResponse>> getAllCompanies(
@@ -35,7 +34,6 @@ public class CompanyController {
         return ResponseEntity.ok(companyReadService.getAllCompanies(page, size, sort));
     }
 
-    // 2. 기업 검색(이름으로)
     @GetMapping("/search")
     @Operation(summary = "기업 검색", description = "기업명에 검색어가 포함된 기업 목록을 반환합니다.")
     public ResponseEntity<List<CompanySummaryResponse>> searchCompanies(
@@ -45,7 +43,6 @@ public class CompanyController {
         return ResponseEntity.ok(companyReadService.searchCompanies(keyword));
     }
 
-    // 3. 기업 상세 정보 조회(기본 정보 + 점수 + 재무제표)
     @GetMapping("/{ticker}")
     @Operation(summary = "기업 상세 정보 조회", description = "특정 기업의 기본 정보, 재무 건전성 점수, 최근 재무제표 내역을 조회합니다.")
     public ResponseEntity<CompanyDetailResponse> getCompanyDetail(
@@ -55,7 +52,6 @@ public class CompanyController {
         return ResponseEntity.ok(companyReadService.getCompanyDetail(ticker));
     }
 
-    // 4. 주가 차트 조회
     @GetMapping("/{ticker}/chart")
     @Operation(summary = "주가 차트 데이터 조회", description = "특정 기업의 주가 히스토리 데이터를 조회합니다.")
     public ResponseEntity<List<StockHistoryResponse>> getCompanyChart(
