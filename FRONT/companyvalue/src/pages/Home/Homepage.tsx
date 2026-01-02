@@ -153,7 +153,17 @@ const HomePage = () => {
             */}
             <div className="relative h-[500px] w-full">
               <div className="absolute inset-0">
-                <ResponsiveContainer width="100%" height="100%" debounce={50}>
+              {/* 수정 사항: minWidth={0} minHeight={0} 추가 
+                  설명: 초기 렌더링 시 부모 크기가 잡히지 않았을 때(-1), 
+                        에러를 뱉지 않고 0으로 처리하도록 강제함.
+                */}
+                <ResponsiveContainer 
+                  width="100%" 
+                  height="100%" 
+                  debounce={50} 
+                  minWidth={0} 
+                  minHeight={0}
+                >
                   <LineChart
                     data={history}
                     margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
