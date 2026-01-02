@@ -30,10 +30,7 @@ public class CompanyEventListener {
     private final FinancialStatementRepository financialStatementRepository;
     private final CompanyRepository companyRepository;
     private final StockPriceHistoryRepository stockPriceHistoryRepository;
-    private final DataFetchService dataFetchService;
     private final ObjectMapper objectMapper;
-
-    private static final long ASSUMED_TOTAL_SHARES = 100_000_000L;
     private static final BigDecimal DEFAULT_PRICE = BigDecimal.valueOf(10.0);
 
     // 기업 재무 데이터 업데이트 이벤트 발생 시 실행되는 점수 계산 메서드
@@ -57,56 +54,51 @@ public class CompanyEventListener {
         FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA));
 
-        JsonNode overview = fetchOverviewSafely(ticker, fs);
+        JsonNode overview = calculateOverview(ticker, fs);
         scoringService.calculateAndSaveScore(fs, overview);
         log.info(">>> [Event] 점수 계산 및 저장 완료: {}", ticker);
     }
 
-    // 실제 Overview 정보를 가져오거나 더미 데이터를 생성하는 헬퍼 메서드
-    private JsonNode fetchOverviewSafely(String ticker, FinancialStatement fs) {
-        try {
-            return dataFetchService.getCompanyOverview(ticker);
-        } catch (Exception e) {
-            log.warn("Overview API 조회 실패 또는 가짜 기업 ({}). 더미 Overview를 생성합니다.", ticker);
-            return createCalculatedDummyOverview(ticker, fs);
-        }
-    }
-
-    // DB에 저장된 더미 데이터에 기반해서 더미 overview를 생성하는 헬퍼 메서드
-    private JsonNode createCalculatedDummyOverview(String ticker, FinancialStatement fs) {
+    // DB 데이터를 사용하여 지표(PER, PBR, MarketCap) 계산
+    private JsonNode calculateOverview(String ticker, FinancialStatement fs) {
         ObjectNode node = objectMapper.createObjectNode();
+
+        // --- 주식 수 가져오기 (없으면 기본값 1억 주 방어 로직) ---
+        Long totalShares = fs.getCompany().getTotalShares();
+        if(totalShares == null || totalShares == 0) totalShares = 100_000_000L;
+        BigDecimal shares = BigDecimal.valueOf(totalShares);
+
+        // 최신 주가 조회
         StockPriceHistory latestStock = stockPriceHistoryRepository.findTopByCompanyOrderByRecordedDateDesc(fs.getCompany());
 
         BigDecimal price;
         if(latestStock == null) {
-            log.warn(">>> [Data Warning] {}의 주가 데이터가 아직 생성되지 않았거나 없습니다. 기본값으로 처리합니다.", ticker);
+            log.warn("[Calculation] {} 주가 데이터 없음. 기본값({}) 사용", ticker, DEFAULT_PRICE);
             price = DEFAULT_PRICE;
         } else {
             price = latestStock.getClosePrice();
         }
 
-        BigDecimal shares = BigDecimal.valueOf(ASSUMED_TOTAL_SHARES);
-
-        // --- 주요 지표 계산 ---
-        // 시가총액 = 주가 * 발행주식수
+        // --- 계산 로직 ---
+        // 시가총액
         BigDecimal marketCap = price.multiply(shares);
 
-        // EPS (주당 순이익) = (분기 순이익 * 4) / 주식수  (연간 환산 가정)
+        // EPS (연간 환산)
         BigDecimal annualNetIncome = fs.getNetIncome().multiply(BigDecimal.valueOf(4));
         BigDecimal eps = annualNetIncome.divide(shares, 2, RoundingMode.HALF_UP);
 
-        // PER (주가 수익 비율) = 주가 / EPS
+        // PER
         BigDecimal peRatio = (eps.compareTo(BigDecimal.ZERO) > 0)
                 ? price.divide(eps, 2, RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
-        // PBR (주가 순자산 비율) = 시가총액 / 자본총계
+        // PBR
         BigDecimal bookValue = fs.getTotalEquity();
         BigDecimal pbRatio = (bookValue.compareTo(BigDecimal.ZERO) > 0)
                 ? marketCap.divide(bookValue, 2, RoundingMode.HALF_UP)
                 : BigDecimal.ZERO;
 
-        // 배당 수익률
+        // 배당 수익률 (임시 고정값)
         String dividendYield = "0.015";
 
         // JSON 생성
@@ -117,8 +109,7 @@ public class CompanyEventListener {
         node.put("DividendYield", dividendYield);
         node.put("EPS", eps.toString());
 
-        log.debug(">>> [Dummy] 생성된 Overview ({}): PER={}, PBR={}", ticker, peRatio, pbRatio);
-
         return node;
     }
+
 }

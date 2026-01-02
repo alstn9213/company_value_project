@@ -23,20 +23,25 @@ public class Company {
 
     private String exchange; // 예: NASDAQ, NYSE (미국 주식 구분)
 
+    private Long totalShares; // 총 발행 주식 수
+
     @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
     private CompanyScore companyScore;
+
 
     @Builder
     public Company(String ticker,
                    String name,
                    String sector,
                    String exchange,
+                   Long totalShares,
                    CompanyScore companyScore
     ) {
         this.ticker = ticker;
         this.name = name;
         this.sector = sector;
         this.exchange = exchange;
+        this.totalShares = totalShares;
         this.companyScore = companyScore;
     }
 }
