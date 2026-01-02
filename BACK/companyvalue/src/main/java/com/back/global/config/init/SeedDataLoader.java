@@ -3,6 +3,8 @@ package com.back.global.config.init;
 import com.back.domain.company.entity.Company;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.entity.StockPriceHistory;
+import com.back.domain.company.repository.CompanyRepository;
+import com.back.domain.company.service.analysis.ScoringService;
 import com.back.global.config.init.dto.CompanySeedDto;
 import com.back.global.config.init.dto.FinancialSeedDto;
 import com.back.global.config.init.dto.StockSeedDto;
@@ -10,8 +12,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -21,9 +26,35 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SeedDataLoader {
+@Profile("!test") // 테스트 환경이 아닐 때만 실행
+public class SeedDataLoader implements CommandLineRunner {
 
+  private final CompanyRepository companyRepository;
+  private final ScoringService scoringService;
   private final ObjectMapper objectMapper;
+
+    @Override
+    @Transactional
+    public void run(String... args) throws Exception {
+        if (companyRepository.count() > 0) {
+            log.info("이미 데이터가 존재하여 초기화를 건너뜁니다.");
+            return;
+        }
+
+        log.info("Seed Data 로딩 시작...");
+
+        // 1. JSON 파일 읽기 및 DB 저장 (기존 로직 유지)
+        // ... (JSON 파싱 및 엔티티 저장 로직) ...
+
+        log.info("Seed Data 저장 완료. 기업 점수 계산을 시작합니다.");
+
+        // 2. [중요] 저장된 데이터를 기반으로 점수 계산 트리거
+        // 기존 FinancialDataSyncService에서 하던 역할을 여기서 수행
+        scoringService.calculateAllScores();
+
+        log.info("초기 데이터 세팅 및 점수 계산 완료!");
+    }
+
 
     // JSON 파일 로드 및 파싱
     public List<CompanySeedDto> loadSeedData() {
@@ -41,7 +72,7 @@ public class SeedDataLoader {
         }
     }
 
-    // --- Mapper Methods (DTO -> Entity 변환) ---
+    // --- 헬퍼 메서드 (DTO -> Entity 변환) ---
 
     public FinancialStatement mapToFinancialEntity(Company company, FinancialSeedDto dto) {
         return FinancialStatement.builder()
