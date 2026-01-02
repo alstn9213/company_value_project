@@ -1,3 +1,4 @@
+import os
 import yfinance as yf
 import json
 import pandas as pd
@@ -59,8 +60,14 @@ for ticker_symbol in target_tickers:
 
     result_data.append(company_data)
 
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+output_path = os.path.join(script_dir, "../BACK/companyvalue/src/main/resources/data/seed_data.json")
+os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+print(f"[fetch_data.py] Saving data to: {output_path}")
+
 # JSON 저장
-output_path = "../BACK/companyvalue/src/main/resources/data/seed_data.json"
 with open(output_path, "w", encoding="utf-8") as f:
     json.dump(result_data, f, indent=2, ensure_ascii=False)
 
