@@ -9,19 +9,24 @@ services:
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MARIADB_DATABASE=${DB_NAME}
       - TZ=Asia/Seoul                 # 타임존 (한국 시간)
-    ports:
-      - "3306:3306"                   # 내 컴퓨터 3306 포트 <-> 도커 내부 3306 연결
     volumes:
       - ./db_data:/var/lib/mysql      # DB 데이터를 프로젝트 폴더 내 db_data에 저장 (삭제 방지)
+    # DB는 외부 노출 없이 내부 네트워크에서만 접근 (보안 강화)
+    expose:
+      - "3306"
     restart: always
+    networks:
+      - app-network
 
   # 2. Redis
   redis:
     image: redis:alpine
     container_name: company_redis
-    ports:
-      - "6379:6379"                   # 기본 포트 사용
+    expose:
+      - "6379"
     restart: always
+    networks:
+      - app-network
 
   # 3. Spring Boot
   backend:
@@ -38,3 +43,49 @@ services:
       - mariadb                     # DB가 먼저 켜진 뒤에 앱이 켜지도록 순서 보장
       - redis
     restart: always
+
+    # 4. Frontend (React)
+  frontend:
+    container_name: company_frontend
+    build: ./FRONT/companyvalue # 프론트엔드 Dockerfile 경로
+    expose:
+      - "5173"
+    environment:
+      - VITE_API_URL=https://${DOMAIN_NAME} # HTTPS 도메인 주입
+    restart: always
+    networks:
+      - app-network
+
+  # 5. Nginx (리버스 프록시 & SSL)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: nginx
+    ports:
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d      # 작성한 Nginx 설정 파일 마운트
+      - ./data/certbot/conf:/etc/letsencrypt  # SSL 인증서 저장소
+      - ./data/certbot/www:/var/www/certbot   # Let's Encrypt 인증 확인용
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - backend
+      - frontend
+    restart: always
+    networks:
+      - app-network
+
+  # 6. Certbot (SSL 인증서 자동 발급/갱신)
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
