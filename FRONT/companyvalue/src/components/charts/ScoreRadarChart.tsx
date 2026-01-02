@@ -68,11 +68,12 @@ const ScoreRadarChart: React.FC<ScoreRadarChartProps> = ({ data }) => {
 
   return (
     <div style={{ width: '100%', height: 300 }}>
-      {/*
-         배포 환경에서의 렌더링 타이밍 이슈(Race Condition) 해결을 위해 
-         minWidth={0} 속성을 추가합니다.
-      */}
-      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <ResponsiveContainer 
+        width="100%" 
+        height="100%" 
+        minWidth={0} 
+        minHeight={0}
+      >
         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={normalizedData}>
           <PolarGrid stroke="#334155" />
           <PolarAngleAxis 

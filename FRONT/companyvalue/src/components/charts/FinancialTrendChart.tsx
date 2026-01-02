@@ -32,7 +32,12 @@ const FinancialTrendChart = ({ data }: Props) => {
       <h3 className="text-lg font-bold text-slate-200 mb-4 pl-2 border-l-4 border-blue-500">
         💰 실적 추이 (최근 2년)
       </h3>
-      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+      <ResponsiveContainer 
+        width="100%" 
+        height="100%" 
+        minWidth={0} 
+        minHeight={0}
+      >
         <BarChart
           data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
