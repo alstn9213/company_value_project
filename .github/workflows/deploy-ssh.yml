@@ -12,20 +12,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Java 17 세팅
+      # Java 17 세팅
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      # 2. Node.js 세팅
+      # Node.js 세팅
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # 3. 프론트엔드 빌드 & 통합
+      # Python 세팅
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # Python 의존성 설치 및 데이터 생성
+      - name: Install Dependencies & Fetch Real Data
+        run: |
+          pip install -r requirements.txt
+          python scripts/fetch_data.py
+
+      # 프론트엔드 빌드 & 통합
       - name: Build Frontend & Copy
         working-directory: ./FRONT/companyvalue
         run: |
@@ -34,21 +46,21 @@ jobs:
           mkdir -p ../../BACK/companyvalue/src/main/resources/static
           cp -r dist/* ../../BACK/companyvalue/src/main/resources/static/
 
-      # 4. 백엔드(Spring Boot) 빌드
+      # 백엔드(Spring Boot) 빌드
       - name: Build Backend (Gradle)
         working-directory: ./BACK/companyvalue
         run: |
           chmod +x gradlew
           ./gradlew clean build -x test
 
-      # 5. Docker Hub 로그인
+      # Docker Hub 로그인
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 6. Docker 이미지 빌드 & Push
+      # Docker 이미지 빌드 & Push
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -56,7 +68,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
 
-      # 7. 서버에 SSH 접속해서 배포 명령 실행
+      # 서버에 SSH 접속해서 배포 명령 실행
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -75,8 +87,8 @@ jobs:
               -e SPRING_DATASOURCE_URL="jdbc:mariadb://127.0.0.1:3306/value" \
               -e SPRING_DATASOURCE_USERNAME="root" \
               -e SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+              -e SPRING_JPA_HIBERNATE_DDL_AUTO="create" \
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \
-              -e API_ALPHAVANTAGE_KEY="${{ secrets.ALPHA_API_KEY }}" \
               -e API_FRED_KEY="${{ secrets.FRED_API_KEY }}" \
               ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
 
