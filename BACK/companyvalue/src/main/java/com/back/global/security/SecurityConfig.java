@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 이므로 세션 미사용
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // OPTIONS 메서드는 인증 없이 모두 허용
-                        .requestMatchers("/", "/index.html", "/assets/**", "/*.ico", "/vite.svg").permitAll() // 정적 리소스(React 파일) 접근 허용
+                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/*.ico", "/vite.svg").permitAll() // 정적 리소스(React 파일) 접근 허용
                         .requestMatchers("/auth/**", "/test/**", "/error").permitAll() // 로그인/회원가입 등 인증 없이 접근 가능한 API
                         .requestMatchers(HttpMethod.GET, "/api/macro/**", "/api/companies/**", "/api/scores/**").permitAll() // 공개 데이터 조회 API 허용
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll() // swagger 관련 허용
