@@ -5,6 +5,7 @@ import { ScoreResult } from "../../types/company";
 import MajorIndicators from "./components/MajorIndicators";
 import MacroTrendSection from "./components/MacroTrendSection";
 import TopRankingList from "./components/TopRankingList";
+import LoadingState from "../../components/common/LoadingState";
 
 const HomePage = () => {
   const { data: latest, isLoading: isLatestLoading } = useQuery({
@@ -28,16 +29,9 @@ const HomePage = () => {
 
   // 로딩 상태 통합
   if (isLatestLoading || isHistoryLoading || isRankLoading) {
-    return (
-      <div className="flex h-full items-center justify-center text-slate-400">
-        <div className="flex flex-col items-center gap-2">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-600 border-t-blue-500"></div>
-          <span>데이터 분석 중...</span>
-        </div>
-      </div>
-    );
+    return <LoadingState message="데이터 분석 중..." />;
   }
-
+  
   if (!latest || !history) return null;
   
   return (
