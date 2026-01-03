@@ -1,34 +1,53 @@
 import { useQuery } from "@tanstack/react-query";
 import { companyApi } from "../../../api/companyApi";
 import StockPriceChart from "./charts/StockPriceChart";
+import LoadingState from "../../../components/common/LoadingState";
+import EmptyState from "../../../components/common/EmptyState";
+import { BarChart2 } from "lucide-react";
+import ErrorState from "../../../components/common/ErrorState";
 
 interface Props {
   ticker: string;
 }
 
 const StockChartSection = ({ticker}: Props) => {
-  
-  const {data: stockHistory, isPending, isError} = useQuery({
+  const {data: stockHistory, isPending, isError, refetch} = useQuery({
     queryKey: ["companyStock", ticker],
     queryFn: async () => companyApi.getStockHistory(ticker),
     enabled: !!ticker,
     staleTime: 1000 * 60 * 60, // 1시간 캐싱
   });
 
-  if(isPending) {
+  // 공통 컨테이너 스타일: 높이 고정 및 중앙 정렬 (Layout Shift 방지)
+  const containerClass = "w-full h-[350px] bg-slate-800/30 rounded-xl flex items-center justify-center border border-slate-700/50";
+
+  if (isPending) {
     return (
-      <div className="w-full h-[350px] bg-slate-800/30 rounded-xl flex items-center justify-center text-slate-400 border border-slate-700/50 animate-pulse">
-        주가 데이터 로딩 중...
+      <div className={containerClass}>
+        <LoadingState message="주가 데이터를 분석하고 있습니다..." />
       </div>
     );
   }
 
-  // 에러가 발생했거나 데이터가 비어있는 경우 처리
-  if(isError || !stockHistory || stockHistory.length === 0) {
+  if (isError) {
     return (
-      <div className="w-full h-[350px] bg-slate-800/30 rounded-xl flex flex-col items-center justify-center text-slate-500 border border-slate-700/50">
-        <p>📉 주가 데이터를 불러올 수 없습니다.</p>
-        <span className="text-xs mt-2">일시적인 오류이거나 데이터가 없습니다.</span>
+      <div className={containerClass}>
+        <ErrorState 
+          title="차트 로딩 실패" 
+          onRetry={refetch} // React Query의 refetch 함수 연결
+        />
+      </div>
+    );
+  }
+
+  if (!stockHistory || stockHistory.length === 0) {
+    return (
+      <div className={containerClass}>
+        <EmptyState 
+          icon={<BarChart2 className="w-10 h-10 text-slate-600" />} // 차트 아이콘
+          title="주가 데이터 없음"
+          description="해당 종목의 차트 정보를 불러올 수 없습니다."
+        />
       </div>
     );
   }
