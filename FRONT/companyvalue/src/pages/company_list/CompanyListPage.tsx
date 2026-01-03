@@ -6,6 +6,7 @@ import axiosClient from "../../api/axiosClient";
 import TopRatedCompanies from "./components/TopRatedCompanies";
 import CompanyFilterHeader from "./components/CompanyFilterHeader";
 import CompanyGridSection from "./components/CompanyGridSection";
+import Pagination from "../../components/common/Pagination";
 
 const CompanyListPage = () => {
   const [page, setPage] = useState(0);
@@ -61,7 +62,8 @@ const CompanyListPage = () => {
     ? isSearchLoading
     : isPageLoading;
 
-    const showPagination = !debouncedSearch && !!pageData;
+  // 페이지네이션 노출 여부 조건 (검색어가 없고 데이터가 있을 때)
+  const showPagination = !debouncedSearch && !!pageData;
 
   
   return (
@@ -72,6 +74,7 @@ const CompanyListPage = () => {
       )}
 
       <div className="space-y-6">
+
         {/* 필터 및 검색 헤더 */}
         <CompanyFilterHeader
           searchTerm={searchTerm}
@@ -80,18 +83,23 @@ const CompanyListPage = () => {
           onSortChange={setSortOption}
           isSearchActive={!!debouncedSearch}
         />
-        {/* 기업 목록 그리드 및 페이지네이션 */}
+
+        {/* 기업 목록 그리드 */}
         <CompanyGridSection
           isLoading={isLoading}
           companies={companies}
-          // 페이지네이션 Props
-          showPagination={showPagination}
-          currentPage={page}
-          totalPages={pageData?.totalPages || 0}
-          isPlaceholderData={isPlaceholderData}
-          onPageChange={setPage}
-          isLastPage={pageData?.last ?? true}
         />
+
+        {/* 페이지네이션 */}
+        {showPagination && (
+          <Pagination
+            currentPage={page}
+            totalPages={pageData?.totalPages || 0}
+            onPageChange={setPage}
+            isPlaceholderData={isPlaceholderData}
+            isLastPage={pageData?.last ?? true}
+          />
+        )}
       </div>
     </div>
   );

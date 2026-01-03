@@ -1,4 +1,4 @@
-import { Building2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { Company } from "../../../types/company";
 import { getGradeColor, getScoreColor } from "../../../utils/formatters";
 import { Link } from "react-router-dom";
@@ -8,24 +8,11 @@ import EmptyState from "../../../components/common/EmptyState";
 interface CompanyGridSectionProps {
   isLoading: boolean;
   companies?: Company[];
-  // 페이지네이션 관련 (검색 중이 아닐 때만 사용하므로 optional)
-  showPagination: boolean;
-  currentPage: number;
-  totalPages: number;
-  isPlaceholderData: boolean;
-  onPageChange: (newPage: number) => void;
-  isLastPage: boolean;
 }
 
 const CompanyGridSection = ({
   isLoading,
   companies,
-  showPagination,
-  currentPage,
-  totalPages,
-  isPlaceholderData,
-  onPageChange,
-  isLastPage,
 }: CompanyGridSectionProps) => {
   // 로딩 상태
   if (isLoading) return <LoadingState />;
@@ -42,8 +29,6 @@ const CompanyGridSection = ({
   }
 
   return (
-    <div className="space-y-6">
-      {/* 3. 기업 목록 그리드 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {companies.map((company) => (
           <Link
@@ -97,35 +82,6 @@ const CompanyGridSection = ({
         ))}
       </div>
 
-      {/* 4. 페이지네이션 (조건부 렌더링) */}
-      {showPagination && (
-        <div className="flex justify-center items-center gap-4 mt-8 pt-8 border-t border-slate-800/50">
-          <button
-            onClick={() => onPageChange(Math.max(currentPage - 1, 0))}
-            disabled={currentPage === 0 || isPlaceholderData}
-            className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft size={14} /> "Prev"
-          </button>
-
-          <span className="text-slate-400 text-sm font-mono">
-            {currentPage + 1} / {totalPages}
-          </span>
-
-          <button
-            onClick={() => {
-              if (!isLastPage) {
-                onPageChange(currentPage + 1);
-              }
-            }}
-            disabled={isLastPage || isPlaceholderData}
-            className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            "Next" <ChevronRight size={14} />
-          </button>
-        </div>
-      )}
-    </div>
   );
 };
 
