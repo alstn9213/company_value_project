@@ -1,56 +1,32 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { watchlistApi } from "../../api/watchlistApi";
-import { AlertCircle, Trash2, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getGradeColor, getScoreColor } from "../../utils/formatters";
+import { AlertCircle } from "lucide-react";
+import { useWatchlist } from "../../hooks/useWatchlist"; // Hook 경로 확인 필요
+import WatchlistCard from "./components/WatchlistCard";
+import LoadingState from "../../components/common/LoadingState";
+import EmptyState from "../../components/common/EmptyState";
 
 const WatchlistPage = () => {
-  const queryClient = useQueryClient();
-
-  const { data: watchlist, isLoading } = useQuery({
-    queryKey: ["watchlist"],
-    queryFn: watchlistApi.getMyWatchlist,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: watchlistApi.remove,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["watchlist"] });
-    },
-    onError: (error) => {
-      console.error("삭제 실패:", error);
-      alert("삭제 중 오류가 발생했습니다.");
-    },
-  });
-
-  const handleDelete = (e: React.MouseEvent, id: number) => {
-    e.preventDefault();
-    if (confirm("관심 목록에서 삭제하시겠습니까?")) {
-      deleteMutation.mutate(id);
-    }
-  };
+  const { watchlist, isLoading, handleDelete } = useWatchlist();
 
   if (isLoading) {
-    return (
-      <div className="text-center p-20 text-slate-400">불러오는 중...</div>
-    );
+    return <LoadingState message="관심 종목을 불러오는 중..." />;
   }
 
-  // 데이터가 없을 경우
+  // 공통 Empty 컴포넌트 사용
+  // 기존 디자인이 EmptyState와 많이 다르다면 아래처럼 유지하되, 
+  // 포트폴리오 일관성을 위해 EmptyState 컴포넌트를 확장해서 쓰는 것이 베스트.
   if (!watchlist || watchlist.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto text-center py-20">
-        <div className="bg-slate-800/30 rounded-xl border border-slate-700/50 p-10 inline-block">
-          <AlertCircle className="w-12 h-12 text-slate-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-slate-300 mb-2">
-            관심 종목이 비어있습니다.
-          </h2>
-          <p className="text-slate-500 mb-6">
-            기업 목록에서 마음에 드는 기업을 추가해보세요.
-          </p>
+      <div className="max-w-7xl mx-auto py-20 px-4">
+        <EmptyState
+          icon={AlertCircle}
+          title="관심 종목이 비어있습니다."
+          description="기업 목록에서 마음에 드는 기업을 추가해보세요."
+        />
+        <div className="text-center mt-6">
           <Link
             to="/companies"
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors inline-block"
           >
             기업 찾으러 가기
           </Link>
@@ -58,6 +34,7 @@ const WatchlistPage = () => {
       </div>
     );
   }
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       <div>
@@ -71,49 +48,11 @@ const WatchlistPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {watchlist.map((item) => (
-          <Link
+          <WatchlistCard
             key={item.watchlistId}
-            to={`/company/${item.ticker}`}
-            className="group relative bg-card border border-slate-700/50 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg block"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-slate-800 text-slate-400 mb-2">
-                  {item.ticker}
-                </span>
-                <h3 className="text-xl font-bold text-white truncate pr-4">
-                  {item.name}
-                </h3>
-              </div>
-              
-              {/* 등급 뱃지 */}
-              <div
-                className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-lg font-bold ${getGradeColor(
-                  item.currentGrade
-                )}`}
-              >
-                {item.currentGrade}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700/50">
-              <div className="flex items-center gap-2">
-                <TrendingUp size={16} className="text-slate-500" />
-                <span className={`font-bold ${getScoreColor(item.currentScore)}`}>
-                  {item.currentScore}점
-                </span>
-              </div>
-
-              {/* 삭제 버튼 */}
-              <button
-                onClick={(e) => handleDelete(e, item.watchlistId)}
-                className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-full transition-colors z-20"
-                title="목록에서 삭제"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          </Link>
+            item={item}
+            onDelete={handleDelete}
+          />
         ))}
       </div>
     </div>
