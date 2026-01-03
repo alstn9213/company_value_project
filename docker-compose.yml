@@ -8,12 +8,12 @@ services:
     environment:
       - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MARIADB_DATABASE=${DB_NAME}
-      - TZ=Asia/Seoul                 # 타임존 (한국 시간)
+      - TZ=Asia/Seoul
     volumes:
-      - ./db_data:/var/lib/mysql      # DB 데이터를 프로젝트 폴더 내 db_data에 저장 (삭제 방지)
-    # DB는 외부 노출 없이 내부 네트워크에서만 접근 (보안 강화)
-    expose:
-      - "3306"
+      - ./db_data:/var/lib/mysql
+    # [중요] expose -> ports로 변경해야 내 컴퓨터(IntelliJ)에서 접속 가능
+    ports:
+      - "3306:3306"
     restart: always
     networks:
       - app-network
@@ -22,74 +22,10 @@ services:
   redis:
     image: redis:alpine
     container_name: company_redis
-    expose:
-      - "6379"
-    restart: always
-    networks:
-      - app-network
-
-  # 3. Backend (Spring Boot)
-  backend:
-    container_name: company_backend
-    build: ./BACK/companyvalue
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://company_mariadb:3306/value
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=${DB_ROOT_PASSWORD}
-      - SPRING_DATA_REDIS_HOST=company_redis
-      - SPRING_DATA_REDIS_PORT=6379
-      # API 키 등 민감 정보는 .env 파일에서 주입
-      - API_FRED_KEY=${API_FRED_KEY}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-    expose:
-      - "8080" # Nginx를 통해서만 접속 가능하도록 외부 포트 매핑 제거
-    depends_on:
-      - mariadb
-      - redis
-    restart: always
-    networks:
-      - app-network
-
-    # 4. Frontend (React)
-  frontend:
-    container_name: company_frontend
-    build:
-      context: ./FRONT/companyvalue # 프론트엔드 Dockerfile 경로
-      args:
-        - VITE_API_URL=https://${DOMAIN_NAME}
-    expose:
-      - "5173"
-    restart: always
-    networks:
-      - app-network
-
-  # 5. Nginx (리버스 프록시 & SSL)
-  nginx:
-    image: nginx:1.25-alpine
-    container_name: nginx
+    # [중요] 내 컴퓨터(Spring Boot)에서 접속 가능하도록 포트 개방
     ports:
-      - "80:80"   # HTTP
-      - "443:443" # HTTPS
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d      # 작성한 Nginx 설정 파일 마운트
-      - ./data/certbot/conf:/etc/letsencrypt  # SSL 인증서 저장소
-      - ./data/certbot/www:/var/www/certbot   # Let's Encrypt 인증 확인용
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-    depends_on:
-      - backend
-      - frontend
+      - "6379:6379"
     restart: always
-    networks:
-      - app-network
-
-  # 6. Certbot (SSL 인증서 자동 발급/갱신)
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - app-network
 

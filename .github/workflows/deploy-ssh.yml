@@ -68,6 +68,17 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
 
+      # 설정 파일(운영용 Compose & Nginx 설정)을 서버로 전송
+      - name: Copy Docker Compose & Config to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # docker-compose.prod.yml 과 nginx 설정 폴더를 전송
+          source: "docker-compose.prod.yml,nginx/conf.d/default.conf"
+          target: "/home/${{ secrets.VM_USERNAME }}/company_value_project"
+
       # 서버에 SSH 접속해서 배포 명령 실행
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -76,20 +87,19 @@ jobs:
           username: ${{ secrets.VM_USERNAME }} # GCP VM의 사용자명 (보통 구글계정 아이디 앞부분)
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
-            docker stop app-server || true
-            docker rm app-server || true
-            
-            docker run -d \
-              --name app-server \
-              --network host \
-              -e SERVER_PORT=80 \
-              -e SPRING_DATASOURCE_URL="jdbc:mariadb://127.0.0.1:3306/value" \
-              -e SPRING_DATASOURCE_USERNAME="root" \
-              -e SPRING_DATASOURCE_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-              -e SPRING_JPA_HIBERNATE_DDL_AUTO="create" \
-              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \
-              -e API_FRED_KEY="${{ secrets.FRED_API_KEY }}" \
-              ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
+            # 프로젝트 폴더로 이동
+            cd /home/${{ secrets.VM_USERNAME }}/company_value_project
 
+            # .env 파일 생성 (환경변수 주입)
+            echo "DB_ROOT_PASSWORD=${{ secrets.DB_PASSWORD }}" > .env
+            echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET }}" >> .env
+            echo "API_FRED_KEY=${{ secrets.FRED_API_KEY }}" >> .env
+            echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
+            # 최신 이미지 Pull (prod 파일 기준)
+            docker compose -f docker-compose.prod.yml pull
+            
+            # 컨테이너 실행 (기존 컨테이너가 있다면 재시작)
+            docker compose -f docker-compose.prod.yml up -d
+            
+            # 불필요한 구버전 이미지 정리
             docker image prune -f
