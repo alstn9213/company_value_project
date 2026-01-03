@@ -4,6 +4,12 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+
+# docker-compose에서 넘겨준 args를 받음
+ARG VITE_API_URL
+# 환경변수로 설정 (Vite가 빌드할 때 읽을 수 있게)
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 
 # 2. 실행 단계 (가볍게 serve 패키지 사용)

@@ -53,11 +53,12 @@ services:
     # 4. Frontend (React)
   frontend:
     container_name: company_frontend
-    build: ./FRONT/companyvalue # 프론트엔드 Dockerfile 경로
+    build:
+      context: ./FRONT/companyvalue # 프론트엔드 Dockerfile 경로
+      args:
+        - VITE_API_URL=https://${DOMAIN_NAME}
     expose:
       - "5173"
-    environment:
-      - VITE_API_URL=https://${DOMAIN_NAME} # HTTPS 도메인 주입
     restart: always
     networks:
       - app-network
