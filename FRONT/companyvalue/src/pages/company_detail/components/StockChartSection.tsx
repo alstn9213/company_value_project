@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { companyApi } from "../../../api/companyApi";
-import StockPriceChart from "../../../components/charts/StockPriceChart";
+import StockPriceChart from "./charts/StockPriceChart";
 
 interface Props {
   ticker: string;

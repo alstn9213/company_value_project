@@ -8,8 +8,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { FinancialDetail } from "../../types/company";
-import { formatCurrency } from "../../utils/formatters";
+import { FinancialDetail } from "../../../../types/company";
+import { formatCurrency } from "../../../../utils/formatters";
 
 interface Props {
   data: FinancialDetail[];

@@ -1,6 +1,6 @@
 import { Activity, DollarSign, Percent, TrendingDown } from "lucide-react";
-import IndicatorItem from "./IndicatorItem";
 import { MacroData } from "../../../types/macro";
+import IndicatorItem from "./IndicatorItem";
 
 interface MajorIndicatorsProps {
   latest: MacroData;

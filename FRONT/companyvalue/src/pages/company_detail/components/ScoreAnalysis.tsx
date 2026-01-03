@@ -1,7 +1,7 @@
 import { AlertTriangle, HelpCircle, TrendingUp } from "lucide-react";
-import ScoreRadarChart, { ChartDataPoint } from "../../../components/charts/ScoreRadarChart";
 import { getScoreColor } from "../../../utils/formatters";
 import { SCORE_TERMS, TermDefinition } from "../constants/financialTerms";
+import ScoreRadarChart, { ChartDataPoint } from "./charts/ScoreRadarChart";
 interface CompanyScore {
   ticker: string;
   name: string;
