@@ -21,7 +21,6 @@ const CompanyGridSection = ({
   if (!companies || companies.length === 0) {
     return (
       <EmptyState
-        icon={Building2}
         title="검색 결과가 없습니다."
         description="다른 키워드로 검색해보세요."
       />

@@ -2,6 +2,8 @@ import { AlertTriangle, HelpCircle, TrendingUp } from "lucide-react";
 import { getScoreColor } from "../../../utils/formatters";
 import { SCORE_TERMS, TermDefinition } from "../constants/financialTerms";
 import ScoreRadarChart, { ChartDataPoint } from "./charts/ScoreRadarChart";
+import ScoreRow from "./rows/ScoreRow";
+
 interface CompanyScore {
   ticker: string;
   name: string;
@@ -36,6 +38,7 @@ const ScoreAnalysis = ({ score }: Props) => {
     { subject: '내재가치', score: score.valuationScore, fullMark: MAX_SCORES.VALUATION },
     { subject: '미래투자', score: score.investmentScore, fullMark: MAX_SCORES.INVESTMENT },
   ];
+  
   return (
     <div className="h-full flex flex-col gap-4">
       {/* 1. 페널티/위험 경고 메시지 */}
@@ -118,60 +121,5 @@ const ScoreAnalysis = ({ score }: Props) => {
   );
 };
 
-// 내부 컴포넌트: 점수 행 (재사용성 및 가독성을 위해 분리)
-const ScoreRow = ({
-  label,
-  value,
-  max,
-  color = "bg-blue-500",
-  term,
-}: {
-  label: string;
-  value: number;
-  max: number;
-  color?: string;
-  term?: TermDefinition;
-}) => (
-  // group 클래스를 추가하여 호버 상태를 자식 요소가 감지할 수 있게 함
-  <div className="flex flex-col gap-1.5 group relative">
-    <div className="flex justify-between items-center text-xs">
-      {/* 라벨에 마우스를 올리면 툴팁이 뜨도록 설정 */}
-      <div className="flex items-center gap-1.5 cursor-help">
-        <span className="text-slate-400 font-medium border-b border-dotted border-slate-600 group-hover:text-white group-hover:border-slate-400 transition-colors">
-          {label}
-        </span>
-        {/* 작은 물음표 아이콘 (선택 사항) */}
-        <HelpCircle
-          size={12}
-          className="text-slate-600 group-hover:text-slate-400 transition-colors"
-        />
-      </div>
-
-      <span className="text-slate-300 font-mono">
-        <span className="text-white font-bold">{value}</span> / {max}
-      </span>
-    </div>
-
-    {/* 프로그레스 바 배경 */}
-    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-      <div
-        className={`h-full rounded-full transition-all duration-1000 ease-out ${color}`}
-        style={{ width: `${Math.min((value / max) * 100, 100)}%` }}
-      />
-    </div>
-
-    {/* 툴팁 (Hover 시 등장) */}
-    {term && (
-      <div className="absolute bottom-full left-0 mb-2 w-72 p-4 bg-slate-900/95 border border-slate-700 rounded-lg shadow-xl backdrop-blur-md z-50 hidden group-hover:block animate-in fade-in zoom-in-95 duration-200">
-        <h4 className="font-bold text-slate-100 mb-2 text-sm">{term.title}</h4>
-        <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-line">
-          {term.description}
-        </p>
-        {/* 말풍선 꼬리 */}
-        <div className="absolute top-full left-6 -mt-1.5 border-4 border-transparent border-t-slate-700" />
-      </div>
-    )}
-  </div>
-);
 
 export default ScoreAnalysis;

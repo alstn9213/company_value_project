@@ -1,23 +1,20 @@
-import { LucideIcon, Search } from "lucide-react";
-
 interface EmptyStateProps {
-  icon?: LucideIcon;
-  title?: string;
-  description?: string;
+  icon?: React.ReactNode;   // 아이콘을 유동적으로 받을 수 있게
+  title?: string;           // 강조된 메시지
+  description?: string;     // 부가 설명
+  className?: string;       // 추가 스타일링
 }
 
-const EmptyState = ({
-  icon: Icon = Search,
-  title = "데이터가 없습니다.",
-  description,
-}: EmptyStateProps) => {
+const EmptyState = ({ 
+  icon, title = "데이터가 없습니다.",
+  description, className
+ }: EmptyStateProps) => {
   return (
-    <div className="text-center py-20 bg-slate-800/30 rounded-xl border border-slate-700/50">
-      <Icon className="mx-auto h-12 w-12 text-slate-500 mb-4" />
-      <p className="text-slate-300 text-lg">{title}</p>
-      {description && <p className="text-slate-500">{description}</p>}
+    <div className={`flex flex-col items-center justify-center text-center p-4 ${className}`}>
+      {icon && <div className="mb-3 opacity-50">{icon}</div>}
+      <p className="text-slate-400 font-medium">{title}</p>
+      {description && <p className="text-sm text-slate-500 mt-1">{description}</p>}
     </div>
   );
 };
-
 export default EmptyState;

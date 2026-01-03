@@ -19,7 +19,6 @@ const WatchlistPage = () => {
     return (
       <div className="max-w-7xl mx-auto py-20 px-4">
         <EmptyState
-          icon={AlertCircle}
           title="관심 종목이 비어있습니다."
           description="기업 목록에서 마음에 드는 기업을 추가해보세요."
         />

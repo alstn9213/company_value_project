@@ -33,7 +33,8 @@ export interface ScoreResult {
   isOpportunity: boolean;
 }
 
-export interface FinancialDetail {
+
+export interface FinancialData {
   year: number;
   quarter: number;
   revenue: number;
@@ -51,8 +52,8 @@ export interface FinancialDetail {
 export interface CompanyDetailResponse {
   companySummary: Company;
   score: ScoreResult;
-  latestFinancial: FinancialDetail;
-  financialHistory: FinancialDetail[];
+  latestFinancial: FinancialData;
+  financialHistory: FinancialData[];
 }
 
 export interface StockHistory {

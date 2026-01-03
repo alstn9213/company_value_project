@@ -12,7 +12,7 @@ const SearchBar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);   
 
 // 검색어 입력 시 DB 조회 (Debounce 적용: 0.3초)
-useEffect(() => {
+  useEffect(() => {
     const fetchSuggestions = async () => {
     if (keyword.trim().length < 1) {
         setSuggestions([]);
