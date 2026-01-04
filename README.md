@@ -17,7 +17,7 @@
 
 ## 배포 및 데모
 
-- **Web URL:** http://valuepick.p-e.kr
+- **Web URL:** https://valuepick.p-e.kr
 - **Demo Video:** `[유튜브 링크 업데이트 예정]`
 
 > **⚠️ 서비스 이용 안내 (비용 최적화 정책)**
