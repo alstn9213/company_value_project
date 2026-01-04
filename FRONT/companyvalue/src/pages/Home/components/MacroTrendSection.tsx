@@ -35,7 +35,7 @@ const MacroTrendSection = ({ latestDate, history, isLoading }: MacroTrendSection
       {isLoading ? (
         <Skeleton className="w-full h-80 rounded-xl bg-slate-800" />
       ) : (
-        history && <EconomicChart history={history} />
+        history && <EconomicChart history={history}/>
       )}
 
       {/* 가이드 섹션 */}
