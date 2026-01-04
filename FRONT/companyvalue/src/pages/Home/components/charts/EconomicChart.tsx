@@ -9,7 +9,7 @@ interface EconomicChartProps {
 }
 
 const EconomicChart = ({ history, isLoading }: EconomicChartProps) => {
-     // 장단기 금리차 역전 구간 계산
+  // 장단기 금리차 역전 구간 계산
   const inversionIntervals = useMemo(() => {
     if (!history || history.length === 0) return [];
     const intervals: { start: string; end: string }[] = [];

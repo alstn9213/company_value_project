@@ -1,7 +1,8 @@
-import { Activity, DollarSign, Percent, TrendingDown } from "lucide-react";
+import { Activity, AlertCircle, DollarSign, Percent, TrendingDown } from "lucide-react";
 import { MacroData } from "../../../types/macro";
 import Skeleton from "../../../components/common/Skeleton";
 import IndicatorItem from "./items/IndicatorItem";
+import EmptyState from "../../../components/common/EmptyState";
 
 interface MajorIndicatorsProps {
   latest?: MacroData;
@@ -27,9 +28,17 @@ const MajorIndicators = ({ latest, isLoading }: MajorIndicatorsProps) => {
               </div>
             </div>
           ))
+        ) : !latest ? (
+          // 데이터가 없을 때 (Empty State)
+          <div className="flex-1 flex items-center justify-center bg-slate-800/30 rounded-xl border border-slate-700/50">
+            <EmptyState
+              icon={<AlertCircle size={40} />}
+              title="지표 데이터 없음"
+              description="현재 확인할 수 있는 경제 지표가 없습니다."
+            />
+          </div>
         ) : (
           // 데이터 로드 완료 시
-          latest && (
             <>
               <IndicatorItem
                 label="기준 금리"
@@ -65,7 +74,6 @@ const MajorIndicators = ({ latest, isLoading }: MajorIndicatorsProps) => {
                 color="text-red-400"
               />
             </>
-          )
         )}
       </div>
     </section>
