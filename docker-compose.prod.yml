@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. MariaDB (유지)
+  # 1. MariaDB
   mariadb:
     image: mariadb:10.6
     container_name: company_mariadb
@@ -17,7 +17,7 @@ services:
     networks:
       - app-network
 
-  # 2. Redis (유지)
+  # 2. Redis
   redis:
     image: redis:alpine
     container_name: company_redis
@@ -27,7 +27,7 @@ services:
     networks:
       - app-network
 
-  # 3. Backend (수정됨: 이미지 사용 & 프론트엔드 통합)
+  # 3. Backend
   backend:
     container_name: company_backend
     # [중요] 빌드 대신 Docker Hub에 올라간 이미지를 사용합니다.
@@ -51,7 +51,7 @@ services:
     networks:
       - app-network
 
-  # 4. Nginx (유지: 백엔드와 연결)
+  # 4. Nginx
   nginx:
     image: nginx:1.25-alpine
     container_name: nginx
@@ -70,7 +70,7 @@ services:
     networks:
       - app-network
 
-  # 5. Certbot (유지)
+  # 5. Certbot
   certbot:
     image: certbot/certbot
     container_name: certbot

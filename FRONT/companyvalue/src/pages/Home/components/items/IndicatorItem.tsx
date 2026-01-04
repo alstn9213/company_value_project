@@ -5,7 +5,6 @@ interface IndicatorItemProps {
   value: string;
   /** Lucide icon 컴포넌트 등을 받기 위한 ReactNode 타입 */
   icon: React.ReactNode;
-  /** Tailwind CSS 텍스트 색상 클래스 (예: "text-red-500") */
   color: string;
   subText?: string;
   /** 경고 스타일 적용 여부 */
