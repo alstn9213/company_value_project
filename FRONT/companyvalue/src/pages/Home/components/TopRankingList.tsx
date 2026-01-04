@@ -78,7 +78,7 @@ const TopRankingList = ({companies, isLoading}: TopRankingListProps) => {
                   </td>
                   <td className="py-3 text-center">
                     <span
-                      className={`inline-block min-w-[24px] rounded px-1.5 py-0.5 text-[10px] font-bold ${getGradeColor(
+                      className={`inline-block min-w-6 rounded px-1.5 py-0.5 text-[10px] font-bold ${getGradeColor(
                         item.grade
                       )}`}
                     >

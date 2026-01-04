@@ -4,11 +4,11 @@ import { MacroData } from "../../../../types/macro";
 import Skeleton from "../../../../components/common/Skeleton";
 
 interface EconomicChartProps {
-  history: MacroData[];
-  isLoading?: boolean;
+  history?: MacroData[];
+  isLoading: boolean;
 }
 
-const EconomicChart = ({ history, isLoading = false }: EconomicChartProps) => {
+const EconomicChart = ({ history, isLoading }: EconomicChartProps) => {
      // 장단기 금리차 역전 구간 계산
   const inversionIntervals = useMemo(() => {
     if (!history || history.length === 0) return [];
@@ -62,16 +62,16 @@ const EconomicChart = ({ history, isLoading = false }: EconomicChartProps) => {
             <h3 className="mb-6 text-lg font-bold text-slate-200">
               미국의 주요 금리 및 인플레이션 추이 (최근 10년)
             </h3>
-            {/* [Best Practice Fix] Recharts 초기 렌더링 크기 오류 방지 (The width(-1) and height(-1) 에러 해결)
+            {/* Recharts 초기 렌더링 크기 오류 방지 (The width(-1) and height(-1) 에러 해결)
                1. relative + h-[500px]: 부모 영역 높이 고정
                2. absolute + inset-0: 자식 영역이 부모 영역을 강제로 꽉 채우도록 설정 (Flex 계산에서 격리)
             */}
             <div className="relative h-[500px] w-full">
               <div className="absolute inset-0">
-              {/* 수정 사항: minWidth={0} minHeight={0} 추가 
-                  설명: 초기 렌더링 시 부모 크기가 잡히지 않았을 때(-1), 
-                        에러를 뱉지 않고 0으로 처리하도록 강제함.
-                */}
+              {/* minWidth={0} minHeight={0} 추가 
+                  초기 렌더링 시 부모 크기가 잡히지 않았을 때(-1), 
+                  에러를 뱉지 않고 0으로 처리하도록 강제함.
+              */}
                 <ResponsiveContainer 
                   width="100%" 
                   height="100%" 
