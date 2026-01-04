@@ -11,9 +11,6 @@ const WatchlistPage = () => {
     return <LoadingState message="관심 종목을 불러오는 중..." />;
   }
 
-  // 공통 Empty 컴포넌트 사용
-  // 기존 디자인이 EmptyState와 많이 다르다면 아래처럼 유지하되, 
-  // 포트폴리오 일관성을 위해 EmptyState 컴포넌트를 확장해서 쓰는 것이 베스트.
   if (!watchlist || watchlist.length === 0) {
     return (
       <div className="max-w-7xl mx-auto py-20 px-4">
