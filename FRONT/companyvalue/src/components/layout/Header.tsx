@@ -1,4 +1,3 @@
-import React from "react";
 import Logo from "../common/Logo";
 import HeaderNav from "./HeaderNav";
 import SearchBar from "../common/SearchBar";

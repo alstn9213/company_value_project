@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { AlertCircle } from "lucide-react";
 import { useWatchlist } from "../../hooks/useWatchlist"; // Hook 경로 확인 필요
 import WatchlistCard from "./components/WatchlistCard";
 import LoadingState from "../../components/common/LoadingState";
