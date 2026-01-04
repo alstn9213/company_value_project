@@ -7,9 +7,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { StockHistory } from "../../types/company";
-import { formatCurrency } from "../../utils/formatters";
 import dayjs from "dayjs";
+import { StockHistory } from "../../../../types/company";
+import { formatCurrency } from "../../../../utils/formatters";
 
 interface Props {
   data: StockHistory[];

@@ -8,11 +8,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { FinancialDetail } from "../../types/company";
-import { formatCurrency } from "../../utils/formatters";
+import { FinancialData } from "../../../../types/company";
+import { formatCurrency } from "../../../../utils/formatters";
 
 interface Props {
-  data: FinancialDetail[];
+  data: FinancialData[];
 }
 
 const FinancialTrendChart = ({ data }: Props) => {

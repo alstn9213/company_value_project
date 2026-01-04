@@ -1,12 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import LoginPage from './pages/Auth/LoginPage'
+import LoginPage from './pages/auth/LoginPage'
 import ProtectedRoute from './components/layout/ProtectedRoute'
-import HomePage from './pages/Home/Homepage';
-import SignupPage from './pages/Auth/SignupPage';
+import HomePage from './pages/home/Homepage';
+import SignupPage from './pages/auth/SignupPage';
 import MainLayout from './components/layout/MainLayout';
-import CompanyListPage from './pages/CompanyList/CompanyListPage';
-import CompanyDetailPage from './pages/CompanyDetail/CompanyDetailPage';
-import WatchlistPage from './pages/Watchlist/WatchlistPage';
+import CompanyListPage from './pages/company_list/CompanyListPage';
+import CompanyDetailPage from './pages/company_detail/CompanyDetailPage';
+import WatchlistPage from './pages/watchlist/WatchlistPage';
 
 function App() {
 

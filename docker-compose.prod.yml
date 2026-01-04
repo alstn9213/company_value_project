@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # 1. MariaDB
+  mariadb:
+    image: mariadb:10.6
+    container_name: company_mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MARIADB_DATABASE=value
+      - TZ=Asia/Seoul
+    volumes:
+      - ./db_data:/var/lib/mysql
+    expose:
+      - "3306"
+    restart: always
+    networks:
+      - app-network
+
+  # 2. Redis
+  redis:
+    image: redis:alpine
+    container_name: company_redis
+    expose:
+      - "6379"
+    restart: always
+    networks:
+      - app-network
+
+  # 3. Backend
+  backend:
+    container_name: company_backend
+    # [중요] 빌드 대신 Docker Hub에 올라간 이미지를 사용합니다.
+    image: ${DOCKER_USERNAME}/value-pick:latest
+    environment:
+      # [중요] 'localhost'가 아닌 내부 서비스 이름으로 통신합니다.
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://company_mariadb:3306/value
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${DB_ROOT_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATA_REDIS_HOST=company_redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - API_FRED_KEY=${API_FRED_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    expose:
+      - "8080"
+    depends_on:
+      - mariadb
+      - redis
+    restart: always
+    networks:
+      - app-network
+
+  # 4. Nginx
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    # 6시간마다 SSL 인증서 갱신 체크 및 Nginx 재로드
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - app-network
+
+  # 5. Certbot
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

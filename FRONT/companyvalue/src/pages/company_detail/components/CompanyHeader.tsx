@@ -1,0 +1,51 @@
+import { useAddWatchlist } from "../../../hooks/useAddWatchlist";
+import { CompanyProfile } from "./header/CompanyProfile";
+import { WatchlistButton } from "./header/WatchlistButton";
+import { InvestmentGradeBadge } from "./header/InvestmentGradeBadge";
+
+interface CompanyInfo {
+  ticker: string;
+  name: string;
+  exchange: string;
+  sector: string;
+}
+
+interface CompanyScore {
+  grade: string;
+  isOpportunity: boolean;
+}
+
+interface Props {
+  info: CompanyInfo;
+  score: CompanyScore;
+}
+
+const CompanyHeader = ({info, score}: Props) => {
+  const { addWatchlist, isPending } = useAddWatchlist();
+
+ return (
+    <div className="bg-card border border-slate-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-6">
+      {/* 1. 좌측: 기업 프로필 */}
+      <CompanyProfile
+        ticker={info.ticker}
+        name={info.name}
+        exchange={info.exchange}
+        sector={info.sector}
+      />
+
+      {/* 2. 우측: 버튼 및 등급 */}
+      <div className="flex items-center gap-6">
+        <WatchlistButton
+          onClick={() => addWatchlist(info.ticker)}
+          isPending={isPending}
+        />
+        <InvestmentGradeBadge
+          grade={score.grade}
+          isOpportunity={score.isOpportunity}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default CompanyHeader;
