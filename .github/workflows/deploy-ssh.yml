@@ -51,7 +51,8 @@ jobs:
         working-directory: ./BACK/companyvalue
         run: |
           chmod +x gradlew
-          ./gradlew clean build -x test
+          # [수정] --refresh-dependencies 옵션 추가 (403 에러 해결용)
+          ./gradlew clean build -x test --refresh-dependencies
 
       # Docker Hub 로그인
       - name: Login to Docker Hub
