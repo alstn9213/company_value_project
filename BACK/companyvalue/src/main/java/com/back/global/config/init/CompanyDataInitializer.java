@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -43,28 +45,41 @@ public class CompanyDataInitializer {
       return;
     }
 
+    // [중복 방지] 이미 처리한 Ticker를 기록할 Set 생성
+    Set<String> processedTickers = new HashSet<>();
+
     for(CompanySeedDto seedData : seedDataList) {
+      // 중복 체크: 이미 처리된 종목이면 건너뜀
+      if(processedTickers.contains(seedData.ticker())) {
+        log.warn("중복된 Ticker 발견, 건너뜁니다: {}", seedData.ticker());
+        continue;
+      }
+      processedTickers.add(seedData.ticker());
+
+      // 회사 정보 저장
       Company company = companyRepository.save(Company.builder()
-        .ticker(seedData.ticker())
-        .name(seedData.name())
-        .sector(seedData.sector())
-        .exchange(seedData.exchange())
-        .totalShares(seedData.totalShares())
-        .build());
+              .ticker(seedData.ticker())
+              .name(seedData.name())
+              .sector(seedData.sector())
+              .exchange(seedData.exchange())
+              .totalShares(seedData.totalShares())
+              .build());
 
-    if(seedData.financials() != null && !seedData.financials().isEmpty()) {
-      financialStatementRepository.saveAll(
-        seedData.financials().stream()
-                .map(dto -> seedDataLoader.mapToFinancialEntity(company, dto))
-                .toList()
-      );
-    }
+      // 재무제표 저장
+      if(seedData.financials() != null && !seedData.financials().isEmpty()) {
+        financialStatementRepository.saveAll(
+                seedData.financials().stream()
+                        .map(dto -> seedDataLoader.mapToFinancialEntity(company, dto))
+                        .toList()
+        );
+      }
 
-    if(seedData.stockHistory() != null && !seedData.stockHistory().isEmpty()) {
-      stockPriceHistoryRepository.saveAll(
-        seedData.stockHistory().stream()
-                .map(dto -> seedDataLoader.mapToStockEntity(company, dto))
-                .toList()
+      // 주가 데이터 저장
+      if(seedData.stockHistory() != null && !seedData.stockHistory().isEmpty()) {
+        stockPriceHistoryRepository.saveAll(
+                seedData.stockHistory().stream()
+                        .map(dto -> seedDataLoader.mapToStockEntity(company, dto))
+                        .toList()
         );
       }
     }
