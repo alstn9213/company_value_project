@@ -9,8 +9,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      # Python 세팅
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      # Python 의존성 설치 및 데이터 생성
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+
+      # 이 스크립트가 실행되면 src/main/resources/data/seed_data.json 파일이 갱신된다.
+      - name: Fetch fresh company data
+        run: |
+          python scripts/fetch_data.py
+          
+      # Node.js 세팅
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 프론트엔드 빌드 & 통합
+      - name: Build Frontend & Copy to Backend
+        working-directory: ./FRONT/companyvalue
+        run: |
+          npm ci
+          npm run build
+          # 백엔드의 static 폴더가 없으면 생성
+          mkdir -p ../../BACK/companyvalue/src/main/resources/static
+          # 기존 파일 삭제 (혹시 모를 잔여물 제거)
+          rm -rf ../../BACK/companyvalue/src/main/resources/static/*
+          # 빌드 결과물(dist) 내부 파일들을 백엔드 static으로 복사
+          cp -r dist/* ../../BACK/companyvalue/src/main/resources/static/
+
+          # 복사 잘 됐는지 확인용 출력
+          echo "Listing static files:"
+          ls -R ../../BACK/companyvalue/src/main/resources/static/
 
       # Java 17 세팅
       - name: Set up JDK 17
@@ -19,39 +56,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Node.js 세팅
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      # Python 세팅
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.14'
-
-      # Python 의존성 설치 및 데이터 생성
-      - name: Install Dependencies & Fetch Real Data
-        run: |
-          pip install -r requirements.txt
-          python scripts/fetch_data.py
-
-      # 프론트엔드 빌드 & 통합
-      - name: Build Frontend & Copy
-        working-directory: ./FRONT/companyvalue
-        run: |
-          npm ci
-          npm run build
-          mkdir -p ../../BACK/companyvalue/src/main/resources/static
-          cp -r dist/* ../../BACK/companyvalue/src/main/resources/static/
-
       # 백엔드(Spring Boot) 빌드
       - name: Build Backend (Gradle)
         working-directory: ./BACK/companyvalue
         run: |
           chmod +x gradlew
-          # [수정] --refresh-dependencies 옵션 추가 (403 에러 해결용)
+          # clean build를 해야 복사된 static 파일들이 확실하게 jar에 포함됨
+          # --refresh-dependencies 옵션 추가 (403 에러 해결용)
           ./gradlew clean build -x test --refresh-dependencies
 
       # Docker Hub 로그인
@@ -96,14 +107,9 @@ jobs:
             echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET }}" >> .env
             echo "API_FRED_KEY=${{ secrets.FRED_API_KEY }}" >> .env
             echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> .env
-            # [추가] Docker Hub 로그인 (Private Repo 접근 권한 확보)
+            # Docker Hub 로그인 (Private Repo 접근 권한 확보)
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            # 최신 이미지 Pull (prod 파일 기준)
+            # 최신 이미지 Pull & 재실행
             docker compose -f docker-compose.prod.yml pull
-            
-            # 컨테이너 강제 재생성 (--force-recreate)
-            # 이미지가 변경되지 않았더라도 확실하게 다시 띄운다.
-            docker compose -f docker-compose.prod.yml up -d
-            
-            # 불필요한 구버전 이미지 정리
+            docker compose -f docker-compose.prod.yml up -d --force-recreate
             docker image prune -f

@@ -1,6 +1,8 @@
 # 1. 업계 표준인 Eclipse Temurin (Java 17, Alpine Linux 버전) 사용
 FROM eclipse-temurin:17-jdk-alpine
 
+WORKDIR /app
+
 # 2. 빌드된 JAR 파일을 컨테이너 내부로 복사
 # (나중에 ./gradlew build 명령어로 생길 파일을 가져온다)
 ARG JAR_FILE=build/libs/*.jar
