@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CompanyTestController {
 
-    private final ScoringService scoringService;
+  private final ScoringService scoringService;
 
-    /**
-     * 저장된 데이터를 기반으로 점수만 다시 계산
-     * URL: http://localhost:8080/test/company/re-score
-     */
-    @GetMapping("/re-score") // 브라우저 접속(GET) 허용
-    public ResponseEntity<String> recalculateAllScores() {
-        log.info("관리자 요청에 의해 모든 기업의 점수 재산정을 시작합니다.");
+  /**
+   * 저장된 데이터를 기반으로 점수만 다시 계산
+   * URL: http://localhost:8080/test/company/re-score
+   */
+  @GetMapping("/re-score") // 브라우저 접속(GET) 허용
+  public ResponseEntity<String> recalculateAllScores() {
+    log.info("관리자 요청에 의해 모든 기업의 점수 재산정을 시작합니다.");
 
-        scoringService.calculateAllScores();
+    scoringService.calculateAllScores();
 
-        return ResponseEntity.ok("모든 기업의 점수 재산정이 완료되었습니다.");
-    }
+    return ResponseEntity.ok("모든 기업의 점수 재산정이 완료되었습니다.");
+  }
 }

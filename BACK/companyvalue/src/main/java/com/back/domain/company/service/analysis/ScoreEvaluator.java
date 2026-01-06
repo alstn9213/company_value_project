@@ -36,6 +36,8 @@ public class ScoreEvaluator {
     );
   }
 
+  // --- 헬퍼 메서드 ---
+
   private String calculateGrade(int score) {
     if (score >= GRADE_S_THRESHOLD) return "S";
     if (score >= GRADE_A_THRESHOLD) return "A";

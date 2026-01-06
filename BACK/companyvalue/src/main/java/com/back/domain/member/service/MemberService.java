@@ -15,22 +15,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+  private final MemberRepository memberRepository;
+  private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public void registerMember(SignUpRequest request) {
-        if(memberRepository.existsByEmail(request.email())) {
-            throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
-        }
-
-        Member member = Member.builder()
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .nickname(request.nickname())
-                .role(Role.USER)
-                .build();
-
-        memberRepository.save(member);
+  @Transactional
+  public void registerMember(SignUpRequest request) {
+    if(memberRepository.existsByEmail(request.email())) {
+      throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
     }
+
+    Member member = Member.builder()
+            .email(request.email())
+            .password(passwordEncoder.encode(request.password()))
+            .nickname(request.nickname())
+            .role(Role.USER)
+            .build();
+
+    memberRepository.save(member);
+  }
 }

@@ -12,20 +12,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class MacroScheduler {
 
-    private final MacroDataService macroDataService;
+  private final MacroDataService macroDataService;
 
-    // ==========================================
-    // 거시 경제 지표 자동 업데이트 (매일 새벽 1시)
-    // ==========================================
-    @Scheduled(cron = "0 0 1 * * *")
-    @CacheEvict(value = {"macro_latest", "macro_history"}, allEntries = true)
-    public void updateMacroData() {
-        log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 시작 (캐시 초기화 포함)");
-        try {
-            macroDataService.updateMacroEconomicData();
-            log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 완료");
-        } catch (Exception e) {
-            log.error(">>> [Scheduler] 거시 경제 업데이트 실패", e);
-        }
+  // ==========================================
+  // 거시 경제 지표 자동 업데이트 (매일 새벽 1시)
+  // ==========================================
+  @Scheduled(cron = "0 0 1 * * *")
+  @CacheEvict(value = {"macro_latest", "macro_history"}, allEntries = true)
+  public void updateMacroData() {
+    log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 시작 (캐시 초기화 포함)");
+    try {
+      macroDataService.updateMacroEconomicData();
+      log.info(">>> [Scheduler] 거시 경제 데이터 업데이트 완료");
+    } catch (Exception e) {
+      log.error(">>> [Scheduler] 거시 경제 업데이트 실패", e);
     }
+  }
 }

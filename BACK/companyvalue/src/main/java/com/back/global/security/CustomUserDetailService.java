@@ -18,23 +18,23 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return memberRepository.findByEmail(email)
-                .map(this::createUserDetails)
-                .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
-    }
+  @Override
+  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    return memberRepository.findByEmail(email)
+            .map(this::createUserDetails)
+            .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
+  }
 
-    // DB의 Member를 Security의 UserDetails로 변환하는 헬퍼 메서드
-    private UserDetails createUserDetails(Member member) {
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().getKey());
+  // DB의 Member를 Security의 UserDetails로 변환하는 헬퍼 메서드
+  private UserDetails createUserDetails(Member member) {
+    GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().getKey());
 
-        return new User(
-                String.valueOf(member.getId()), // Principal로 ID 저장
-                member.getPassword(),
-                Collections.singleton(grantedAuthority)
-        );
-    }
+    return new User(
+            String.valueOf(member.getId()), // Principal로 ID 저장
+            member.getPassword(),
+            Collections.singleton(grantedAuthority)
+    );
+  }
 }

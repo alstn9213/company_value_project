@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 public class InitDataConfig {
 
-    private final MacroDataService macroDataService;
-    private final CompanyDataInitializer companyDataInitializer;
+  private final MacroDataService macroDataService;
+  private final CompanyDataInitializer companyDataInitializer;
 
-    @Bean
-    public CommandLineRunner initData() {
-        return args -> {
-            log.info("[InitData] 데이터 초기화 작업을 시작합니다...");
-            macroDataService.initHistoricalMacroData();
-            companyDataInitializer.initCompanyData();
-            log.info("[InitData] 데이터 초기화 로직 완료.");
-        };
-    }
+  @Bean
+  public CommandLineRunner initData() {
+    return args -> {
+      log.info("[InitData] 데이터 초기화 작업을 시작합니다...");
+      macroDataService.initHistoricalMacroData();
+      companyDataInitializer.initCompanyData();
+      log.info("[InitData] 데이터 초기화 로직 완료.");
+    };
+  }
 
 
 

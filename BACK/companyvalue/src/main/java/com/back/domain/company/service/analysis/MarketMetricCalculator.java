@@ -40,7 +40,9 @@ public class MarketMetricCalculator {
     return new MarketMetrics(eps, per, bps, pbr);
   }
 
-  // 나눗셈 중복 제거 및 반올림 정책 통일 헬퍼 메서드
+  // --- 헬퍼 메서드 ---
+
+  // 나눗셈 중복 제거 및 반올림 정책 통일 헬퍼
   private BigDecimal divide(BigDecimal dividend, BigDecimal divisor) {
     if (dividend == null || divisor == null || divisor.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
