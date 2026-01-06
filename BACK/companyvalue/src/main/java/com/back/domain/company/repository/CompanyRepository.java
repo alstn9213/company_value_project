@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
-    Optional<Company> findByTicker(String ticker);
-    // 검색 드롭다운
-    List<Company> findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(String ticker, String name);
-    Page<Company> findAll(Pageable pageable);
+  Optional<Company> findByTicker(String ticker);
+  boolean existsByTicker(String ticker);
+  // 검색 드롭다운
+  List<Company> findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(String ticker, String name);
+  Page<Company> findAll(Pageable pageable);
 }
 

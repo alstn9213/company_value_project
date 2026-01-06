@@ -33,61 +33,67 @@ public class CompanyDataInitializer {
   public void initCompanyData() {
     log.info("[CompanyDataInitializer] 데이터 초기화를 시작합니다...");
 
-    log.info("기존 데이터 삭제 중...");
-    stockPriceHistoryRepository.deleteAll();     // 주가 데이터 삭제
-    financialStatementRepository.deleteAll();    // 재무제표 데이터 삭제
-    companyRepository.deleteAll();               // 기업 정보 삭제
-
-    log.info("새로운 시드 데이터 로드 중...");
     List<CompanySeedDto> seedDataList = seedDataLoader.loadSeedData();
-    if(seedDataList.isEmpty()) {
+    if (seedDataList.isEmpty()) {
       log.warn("시드 데이터가 비어있습니다. 초기화를 종료합니다.");
       return;
     }
 
-    // [중복 방지] 이미 처리한 Ticker를 기록할 Set 생성
     Set<String> processedTickers = new HashSet<>();
+    int newCompanyCount = 0;
 
     for(CompanySeedDto seedData : seedDataList) {
-      // 중복 체크: 이미 처리된 종목이면 건너뜀
-      if(processedTickers.contains(seedData.ticker())) {
-        log.warn("중복된 Ticker 발견, 건너뜁니다: {}", seedData.ticker());
-        continue;
-      }
+      String ticker = seedData.ticker();
+      if(processedTickers.contains(ticker)) continue;
       processedTickers.add(seedData.ticker());
+      if(companyRepository.existsByTicker(ticker)) continue;
 
-      // 회사 정보 저장
-      Company company = companyRepository.save(Company.builder()
-              .ticker(seedData.ticker())
-              .name(seedData.name())
-              .sector(seedData.sector())
-              .exchange(seedData.exchange())
-              .totalShares(seedData.totalShares())
-              .build());
+      try {
+        // 회사 정보 저장
+        Company company = companyRepository.save(Company.builder()
+                .ticker(ticker)
+                .name(seedData.name())
+                .sector(seedData.sector())
+                .exchange(seedData.exchange())
+                .totalShares(seedData.totalShares())
+                .build());
 
-      // 재무제표 저장
-      if(seedData.financials() != null && !seedData.financials().isEmpty()) {
-        financialStatementRepository.saveAll(
-                seedData.financials().stream()
-                        .map(dto -> seedDataLoader.mapToFinancialEntity(company, dto))
-                        .toList()
-        );
-      }
+        // 재무제표 저장
+        if (seedData.financials() != null && !seedData.financials().isEmpty()) {
+          financialStatementRepository.saveAll(
+                  seedData.financials().stream()
+                          .map(dto -> seedDataLoader.mapToFinancialEntity(company, dto))
+                          .toList()
+          );
+        }
 
-      // 주가 데이터 저장
-      if(seedData.stockHistory() != null && !seedData.stockHistory().isEmpty()) {
-        stockPriceHistoryRepository.saveAll(
-                seedData.stockHistory().stream()
-                        .map(dto -> seedDataLoader.mapToStockEntity(company, dto))
-                        .toList()
-        );
+        // 주가 데이터 저장
+        if (seedData.stockHistory() != null && !seedData.stockHistory().isEmpty()) {
+          stockPriceHistoryRepository.saveAll(
+                  seedData.stockHistory().stream()
+                          .map(dto -> seedDataLoader.mapToStockEntity(company, dto))
+                          .toList()
+          );
+        }
+        newCompanyCount++;
+
+      } catch (Exception e) {
+        // 특정 기업 저장 실패가 전체 초기화 로직을 중단시키지 않도록 예외 처리
+        log.error("기업 데이터 저장 중 오류 발생 (Ticker: {}): {}", ticker, e.getMessage());
       }
     }
 
     log.info("[CompanyDataInitializer] 데이터 적재 완료. 점수 산출 시작...");
 
-    scoringService.calculateAllScores();
+    // 점수 산출은 데이터가 변경되었을 때만 수행하거나, 별도 스케줄러로 분리하는 것이 좋으나
+    // 초기화 단계에서는 필요하다면 수행합니다.
+    if (newCompanyCount > 0) {
+      log.info("[CompanyDataInitializer] 신규 데이터가 있어 점수 재산출을 진행합니다.");
+      scoringService.calculateAllScores();
+    } else {
+      log.info("[CompanyDataInitializer] 신규 데이터가 없어 점수 산출을 생략합니다.");
+    }
 
-    log.info("[CompanyDataInitializer] 초기화 최종 완료. (총 {}개 기업)", seedDataList.size());
+    log.info("[CompanyDataInitializer] 초기화 최종 완료.");
   }
 }
