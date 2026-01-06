@@ -10,15 +10,13 @@ export interface Company {
 // Spring Data JPA의 Page 인터페이스 응답 구조 대응
 export interface PageResponse<T> {
   content: T[];
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number; // 현재 페이지 인덱스 (0부터 시작)
-  first: boolean;
-  last: boolean;
-  empty: boolean;
+  page: {
+    size: number;
+    number: number; // 현재 페이지
+    totalElements: number;
+    totalPages: number;
+  };
 }
-
 // --- 상세 페이지용 추가 타입 ---
 
 export interface ScoreResult {

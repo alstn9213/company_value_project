@@ -30,7 +30,7 @@ const CompanyListPage = () => {
       const res = await axiosClient.get<ScoreResult[]>("/api/scores/top");
       return res.data;
     },
-    staleTime: (1000 * 60) & 5, // 5분 캐싱
+    staleTime: (1000 * 60) * 5,// 5분 캐싱
   });
 
   // 전체 목록 쿼리 (검색어가 없을 때 실행)
@@ -65,6 +65,10 @@ const CompanyListPage = () => {
   // 페이지네이션 노출 여부 조건 (검색어가 없고 데이터가 있을 때)
   const showPagination = !debouncedSearch && !!pageData;
 
+  // 현재 페이지(number)가 (전체 페이지 수 - 1)보다 크거나 같으면 마지막 페이지입니다.
+  const currentPage = pageData?.page.number ?? 0;
+  const totalPages = pageData?.page.totalPages ?? 0;
+  const isLastPage = totalPages === 0 || currentPage >= totalPages - 1;
   
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-10">
@@ -93,11 +97,11 @@ const CompanyListPage = () => {
         {/* 페이지네이션 */}
         {showPagination && (
           <Pagination
-            currentPage={page}
-            totalPages={pageData?.totalPages || 0}
+            currentPage={currentPage}
+            totalPages={totalPages}
             onPageChange={setPage}
             isPlaceholderData={isPlaceholderData}
-            isLastPage={pageData?.last ?? true}
+            isLastPage={isLastPage} 
           />
         )}
       </div>

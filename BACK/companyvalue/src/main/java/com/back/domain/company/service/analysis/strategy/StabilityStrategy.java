@@ -2,16 +2,15 @@ package com.back.domain.company.service.analysis.strategy;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.dto.ScoringData;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import static com.back.domain.company.service.analysis.constant.ScoringConstants.SECTOR_FINANCIAL;
+
 @Component
 public class StabilityStrategy implements ScoringStrategy {
-
-    private static final String SECTOR_FINANCIAL = "Financial Services";
 
     @Override
     public int calculate(ScoringData data) {

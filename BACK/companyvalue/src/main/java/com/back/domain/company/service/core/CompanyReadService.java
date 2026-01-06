@@ -31,7 +31,7 @@ public class CompanyReadService {
 
     // 기업 목록 페이지에 모든 기업들을 나열하는 메서드
     public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
-        Sort sortObj = Sort.by(Sort.Direction.ASC, "name"); // 기본: 이름순
+        Sort sortObj = Sort.by(Sort.Direction.ASC, "name");
         if("score".equals(sort)) {
             sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
         }
