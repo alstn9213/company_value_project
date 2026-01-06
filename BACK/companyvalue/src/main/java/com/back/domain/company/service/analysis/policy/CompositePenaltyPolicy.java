@@ -27,7 +27,7 @@ public class CompositePenaltyPolicy implements PenaltyPolicy {
     @Override
     public int calculatePenalty(FinancialStatement fs, MacroEconomicData macro) {
       if (macro == null) {
-        log.debug("");
+        log.warn("[CompositePenaltyPolicy] 거시 경제 데이터 누락");
       }
 
       return rules.stream()

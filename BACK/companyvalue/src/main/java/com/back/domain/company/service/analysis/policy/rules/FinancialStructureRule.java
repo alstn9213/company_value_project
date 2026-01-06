@@ -23,6 +23,7 @@ public class FinancialStructureRule implements PenaltyRule {
     // 자본 잠식 체크
     if (equity.compareTo(BigDecimal.ZERO) <= 0) {
       log.debug("페널티 적용: 자본 잠식(기업: {})", fs.getCompany().getName());
+      penalty += PENALTY_SCORE_CAPITAL_IMPAIRMENT;
     }
 
     // 부채 비율 체크

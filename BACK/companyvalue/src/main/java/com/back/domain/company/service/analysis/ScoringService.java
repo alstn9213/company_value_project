@@ -50,10 +50,8 @@ public class ScoringService {
   private final StockPriceHistoryRepository stockPriceHistoryRepository;
   private final FinancialStatementRepository financialStatementRepository;
 
-  // 전략들 모음
   private final ScoringAggregator scoringAggregator;
 
-  // 페널티 정책
   private final PenaltyPolicy penaltyPolicy;
 
   @Transactional
@@ -68,6 +66,8 @@ public class ScoringService {
                         this::calculateAndSaveScore,
                         () -> log.warn("재무 데이터 없음: {}", company.getTicker())
                 );
+      } catch (BusinessException e) {
+        log.warn("점수 계산 스킵 (Ticker: {}): {}", company.getTicker(), e.getMessage());
       } catch (Exception e) {
         log.error("점수 계산 중 오류 발생 (Ticker: {}): {}", company.getTicker(), e.getMessage());
       }
@@ -94,13 +94,14 @@ public class ScoringService {
 
   @Transactional
   public void calculateAndSaveScore(FinancialStatement fs) {
+    validateFinancialData(fs);
+
     MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
             .orElseThrow(() -> new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND));
 
     StockPriceHistory latestStock = stockPriceHistoryRepository.findTopByCompanyOrderByRecordedDateDesc(fs.getCompany());
-    if(latestStock == null) {
-      log.error("{}의 최근 주가 데이터가 없습니다.", fs.getCompany().getName());
-      return;
+    if (latestStock == null) {
+      throw new BusinessException(ErrorCode.LATEST_STOCK_NOT_FOUND);
     }
 
     BigDecimal price = latestStock.getClosePrice();
@@ -109,17 +110,22 @@ public class ScoringService {
 
     // 모든 전략 실행 (Map으로 결과 받음)
     Map<ScoreCategory, Integer> scores = scoringAggregator.calculateAll(scoringData);
+
     // 각 영역의 점수 추출
     int stability = scores.getOrDefault(ScoreCategory.STABILITY, 0);
     int profitability = scores.getOrDefault(ScoreCategory.PROFITABILITY, 0);
     int valuation = scores.getOrDefault(ScoreCategory.VALUATION, 0);
     int investment = scores.getOrDefault(ScoreCategory.INVESTMENT, 0);
+
     // 기본 점수 계산
     int baseScore = stability + profitability + valuation + investment;
+
     // 페널티 계산
     int penalty = penaltyPolicy.calculatePenalty(fs, macro);
+
     // 총점 계산
     int totalScore = Math.max(0, Math.min(100, baseScore - penalty));
+
     // 등급 매기기
     String grade = calculateGrade(totalScore);
 
@@ -141,6 +147,13 @@ public class ScoringService {
   }
 
   // --- 헬퍼 메서드 ---
+
+  // NPE 방지를 위한 데이터 검증 헬퍼
+  private void validateFinancialData(FinancialStatement fs) {
+    if (fs.getTotalEquity() == null || fs.getNetIncome() == null || fs.getTotalAssets() == null) {
+      throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
+    }
+  }
 
   // 밸류 지표 계산 헬퍼
   private MarketMetrics calculateMarketMetrics(FinancialStatement fs, BigDecimal price) {
@@ -183,7 +196,7 @@ public class ScoringService {
     return "D";
   }
 
-  // 점수 저장하는 헬퍼
+  // 점수 저장 헬퍼
   private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
     CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
             .orElseGet(() -> CompanyScore.builder()
