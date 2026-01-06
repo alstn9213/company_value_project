@@ -9,6 +9,7 @@ import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.MarketMetrics;
+import com.back.domain.company.service.analysis.dto.ScoreEvaluationResult;
 import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.ScoringAggregator;
@@ -51,8 +52,10 @@ public class ScoringService {
   private final FinancialStatementRepository financialStatementRepository;
 
   private final ScoringAggregator scoringAggregator;
-
   private final PenaltyPolicy penaltyPolicy;
+
+  private final MarketMetricCalculator marketMetricCalculator;
+  private final ScoreEvaluator scoreEvaluator;
 
   @Transactional
   public void calculateAllScores() {
@@ -89,7 +92,7 @@ public class ScoringService {
 
     return companyScoreRepository.findByCompany(company)
             .map(CompanyScoreResponse::from)
-            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_SCORE_NOT_FOUND));
   }
 
   @Transactional
@@ -105,45 +108,20 @@ public class ScoringService {
     }
 
     BigDecimal price = latestStock.getClosePrice();
-    MarketMetrics metrics = calculateMarketMetrics(fs, price);
+    MarketMetrics metrics = marketMetricCalculator.calculate(fs, price);
     ScoringData scoringData = new ScoringData(fs, metrics, price);
 
     // 모든 전략 실행 (Map으로 결과 받음)
-    Map<ScoreCategory, Integer> scores = scoringAggregator.calculateAll(scoringData);
-
-    // 각 영역의 점수 추출
-    int stability = scores.getOrDefault(ScoreCategory.STABILITY, 0);
-    int profitability = scores.getOrDefault(ScoreCategory.PROFITABILITY, 0);
-    int valuation = scores.getOrDefault(ScoreCategory.VALUATION, 0);
-    int investment = scores.getOrDefault(ScoreCategory.INVESTMENT, 0);
-
-    // 기본 점수 계산
-    int baseScore = stability + profitability + valuation + investment;
+    Map<ScoreCategory, Integer> componentScores = scoringAggregator.calculateAll(scoringData);
 
     // 페널티 계산
     int penalty = penaltyPolicy.calculatePenalty(fs, macro);
 
     // 총점 계산
-    int totalScore = Math.max(0, Math.min(100, baseScore - penalty));
+    ScoreEvaluationResult result = scoreEvaluator.evaluate(componentScores, penalty, fs);
 
-    // 등급 매기기
-    String grade = calculateGrade(totalScore);
+    saveScore(fs.getCompany(), result);
 
-    // 기업 자체의 가치가 훌륭해서(PBR, PER이 낮음) 저점 매수하기 좋을 경우
-    // 단, 자본 잠식은 걸러냄
-    boolean isOpportunity = (valuation >= OPPORTUNITY_VALUATION_THRESHOLD)
-            && (fs.getTotalEquity().compareTo(BigDecimal.ZERO) > 0);
-
-    saveScore(
-            fs,
-            totalScore,
-            stability,
-            profitability,
-            valuation,
-            investment,
-            grade,
-            isOpportunity
-    );
   }
 
   // --- 헬퍼 메서드 ---
@@ -155,55 +133,20 @@ public class ScoringService {
     }
   }
 
-  // 밸류 지표 계산 헬퍼
-  private MarketMetrics calculateMarketMetrics(FinancialStatement fs, BigDecimal price) {
-    Long totalSharesObj = fs.getCompany().getTotalShares();
-
-    // 주식 수가 null이거나 0이면 PER/PBR 계산 불가 (방어 로직)
-    if (totalSharesObj == null || totalSharesObj == 0) {
-      return MarketMetrics.empty();
-    }
-
-    BigDecimal shares = BigDecimal.valueOf(totalSharesObj);
-
-    // EPS (주당 순이익) = 순이익 / 주식수
-    BigDecimal eps = fs.getNetIncome().divide(shares, 2, RoundingMode.HALF_UP);
-
-    // PER (주가수익비율) = 주가 / EPS
-    BigDecimal per = BigDecimal.ZERO;
-    if (eps.compareTo(BigDecimal.ZERO) > 0) {
-      per = price.divide(eps, 2, RoundingMode.HALF_UP);
-    }
-
-    // BPS (주당 순자산) = 자본총계 / 주식수
-    BigDecimal bps = fs.getTotalEquity().divide(shares, 2, RoundingMode.HALF_UP);
-
-    // PBR (주가순자산비율) = 주가 / BPS
-    BigDecimal pbr = BigDecimal.ZERO;
-    if (bps.compareTo(BigDecimal.ZERO) > 0) {
-      pbr = price.divide(bps, 2, RoundingMode.HALF_UP);
-    }
-
-    return new MarketMetrics(eps, per, bps, pbr);
-  }
-
-  // 회사 등급 매기는 헬퍼
-  private String calculateGrade(int score) {
-    if(score >= GRADE_S_THRESHOLD) return "S";
-    if(score >= GRADE_A_THRESHOLD) return "A";
-    if(score >= GRADE_B_THRESHOLD) return "B";
-    if(score >= GRADE_C_THRESHOLD) return "C";
-    return "D";
-  }
-
   // 점수 저장 헬퍼
-  private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
-    CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
-            .orElseGet(() -> CompanyScore.builder()
-                    .company(fs.getCompany())
-                    .build());
+  private void saveScore(Company company, ScoreEvaluationResult result) {
+    CompanyScore score = companyScoreRepository.findByCompany(company)
+            .orElseGet(() -> CompanyScore.builder().company(company).build());
 
-    score.updateScore(total, stab, prof, val, inv, grade, isOpportunity);
+    score.updateScore(
+            result.totalScore(),
+            result.stability(),
+            result.profitability(),
+            result.valuation(),
+            result.investment(),
+            result.grade(),
+            result.isOpportunity()
+    );
     companyScoreRepository.save(score);
   }
 }
