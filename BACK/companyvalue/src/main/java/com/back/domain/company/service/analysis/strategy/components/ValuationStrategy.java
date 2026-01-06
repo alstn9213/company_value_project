@@ -1,10 +1,12 @@
 package com.back.domain.company.service.analysis.strategy.components;
 
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
+import com.back.domain.company.service.analysis.dto.MarketMetrics;
 import com.back.domain.company.service.analysis.dto.ScoringData;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Slf4j
 @Component
@@ -12,25 +14,19 @@ public class ValuationStrategy implements ScoringStrategy {
 
   @Override
   public int calculate(ScoringData data) {
-    JsonNode overview = data.overview();
+    MarketMetrics metrics = data.metrics();
 
-    if (!isValidOverview(overview)) {
-      log.warn("Valuation 데이터 누락: {}", data.fs().getCompany().getName());
+    if (isInvalidMetric(metrics.per()) || isInvalidMetric(metrics.pbr())) {
+      log.debug("Valuation 데이터 부적합 (적자 또는 데이터 부족): {}", data.fs().getCompany().getName());
       return 0;
     }
 
-    double per = parseDouble(overview, "PERRatio");
-    double pbr = parseDouble(overview, "PriceToBookRatio");
-
-    // per이나 pbr이 0이면 기업 상태가 최악이므로 0점
-    if (per == 0 || pbr == 0) return 0;
-
-    return calculateScore(per, pbr);
+    return calculateScore(metrics.per().doubleValue(), metrics.pbr().doubleValue());
   }
 
   @Override
   public ScoreCategory getCategory() {
-    return ScoreCategory.INVESTMENT;
+    return ScoreCategory.VALUATION;
   }
 
 
@@ -53,24 +49,10 @@ public class ValuationStrategy implements ScoringStrategy {
     return score;
   }
 
-  // JSON 필드 파싱 헬퍼
-  private double parseDouble(JsonNode node, String field) {
-    // 적자 기업이나 자본 잠식일 경우 PBR이나 PER이 None으로 표시된다.
-    if (node.has(field) && !node.get(field).asText().equalsIgnoreCase("None")) {
-      try {
-        return Double.parseDouble(node.get(field).asText());
-      } catch (NumberFormatException e) {
-        return 0.0;
-      }
-    }
-    return 0.0;
+  // 유효한 가치 지표인지 판별하는 헬퍼
+  private boolean isInvalidMetric(BigDecimal value) {
+    return value == null || value.compareTo(BigDecimal.ZERO) <= 0;
   }
-
-  // Overview 유효성 체크 헬퍼
-  private boolean isValidOverview(JsonNode overview) {
-    return overview != null && overview.has("PERRatio");
-  }
-
 
 
 }

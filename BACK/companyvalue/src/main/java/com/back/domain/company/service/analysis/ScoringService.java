@@ -8,6 +8,7 @@ import com.back.domain.company.entity.StockPriceHistory;
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
+import com.back.domain.company.service.analysis.dto.MarketMetrics;
 import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.ScoringAggregator;
@@ -49,9 +50,7 @@ public class ScoringService {
   private final StockPriceHistoryRepository stockPriceHistoryRepository;
   private final FinancialStatementRepository financialStatementRepository;
 
-  private final ObjectMapper objectMapper;
-
-  // 전략들의 모음
+  // 전략들 모음
   private final ScoringAggregator scoringAggregator;
 
   // 페널티 정책
@@ -59,12 +58,11 @@ public class ScoringService {
 
   @Transactional
   public void calculateAllScores() {
-    log.info("모든 기업의 가치 평가 점수 계산을 시작합니다...");
+    log.info("모든 기업의 평가 점수 계산을 시작합니다...");
     List<Company> companies = companyRepository.findAll();
 
     for (Company company : companies) {
       try {
-        // 각 기업의 가장 최신 재무제표 조회 (연도, 분기 내림차순)
         financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
                 .ifPresentOrElse(
                         this::calculateAndSaveScore,
@@ -106,8 +104,8 @@ public class ScoringService {
     }
 
     BigDecimal price = latestStock.getClosePrice();
-    JsonNode calculatedOverview = createCalculatedOverview(fs, price);
-    ScoringData scoringData = new ScoringData(fs, calculatedOverview, price);
+    MarketMetrics metrics = calculateMarketMetrics(fs, price);
+    ScoringData scoringData = new ScoringData(fs, metrics, price);
 
     // 모든 전략 실행 (Map으로 결과 받음)
     Map<ScoreCategory, Integer> scores = scoringAggregator.calculateAll(scoringData);
@@ -142,47 +140,41 @@ public class ScoringService {
     );
   }
 
-  // --- 헬퍼 메서드: 내부 데이터로 밸류 지표 계산 ---
-  private JsonNode createCalculatedOverview(FinancialStatement fs, BigDecimal price) {
-    ObjectNode overview = objectMapper.createObjectNode();
+  // --- 헬퍼 메서드 ---
+
+  // 밸류 지표 계산 헬퍼
+  private MarketMetrics calculateMarketMetrics(FinancialStatement fs, BigDecimal price) {
     Long totalSharesObj = fs.getCompany().getTotalShares();
 
     // 주식 수가 null이거나 0이면 PER/PBR 계산 불가 (방어 로직)
-    if(totalSharesObj == null || totalSharesObj == 0) {
-      return overview;
+    if (totalSharesObj == null || totalSharesObj == 0) {
+      return MarketMetrics.empty();
     }
 
-    long totalShares = totalSharesObj;
-    BigDecimal shares = BigDecimal.valueOf(totalShares);
+    BigDecimal shares = BigDecimal.valueOf(totalSharesObj);
 
     // EPS (주당 순이익) = 순이익 / 주식수
     BigDecimal eps = fs.getNetIncome().divide(shares, 2, RoundingMode.HALF_UP);
-    overview.put("EPS", eps.toString());
 
     // PER (주가수익비율) = 주가 / EPS
+    BigDecimal per = BigDecimal.ZERO;
     if (eps.compareTo(BigDecimal.ZERO) > 0) {
-      BigDecimal per = price.divide(eps, 2, RoundingMode.HALF_UP);
-      overview.put("PERRatio", per.toString()); // 키 이름은 Strategy에서 사용하는 것과 맞춰야 함
-    } else {
-      overview.put("PERRatio", "0"); // 적자 기업
+      per = price.divide(eps, 2, RoundingMode.HALF_UP);
     }
 
     // BPS (주당 순자산) = 자본총계 / 주식수
     BigDecimal bps = fs.getTotalEquity().divide(shares, 2, RoundingMode.HALF_UP);
-    overview.put("BookValue", bps.toString());
 
     // PBR (주가순자산비율) = 주가 / BPS
+    BigDecimal pbr = BigDecimal.ZERO;
     if (bps.compareTo(BigDecimal.ZERO) > 0) {
-      BigDecimal pbr = price.divide(bps, 2, RoundingMode.HALF_UP);
-      overview.put("PriceToBookRatio", pbr.toString());
-    } else {
-      overview.put("PriceToBookRatio", "0");
+      pbr = price.divide(bps, 2, RoundingMode.HALF_UP);
     }
 
-    return overview;
+    return new MarketMetrics(eps, per, bps, pbr);
   }
 
-  // 회사 등급 매기는 헬퍼 메서드
+  // 회사 등급 매기는 헬퍼
   private String calculateGrade(int score) {
     if(score >= GRADE_S_THRESHOLD) return "S";
     if(score >= GRADE_A_THRESHOLD) return "A";
@@ -191,7 +183,7 @@ public class ScoringService {
     return "D";
   }
 
-  // 점수 저장하는 헬퍼 메서드
+  // 점수 저장하는 헬퍼
   private void saveScore(FinancialStatement fs, int total, int stab, int prof, int val, int inv, String grade, boolean isOpportunity) {
     CompanyScore score = companyScoreRepository.findByCompany(fs.getCompany())
             .orElseGet(() -> CompanyScore.builder()

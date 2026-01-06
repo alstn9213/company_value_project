@@ -37,7 +37,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
 
     // 데이터 유효성 검사 (Null 체크 및 자본이 0 이하인 완전 자본 잠식 상태 체크)
     if (netIncome == null || equity == null || equity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.warn("순이익이나 자본 데이터가 누락됐거나 자본 잠식 상태입니다: {}", fs.getCompany().getName());
+      log.debug("순이익이나 자본 데이터가 누락됐거나 자본 잠식 상태: {}", fs.getCompany().getName());
       return 0;
     }
 
@@ -60,7 +60,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     // 데이터 유효성 검사 (Null 체크 및 매출액이 0인 경우 체크)
     // 매출액이 0이면 영업이익률 계산 불가 (0 나누기 방지)
     if (revenue == null || operatingProfit == null || revenue.compareTo(BigDecimal.ZERO) == 0) {
-      log.warn("매출액이나 영업이익률 데이터가 누락됐거나 매출이 없는 기업(스타트업)입니다: {}", fs.getCompany().getName());
+      log.debug("매출액이나 영업이익률 데이터가 누락됐거나 매출이 없는 기업(스타트업): {}", fs.getCompany().getName());
       return 0;
     }
 

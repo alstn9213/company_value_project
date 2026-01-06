@@ -39,7 +39,7 @@ public class StabilityStrategy implements ScoringStrategy {
 
     // 데이터 유효성 검사 (Null 체크 및 자본 잠식 체크)
     if (totalLiabilities == null || totalEquity == null || totalEquity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.warn("부채, 자본 데이터가 누락됐거나 자본 잠식 상태입니다: {}", fs.getCompany().getName());
+      log.debug("부채, 자본 데이터가 누락됐거나 자본 잠식 상태입니다: {}", fs.getCompany().getName());
       return 0;
     }
 
@@ -76,7 +76,7 @@ public class StabilityStrategy implements ScoringStrategy {
     BigDecimal operatingCashFlow = fs.getOperatingCashFlow();
 
     if (operatingCashFlow == null) {
-      log.warn("영업활동 현금 흐름 데이터 누락: {}", fs.getCompany().getName());
+      log.debug("영업활동 현금 흐름 데이터 누락: {}", fs.getCompany().getName());
       return 0;
     }
 

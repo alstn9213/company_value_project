@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public record ScoringData(
         FinancialStatement fs,
-        JsonNode overview,
+        MarketMetrics metrics,
         BigDecimal latestStockPrice
 ) {
 
