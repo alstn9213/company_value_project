@@ -1,10 +1,8 @@
-package com.back.domain.company.service.analysis.strategy;
+package com.back.domain.company.service.analysis.strategy.components;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.ScoringData;
-import com.back.global.error.ErrorCode;
-import com.back.global.error.exception.BusinessException;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +35,11 @@ public class InvestmentStrategy implements ScoringStrategy {
     else if (ratio >= 5) return 3;
 
     return 0;
+  }
+
+  @Override
+  public ScoreCategory getCategory() {
+    return ScoreCategory.INVESTMENT;
   }
 
 

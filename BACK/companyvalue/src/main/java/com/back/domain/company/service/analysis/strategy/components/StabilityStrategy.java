@@ -1,6 +1,7 @@
-package com.back.domain.company.service.analysis.strategy;
+package com.back.domain.company.service.analysis.strategy.components;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.ScoringData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,11 @@ public class StabilityStrategy implements ScoringStrategy {
     int cashFlowScore = calculateCashFlowScore(fs);
 
     return debtScore + cashFlowScore;
+  }
+
+  @Override
+  public ScoreCategory getCategory() {
+    return ScoreCategory.STABILITY;
   }
 
   // --- 헬퍼 메서드 ---
@@ -49,6 +55,22 @@ public class StabilityStrategy implements ScoringStrategy {
     }
   }
 
+  // 금융업 부채비율 채점 (금융업은 부채비율이 높음)
+  private int scoreFinancialSector(BigDecimal debtRatio) {
+    if (debtRatio.compareTo(BigDecimal.valueOf(800)) < 0) return 20;
+    else if (debtRatio.compareTo(BigDecimal.valueOf(1000)) < 0) return 10;
+    else if (debtRatio.compareTo(BigDecimal.valueOf(1200)) < 0) return 5;
+    return 0;
+  }
+
+  // 일반 기업 부채비율 채점
+  private int scoreGeneralSector(BigDecimal debtRatio) {
+    if (debtRatio.compareTo(BigDecimal.valueOf(100)) < 0) return 20;
+    else if (debtRatio.compareTo(BigDecimal.valueOf(200)) < 0) return 10;
+    else if (debtRatio.compareTo(BigDecimal.valueOf(300)) < 0) return 5;
+    return 0;
+  }
+
   // 영업활동 현금흐름 점수 계산 헬퍼
   private int calculateCashFlowScore(FinancialStatement fs) {
     BigDecimal operatingCashFlow = fs.getOperatingCashFlow();
@@ -70,21 +92,7 @@ public class StabilityStrategy implements ScoringStrategy {
     return SECTOR_FINANCIAL.equalsIgnoreCase(sector);
   }
 
-  // 금융업 부채비율 채점 (금융업은 부채비율이 높음)
-  private int scoreFinancialSector(BigDecimal debtRatio) {
-    if (debtRatio.compareTo(BigDecimal.valueOf(800)) < 0) return 20;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(1000)) < 0) return 10;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(1200)) < 0) return 5;
-    return 0;
-  }
 
-  // 일반 기업 부채비율 채점
-  private int scoreGeneralSector(BigDecimal debtRatio) {
-    if (debtRatio.compareTo(BigDecimal.valueOf(100)) < 0) return 20;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(200)) < 0) return 10;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(300)) < 0) return 5;
-    return 0;
-  }
 
 
 

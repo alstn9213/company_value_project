@@ -7,12 +7,14 @@ import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.entity.StockPriceHistory;
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
+import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
-import com.back.domain.company.service.analysis.strategy.InvestmentStrategy;
-import com.back.domain.company.service.analysis.strategy.ProfitabilityStrategy;
-import com.back.domain.company.service.analysis.strategy.StabilityStrategy;
-import com.back.domain.company.service.analysis.strategy.ValuationStrategy;
+import com.back.domain.company.service.analysis.strategy.ScoringAggregator;
+import com.back.domain.company.service.analysis.strategy.components.InvestmentStrategy;
+import com.back.domain.company.service.analysis.strategy.components.ProfitabilityStrategy;
+import com.back.domain.company.service.analysis.strategy.components.StabilityStrategy;
+import com.back.domain.company.service.analysis.strategy.components.ValuationStrategy;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.CompanyScoreRepository;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 
 import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
 
@@ -48,13 +51,10 @@ public class ScoringService {
 
   private final ObjectMapper objectMapper;
 
-  // Strategies (점수 계산 전략들)
-  private final StabilityStrategy stabilityStrategy;
-  private final ProfitabilityStrategy profitabilityStrategy;
-  private final ValuationStrategy valuationStrategy;
-  private final InvestmentStrategy investmentStrategy;
+  // 전략들의 모음
+  private final ScoringAggregator scoringAggregator;
 
-  // Policies (페널티 정책)
+  // 페널티 정책
   private final PenaltyPolicy penaltyPolicy;
 
   @Transactional
@@ -71,7 +71,6 @@ public class ScoringService {
                         () -> log.warn("재무 데이터 없음: {}", company.getTicker())
                 );
       } catch (Exception e) {
-        // 개별 기업 실패가 전체 프로세스를 멈추지 않도록 로그만 찍고 넘어감
         log.error("점수 계산 중 오류 발생 (Ticker: {}): {}", company.getTicker(), e.getMessage());
       }
     }
@@ -110,26 +109,37 @@ public class ScoringService {
     JsonNode calculatedOverview = createCalculatedOverview(fs, price);
     ScoringData scoringData = new ScoringData(fs, calculatedOverview, price);
 
-    // 기본 점수 계산 (Strategy Pattern 활용)
-    int stability = stabilityStrategy.calculate(scoringData);
-    int profitability = profitabilityStrategy.calculate(scoringData);
-    int valuation = valuationStrategy.calculate(scoringData);
-    int investment = investmentStrategy.calculate(scoringData);
+    // 모든 전략 실행 (Map으로 결과 받음)
+    Map<ScoreCategory, Integer> scores = scoringAggregator.calculateAll(scoringData);
+    // 각 영역의 점수 추출
+    int stability = scores.getOrDefault(ScoreCategory.STABILITY, 0);
+    int profitability = scores.getOrDefault(ScoreCategory.PROFITABILITY, 0);
+    int valuation = scores.getOrDefault(ScoreCategory.VALUATION, 0);
+    int investment = scores.getOrDefault(ScoreCategory.INVESTMENT, 0);
+    // 기본 점수 계산
     int baseScore = stability + profitability + valuation + investment;
-    // 페널티
+    // 페널티 계산
     int penalty = penaltyPolicy.calculatePenalty(fs, macro);
     // 총점 계산
     int totalScore = Math.max(0, Math.min(100, baseScore - penalty));
     // 등급 매기기
     String grade = calculateGrade(totalScore);
 
-    // 페널티는 존재하지만, 기업 자체의 가치는 훌륭해서(PBR, PER이 높음) 저점 매수하기 좋을 경우
+    // 기업 자체의 가치가 훌륭해서(PBR, PER이 낮음) 저점 매수하기 좋을 경우
     // 단, 자본 잠식은 걸러냄
-    boolean isOpportunity = (penalty > 0)
-            && (valuation >= OPPORTUNITY_VALUATION_THRESHOLD)
+    boolean isOpportunity = (valuation >= OPPORTUNITY_VALUATION_THRESHOLD)
             && (fs.getTotalEquity().compareTo(BigDecimal.ZERO) > 0);
 
-    saveScore(fs, totalScore, stability, profitability, valuation, investment, grade, isOpportunity);
+    saveScore(
+            fs,
+            totalScore,
+            stability,
+            profitability,
+            valuation,
+            investment,
+            grade,
+            isOpportunity
+    );
   }
 
   // --- 헬퍼 메서드: 내부 데이터로 밸류 지표 계산 ---

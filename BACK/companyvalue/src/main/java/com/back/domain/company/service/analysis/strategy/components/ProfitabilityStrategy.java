@@ -1,8 +1,8 @@
-package com.back.domain.company.service.analysis.strategy;
+package com.back.domain.company.service.analysis.strategy.components;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.ScoringData;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +21,11 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     int opMarginScore = calculateOperatingMarginScore(fs);
 
     return roeScore + opMarginScore;
+  }
+
+  @Override
+  public ScoreCategory getCategory() {
+    return ScoreCategory.PROFITABILITY;
   }
 
   // --- 헬퍼 메서드 ---
