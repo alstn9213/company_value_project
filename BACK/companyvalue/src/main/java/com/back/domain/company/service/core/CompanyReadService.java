@@ -25,43 +25,47 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class CompanyReadService {
 
-    private final CompanyRepository companyRepository;
-    private final CompanyScoreRepository companyScoreRepository;
-    private final FinancialStatementRepository financialStatementRepository;
+  private final CompanyRepository companyRepository;
+  private final CompanyScoreRepository companyScoreRepository;
+  private final FinancialStatementRepository financialStatementRepository;
 
-    // 기업 목록 페이지에 모든 기업들을 나열하는 메서드
-    public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
-        Sort sortObj = Sort.by(Sort.Direction.ASC, "name");
-        if("score".equals(sort)) {
-            sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
-        }
+  public List<FinancialStatement> getFinancialStatements(Company company) {
+    return financialStatementRepository.findByCompanyOrderByYearDescQuarterDesc(company);
+  }
 
-        Pageable pageable = PageRequest.of(page, size, sortObj);
-
-        return companyRepository.findAll(pageable)
-                .map(CompanySummaryResponse::from);
+  // 기업 목록 페이지에 모든 기업들을 나열하는 메서드
+  public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
+    Sort sortObj = Sort.by(Sort.Direction.ASC, "name");
+    if("score".equals(sort)) {
+      sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
     }
 
-    // 기업의 상세 정보를 가져오는 메서드
-    public CompanyDetailResponse getCompanyDetail(String ticker) {
-        Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+    Pageable pageable = PageRequest.of(page, size, sortObj);
 
-        CompanyScore score = companyScoreRepository.findByCompany(company)
-                .orElse(CompanyScore.empty(company));
+    return companyRepository.findAll(pageable)
+            .map(CompanySummaryResponse::from);
+  }
 
-        List<FinancialStatement> history = financialStatementRepository.findByCompanyOrderByYearDescQuarterDesc(company);
+  // 기업의 상세 정보를 가져오는 메서드
+  public CompanyDetailResponse getCompanyDetail(String ticker) {
+    Company company = companyRepository.findByTicker(ticker)
+            .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
-        return CompanyDetailResponse.of(company, score, history);
-    }
+    CompanyScore score = companyScoreRepository.findByCompany(company)
+            .orElse(CompanyScore.empty(company));
 
-    // top 10 회사 나열용 메서드
-    public List<CompanySummaryResponse> searchCompanies(String keyword) {
-        return companyRepository.findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(keyword, keyword)
-                .stream()
-                .map(CompanySummaryResponse::from)
-                .toList();
-    }
+    List<FinancialStatement> history = financialStatementRepository.findByCompanyOrderByYearDescQuarterDesc(company);
+
+    return CompanyDetailResponse.of(company, score, history);
+  }
+
+  // top 10 회사 나열용 메서드
+  public List<CompanySummaryResponse> searchCompanies(String keyword) {
+    return companyRepository.findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(keyword, keyword)
+            .stream()
+            .map(CompanySummaryResponse::from)
+            .toList();
+  }
 
 
 }
