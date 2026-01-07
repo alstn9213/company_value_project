@@ -2,6 +2,8 @@ package com.back.domain.company.dto.response;
 
 import com.back.domain.company.entity.CompanyScore;
 
+import java.util.Optional;
+
 public record CompanyScoreResponse(
         String ticker,
         String name,
@@ -23,7 +25,7 @@ public record CompanyScoreResponse(
                 score.getProfitabilityScore(),
                 score.getValuationScore(),
                 score.getInvestmentScore(),
-                score.getIsOpportunity() != null && score.getIsOpportunity() // null safe 처리
+                Optional.ofNullable(score.getIsOpportunity()).orElse(false)
         );
     }
 }

@@ -18,12 +18,15 @@ public record CompanyDetailResponse(
             .map(FinancialStatementResponse::from)
             .toList();
 
-    FinancialStatement latest = history.isEmpty() ? new FinancialStatement() : history.get(0);
+    FinancialStatementResponse latestDto = history.stream()
+            .findFirst()
+            .map(FinancialStatementResponse::from)
+            .orElse(null);
 
     return new CompanyDetailResponse(
             CompanySummaryResponse.from(company),
             CompanyScoreResponse.from(score),
-            FinancialStatementResponse.from(latest),
+            latestDto,
             historyDto
     );
   }

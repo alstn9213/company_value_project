@@ -4,6 +4,7 @@ package com.back.domain.macro.dto;
 import com.back.domain.macro.entity.MacroEconomicData;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public record MacroDataResponse(
         LocalDate date,
@@ -15,18 +16,19 @@ public record MacroDataResponse(
         Double unemployment  // 실업률
 ) {
     public static MacroDataResponse from(MacroEconomicData macro) {
-        // null 방지 로직
-        double y10 = macro.getUs10yTreasuryYield() != null ? macro.getUs10yTreasuryYield() : 0.0;
-        double y2 = macro.getUs2yTreasuryYield() != null ? macro.getUs2yTreasuryYield() : 0.0;
+      double y10 = Optional.ofNullable(macro.getUs10yTreasuryYield()).orElse(0.0);
+      double y2 = Optional.ofNullable(macro.getUs2yTreasuryYield()).orElse(0.0);
 
-        return new MacroDataResponse(
-                macro.getRecordedDate(),
-                macro.getFedFundsRate(),
-                y10,
-                y2,
-                Math.round((y10 - y2) * 100.0) / 100.0, // 소수점 2자리 반올림
-                macro.getInflationRate(),
-                macro.getUnemploymentRate()
-        );
+      double spread = Math.round((y10 - y2) * 100.0) / 100.0;
+
+      return new MacroDataResponse(
+              macro.getRecordedDate(),
+              macro.getFedFundsRate(),
+              y10,
+              y2,
+              spread,
+              macro.getInflationRate(),
+              macro.getUnemploymentRate()
+      );
     }
 }

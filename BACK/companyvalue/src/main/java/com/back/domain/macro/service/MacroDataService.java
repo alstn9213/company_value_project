@@ -39,7 +39,7 @@ public class MacroDataService {
     log.info("업데이트 및 캐시 초기화 완료");
   }
 
-  // 지표들을 DB에 저장하고 결측치는 보정하는 헬퍼 메서드
+  // 지표들을 DB에 저장하고 결측치는 보정하는 헬퍼
   private void saveLatestData(Map<MacroIndicator, Double> newValues) {
     LocalDate today = LocalDate.now();
     // --- 결측치 보정 ---
@@ -95,7 +95,7 @@ public class MacroDataService {
 
   // Api를 호출해서(fetchHistory) 데이터를 받아오고
   // forEach로 날짜와 지표 데이터를 병합해서
-  // Map으로 반환하는 헬퍼 메서드
+  // Map으로 반환하는 헬퍼
   private Map<LocalDate, Map<MacroIndicator, Double>> fetchAndMergeAllHistory() {
     Map<LocalDate, Map<MacroIndicator, Double>> historyMap = new HashMap<>();
     for(MacroIndicator indicator : MacroIndicator.values()) {

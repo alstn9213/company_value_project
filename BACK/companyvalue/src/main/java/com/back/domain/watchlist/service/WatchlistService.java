@@ -21,51 +21,51 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class WatchlistService {
 
-    private final WatchlistRepository watchlistRepository;
-    private final MemberRepository memberRepository;
-    private final CompanyRepository companyRepository;
+  private final WatchlistRepository watchlistRepository;
+  private final MemberRepository memberRepository;
+  private final CompanyRepository companyRepository;
 
-    public List<WatchlistResponse> getWatchlist(Long memberId) {
-        Member member = getMember(memberId);
+  public List<WatchlistResponse> getWatchlist(Long memberId) {
+    Member member = getMember(memberId);
 
-        return watchlistRepository.findAllByMemberWithCompanyAndScore(member).stream()
-                .map(WatchlistResponse::from)
-                .toList();
+    return watchlistRepository.findAllByMemberWithCompanyAndScore(member).stream()
+            .map(WatchlistResponse::from)
+            .toList();
+  }
+
+  @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
+  public void addWatchlist(Long memberId, String ticker) {
+    Member member = getMember(memberId);
+    Company company = companyRepository.findByTicker(ticker)
+            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+
+    if (watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
+      throw new BusinessException(ErrorCode.WATCHLIST_DUPLICATION);
     }
 
-    @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
-    public void addWatchlist(Long memberId, String ticker) {
-        Member member = getMember(memberId);
-        Company company = companyRepository.findByTicker(ticker)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+    watchlistRepository.save(Watchlist.builder()
+            .member(member)
+            .company(company)
+            .build());
+  }
 
-        if(watchlistRepository.existsByMemberAndCompanyTicker(member, ticker)) {
-            throw new BusinessException(ErrorCode.WATCHLIST_DUPLICATION);
-        }
+  @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
+  public void deleteWatchlist(Long memberId, Long watchlistId) {
+    Member member = getMember(memberId);
 
-        watchlistRepository.save(Watchlist.builder()
-                .member(member)
-                .company(company)
-                .build());
+    // 내 관심종목인지 확인 후 삭제 (보안 강화)
+    if(!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
+      throw new BusinessException(ErrorCode.WATCHLIST_ACCESS_DENIED);
     }
 
-    @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
-    public void deleteWatchlist(Long memberId, Long watchlistId) {
-        Member member = getMember(memberId);
+    watchlistRepository.deleteById(watchlistId);
+  }
 
-        // 내 관심종목인지 확인 후 삭제 (보안 강화)
-        if(!watchlistRepository.existsByIdAndMember(watchlistId, member)) {
-            throw new BusinessException(ErrorCode.WATCHLIST_ACCESS_DENIED);
-        }
+  // --- 헬퍼 메서드 ---
 
-        watchlistRepository.deleteById(watchlistId);
-    }
-
-    // --- 헬퍼 메서드 ---
-
-    // 회원이 있는지 확인하는 헬퍼 메서드
-    private Member getMember(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-    }
+  // 회원이 있는지 확인하는 헬퍼 메서드
+  private Member getMember(Long memberId) {
+    return memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+  }
 }

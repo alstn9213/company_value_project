@@ -1,6 +1,9 @@
 package com.back.domain.company.dto.response;
 
 import com.back.domain.company.entity.Company;
+import com.back.domain.company.entity.CompanyScore;
+
+import java.util.Optional;
 
 public record CompanySummaryResponse(
         String ticker,
@@ -10,23 +13,20 @@ public record CompanySummaryResponse(
         Integer totalScore,
         String grade
 ) {
-  public static CompanySummaryResponse from(Company company) {
-    int score = 0;
-    String grade = "N/A";
+  // 점수 계산이 안된 기업이 있을 땐 상수 대입
+  private static final int DEFAULT_SCORE = 0;
+  private static final String DEFAULT_GRADE = "N/A";
 
-    // 만약 점수가 아직 계산되지 않은 기업이라면 null일 수 있으므로 안전하게 처리
-    if (company.getCompanyScore() != null) {
-      score = company.getCompanyScore().getTotalScore();
-      grade = company.getCompanyScore().getGrade();
-    }
+  public static CompanySummaryResponse from(Company company) {
+    CompanyScore score = company.getCompanyScore();
 
     return new CompanySummaryResponse(
             company.getTicker(),
             company.getName(),
             company.getSector(),
             company.getExchange(),
-            score,
-            grade
+            Optional.ofNullable(score).map(CompanyScore::getTotalScore).orElse(DEFAULT_SCORE),
+            Optional.ofNullable(score).map(CompanyScore::getGrade).orElse(DEFAULT_GRADE)
     );
   }
 }
