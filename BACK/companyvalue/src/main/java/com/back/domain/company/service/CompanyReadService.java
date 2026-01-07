@@ -29,10 +29,6 @@ public class CompanyReadService {
   private final CompanyScoreRepository companyScoreRepository;
   private final FinancialStatementRepository financialStatementRepository;
 
-  public List<FinancialStatement> getFinancialStatements(Company company) {
-    return financialStatementRepository.findByCompanyOrderByYearDescQuarterDesc(company);
-  }
-
   // 기업 목록 페이지에 모든 기업들을 나열하는 메서드
   public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
     Sort sortObj = Sort.by(Sort.Direction.ASC, "name");

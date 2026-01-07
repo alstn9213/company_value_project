@@ -17,7 +17,7 @@ public class MacroController {
 
     private final MacroReadService macroReadService;
 
-    // 1. 대시보드용 최신 지표
+    // 대시보드용 최신 지표
     @GetMapping("/latest")
     public ResponseEntity<MacroDataResponse> getLatestMacroData() {
         MacroDataResponse data = macroReadService.getLatestData();
@@ -25,7 +25,7 @@ public class MacroController {
         return ResponseEntity.ok(data);
     }
 
-    // 2. 차트용 10년치 과거 데이터
+    // 차트용 10년치 과거 데이터
     @GetMapping("/history")
     public ResponseEntity<List<MacroDataResponse>> getMacroHistory() {
         List<MacroDataResponse> history = macroReadService.getHistoryData();

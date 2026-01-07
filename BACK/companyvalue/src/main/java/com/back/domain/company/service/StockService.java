@@ -32,10 +32,8 @@ public class StockService {
             .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
     // DB 조회 (데이터가 없으면 빈 리스트 반환)
-    // 데이터의 존재 유무는 'SeedDataLoader'와 'Scheduler'가 책임진다
     List<StockPriceHistory> histories = stockRepository.findByCompanyOrderByRecordedDateAsc(company);
 
-    // Entity -> DTO 변환하여 반환 (이 결과가 Redis에 저장됨)
     return histories.stream()
             .map(h -> new StockHistoryResponse(h.getRecordedDate(), h.getClosePrice()))
             .toList();
