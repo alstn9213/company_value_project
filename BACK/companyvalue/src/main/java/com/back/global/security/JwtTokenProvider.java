@@ -1,5 +1,7 @@
 package com.back.global.security;
 
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -67,7 +69,7 @@ public class JwtTokenProvider {
     Claims claims = parseClaims(token);
 
     if (claims.get(AUTHORITIES_KEY) == null) {
-      throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+      throw new BusinessException(ErrorCode.TOKEN_CLAIMS_EMPTY);
     }
 
     Collection<? extends  GrantedAuthority> authorities =
@@ -85,15 +87,14 @@ public class JwtTokenProvider {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
       return true;
     } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-      log.info("잘못된 JWT 서명입니다.");
+      throw new BusinessException(ErrorCode.TOKEN_SIGNATURE_INVALID);
     } catch (ExpiredJwtException e) {
-      log.info("만료된 JWT 토큰입니다.");
+      throw new BusinessException(ErrorCode.EXPIRED_TOKEN);
     } catch (UnsupportedJwtException e) {
-      log.info("지원되지 않는 JWT 토큰입니다.");
+      throw new BusinessException(ErrorCode.UNSUPPORTED_TOKEN);
     } catch (IllegalArgumentException e) {
-      log.info("JWT 토큰이 잘못되었습니다.");
+      throw new BusinessException(ErrorCode.INVALID_TOKEN);
     }
-    return false;
   }
 
   // --- 헬퍼 메서드 ---

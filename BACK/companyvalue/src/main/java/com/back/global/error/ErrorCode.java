@@ -37,7 +37,14 @@ public enum ErrorCode {
 
   // Watchlist
   WATCHLIST_DUPLICATION(HttpStatus.BAD_REQUEST, "W001", "이미 관심 목록에 존재합니다."),
-  WATCHLIST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "W002", "해당 관심 종목에 대한 접근 권한이 없습니다.");
+  WATCHLIST_ACCESS_DENIED(HttpStatus.FORBIDDEN, "W002", "해당 관심 종목에 대한 접근 권한이 없습니다."),
+
+  // Auth (Token)
+  INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "유효하지 않은 토큰입니다."),
+  EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "만료된 토큰입니다."),
+  UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "A003", "지원하지 않는 토큰 형식입니다."),
+  TOKEN_CLAIMS_EMPTY(HttpStatus.UNAUTHORIZED, "A004", "토큰에 권한 정보가 존재하지 않습니다."),
+  TOKEN_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "A005", "토큰 서명이 유효하지 않습니다.");
 
 
   private final HttpStatus status;
