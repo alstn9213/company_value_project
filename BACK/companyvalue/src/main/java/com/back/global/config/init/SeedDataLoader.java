@@ -37,7 +37,6 @@ public class SeedDataLoader {
         return objectMapper.readValue(inputStream, new TypeReference<List<CompanySeedDto>>() {});
       }
     } catch (Exception e) {
-      log.error("시드 데이터 로딩 실패", e);
       throw new RuntimeException("초기 데이터 로딩 중 오류 발생", e);
     }
   }

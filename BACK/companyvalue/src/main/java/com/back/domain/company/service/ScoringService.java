@@ -56,11 +56,10 @@ public class ScoringService {
 
     for (Company company : companies) {
       try {
-        financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
-                .ifPresentOrElse(
-                        this::calculateAndSaveScore,
-                        () -> log.warn("재무 데이터 없음: {}", company.getTicker())
-                );
+        FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
+                .orElseThrow(() -> new BusinessException(ErrorCode.FINANCIAL_STATEMENT_NOT_FOUND));
+        calculateAndSaveScore(fs);
+
       } catch (BusinessException e) {
         log.warn("점수 계산 스킵 (Ticker: {}): {}", company.getTicker(), e.getMessage());
       } catch (Exception e) {
@@ -70,7 +69,7 @@ public class ScoringService {
     log.info("모든 기업 점수 계산 완료.");
   }
 
-  // 점수 계산하고 저장하는 헬퍼
+  // 특정 기업의 점수 계산하고 저장하는 헬퍼
   private void calculateAndSaveScore(FinancialStatement fs) {
     validateFinancialData(fs);
 

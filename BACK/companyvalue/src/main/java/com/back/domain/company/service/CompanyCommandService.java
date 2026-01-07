@@ -9,6 +9,8 @@ import com.back.domain.company.repository.StockPriceHistoryRepository;
 import com.back.global.config.init.dto.CompanySeedDto;
 import com.back.global.config.init.dto.FinancialSeedDto;
 import com.back.global.config.init.dto.StockSeedDto;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,21 +29,19 @@ public class CompanyCommandService {
   private final StockPriceHistoryRepository stockPriceHistoryRepository;
 
   @Transactional
-  public boolean registerCompany(CompanySeedDto seedData) {
+  public void registerCompany(CompanySeedDto seedData) {
     if (companyRepository.existsByTicker(seedData.ticker())) {
-      log.info("이미 존재하는 기업입니다: {}", seedData.ticker());
-      return false;
+      throw new BusinessException(ErrorCode.COMPANY_ALREADY_EXISTS);
     }
 
     Company newCompany = seedData.toEntity();
     Company savedCompany = companyRepository.save(newCompany);
 
-    // --- 연관 데이터 저장 (재무제표, 주가) ---
+    // --- 기업의 재무제표, 주가 저장 ---
     saveFinancialStatements(savedCompany, seedData.financials());
     saveStockPriceHistory(savedCompany, seedData.stockHistory());
 
     log.debug("기업 데이터 등록 완료: {}", seedData.ticker());
-    return true;
   }
 
   // --- 헬퍼 메서드 ---
@@ -49,8 +49,7 @@ public class CompanyCommandService {
   // 재무제표 저장 헬퍼
   private void saveFinancialStatements(Company company, List<FinancialSeedDto> financials) {
     if (financials == null || financials.isEmpty()) {
-      log.warn("등록된 재무제표 데이터가 없습니다. (Ticker: {})", company.getTicker());
-      return;
+      throw new BusinessException(ErrorCode.REQUIRED_DATA_MISSING);
     }
 
     List<FinancialStatement> financialEntities = financials.stream()
@@ -63,8 +62,7 @@ public class CompanyCommandService {
   // 주가 저장 헬퍼
   private void saveStockPriceHistory(Company company, List<StockSeedDto> stockHistory) {
     if (stockHistory == null || stockHistory.isEmpty()) {
-      log.warn("등록된 주가 과거 데이터가 없습니다. (Ticker: {})", company.getTicker());
-      return;
+      throw new BusinessException(ErrorCode.REQUIRED_DATA_MISSING);
     }
 
     List<StockPriceHistory> stockEntities = stockHistory.stream()

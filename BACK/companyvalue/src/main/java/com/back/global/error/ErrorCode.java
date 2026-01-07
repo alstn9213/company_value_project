@@ -22,9 +22,12 @@ public enum ErrorCode {
   COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "CP001", "해당 기업을 찾을 수 없습니다."),
   INVALID_SCORE_RANGE(HttpStatus.BAD_REQUEST, "CP002", "점수는 0에서 100 사이여야 합니다."),
   COMPANY_SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "CP003", "해당 기업의 분석 점수 데이터가 존재하지 않습니다."),
+  COMPANY_ALREADY_EXISTS(HttpStatus.CONFLICT, "CP004", "이미 등록된 기업입니다."),
+  REQUIRED_DATA_MISSING(HttpStatus.BAD_REQUEST, "CP005", "기업 등록을 위한 필수 데이터(재무제표 또는 주가)가 누락되었습니다."),
 
   // Financial
   INVALID_FINANCIAL_DATA(HttpStatus.BAD_REQUEST, "F001", "유효하지 않은 재무 데이터입니다 (매출액, 자본, 부채 누락 등)."),
+  FINANCIAL_STATEMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "F002", "해당 기업의 재무제표 데이터를 찾을 수 없습니다."),
 
   // Stock
   LATEST_STOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "S001", "최신 주가 데이터를 찾을 수 없습니다."),
