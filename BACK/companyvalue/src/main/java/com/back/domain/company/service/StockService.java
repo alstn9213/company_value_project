@@ -35,7 +35,7 @@ public class StockService {
     List<StockPriceHistory> histories = stockRepository.findByCompanyOrderByRecordedDateAsc(company);
 
     return histories.stream()
-            .map(h -> new StockHistoryResponse(h.getRecordedDate(), h.getClosePrice()))
+            .map(StockHistoryResponse::from)
             .toList();
   }
 

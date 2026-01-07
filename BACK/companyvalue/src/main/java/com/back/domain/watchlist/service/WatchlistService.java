@@ -29,9 +29,8 @@ public class WatchlistService {
         Member member = getMember(memberId);
 
         return watchlistRepository.findAllByMemberWithCompanyAndScore(member).stream()
-                .map(this::convertToDto)
+                .map(WatchlistResponse::from)
                 .toList();
-
     }
 
     @Transactional // 쓰기 메서드는 따로 Transactional을 붙인다.
@@ -62,23 +61,7 @@ public class WatchlistService {
         watchlistRepository.deleteById(watchlistId);
     }
 
-    // Watchlist 엔티티를 WatchListResponse로 변환하는 헬퍼 메서드
-    private WatchlistResponse convertToDto(Watchlist watchlist) {
-        Company company = watchlist.getCompany();
-        CompanyScore score = company.getCompanyScore();
-
-        // 점수가 null일 경우(신규 상장 등) 방어 로직
-        int totalScore = (score != null) ? score.getTotalScore() : 0;
-        String grade = (score != null) ? score.getGrade() : "-";
-
-        return new WatchlistResponse(
-                watchlist.getId(),
-                company.getTicker(),
-                company.getName(),
-                totalScore,
-                grade
-        );
-    }
+    // --- 헬퍼 메서드 ---
 
     // 회원이 있는지 확인하는 헬퍼 메서드
     private Member getMember(Long memberId) {
