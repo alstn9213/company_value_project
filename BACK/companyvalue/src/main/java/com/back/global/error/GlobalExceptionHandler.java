@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 비즈니스 로직 에러 처리 (미리 정의한 예외)
-    @ExceptionHandler(BusinessException.class)
-    protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        log.error("정의된 예외처리: {}", e.getErrorCode());
-        return ResponseEntity
-                .status(e.getErrorCode().getStatus())
-                .body(ErrorResponse.of(e.getErrorCode()));
-    }
+  // 비즈니스 로직 에러 처리 (미리 정의한 예외)
+  @ExceptionHandler(BusinessException.class)
+  protected ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
+    log.error("정의된 예외처리: {}", e.getErrorCode());
+    return ResponseEntity
+            .status(e.getErrorCode().getStatus())
+            .body(ErrorResponse.of(e.getErrorCode()));
+  }
 
-    // 그 외 모든 예상치 못한 에러 처리
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("예상치 못한 에러: ", e);
-        return ResponseEntity
-                .status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
-                .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR));
-    }
+  // 그 외 모든 예상치 못한 에러 처리
+  @ExceptionHandler(Exception.class)
+  protected ResponseEntity<ErrorResponse> handleException(Exception e) {
+    log.error("예상치 못한 에러: ", e);
+    return ResponseEntity
+            .status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus())
+            .body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR));
+  }
 }

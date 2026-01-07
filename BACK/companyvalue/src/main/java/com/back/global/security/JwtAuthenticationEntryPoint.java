@@ -18,7 +18,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
   @Override
   public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-    // Filter에서 담아둔 예외 코드를 가져옵니다.
+    // Filter에서 담아둔 예외 코드를 가져온다.
     ErrorCode errorCode = (ErrorCode) request.getAttribute("exception");
 
     if (errorCode == null) errorCode = ErrorCode.LOGIN_REQUIRED; // 기본 에러

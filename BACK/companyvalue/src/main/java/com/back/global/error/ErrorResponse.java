@@ -1,25 +1,18 @@
 package com.back.global.error;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor
-public class ErrorResponse {
+public record ErrorResponse(
+        String code,
+        String message,
+        LocalDateTime timestamp
+) {
 
-    private String code;
-    private String message;
-    private LocalDateTime timestamp;
+  public static ErrorResponse of(ErrorCode errorCode) {
+    return new ErrorResponse(
+            errorCode.getCode(),
+            errorCode.getMessage(),
+            LocalDateTime.now());
+  }
 
-    public ErrorResponse(ErrorCode code) {
-        this.code = code.getCode();
-        this.message = code.getMessage();
-        this.timestamp = LocalDateTime.now();
-    }
-
-    public static ErrorResponse of(ErrorCode code) {
-        return new ErrorResponse(code);
-    }
 }
