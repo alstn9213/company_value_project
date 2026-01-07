@@ -19,6 +19,14 @@ public class GlobalExceptionHandler {
             .body(ErrorResponse.of(e.getErrorCode()));
   }
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+    log.warn("잘못된 입력값 감지: {}", e.getMessage());
+    return ResponseEntity
+            .status(ErrorCode.INVALID_INPUT_VALUE.getStatus())
+            .body(ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE));
+  }
+
   // 그 외 모든 예상치 못한 에러 처리
   @ExceptionHandler(Exception.class)
   protected ResponseEntity<ErrorResponse> handleException(Exception e) {

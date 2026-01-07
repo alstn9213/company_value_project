@@ -2,13 +2,14 @@ package com.back.domain.company.entity;
 
 import com.back.domain.time.BaseTime;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CompanyScore extends BaseTime {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +30,7 @@ public class CompanyScore extends BaseTime {
     private String grade; // 등급 (S, A, B, F 등)
     private Boolean isOpportunity; // 저점 매수 기회 여부
 
+    // 점수 최신화 메서드
     public void updateScore(
             Integer totalScore,
             Integer stabilityScore,
@@ -38,6 +40,10 @@ public class CompanyScore extends BaseTime {
             String grade,
             Boolean isOpportunity
     ) {
+      if (totalScore != null && (totalScore < 0 || totalScore > 100)) {
+        throw new IllegalArgumentException("Total score must be between 0 and 100");
+      }
+
         this.totalScore = totalScore;
         this.stabilityScore = stabilityScore;
         this.profitabilityScore = profitabilityScore;
