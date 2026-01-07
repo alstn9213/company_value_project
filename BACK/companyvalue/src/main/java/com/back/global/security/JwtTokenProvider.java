@@ -1,9 +1,9 @@
 package com.back.global.security;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Getter
 @Component
 public class JwtTokenProvider {
   private static final String AUTHORITIES_KEY = "auth";
@@ -42,7 +43,7 @@ public class JwtTokenProvider {
     this.key = Keys.hmacShaKeyFor(keyBytes);
   }
 
-  // 1. 토큰 생성
+  // 토큰 생성
   public String createToken(Authentication authentication, String nickname) {
     String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
@@ -54,18 +55,18 @@ public class JwtTokenProvider {
     return Jwts.builder()
             .setSubject(authentication.getName()) // email
             .claim(AUTHORITIES_KEY, authorities)
-            .claim("nickname", nickname) // 닉네임 추가
+            .claim("nickname", nickname) // 닉네임
             .setIssuedAt(new Date())
             .setExpiration(validity)
             .signWith(key)
             .compact();
   }
 
-  // 2. 토큰에서 인증 정보 조회
+  // 토큰에서 인증 정보 조회
   public Authentication getAuthentication(String token) {
     Claims claims = parseClaims(token);
 
-    if(claims.get(AUTHORITIES_KEY) == null) {
+    if (claims.get(AUTHORITIES_KEY) == null) {
       throw new RuntimeException("권한 정보가 없는 토큰입니다.");
     }
 
@@ -78,7 +79,7 @@ public class JwtTokenProvider {
     return new UsernamePasswordAuthenticationToken(principal, "", authorities);
   }
 
-  // 3. 토큰 유효성 검증
+  // 토큰 유효성 검증
   public boolean validateToken(String token) {
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -95,6 +96,7 @@ public class JwtTokenProvider {
     return false;
   }
 
+  // --- 헬퍼 메서드 ---
   private Claims parseClaims(String accessToken) {
     try {
       return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();

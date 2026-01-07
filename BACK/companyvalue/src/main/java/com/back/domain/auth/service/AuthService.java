@@ -37,7 +37,7 @@ public class AuthService {
 
     String accessToken = jwtTokenProvider.createToken(authentication, member.getNickname());
 
-    long expiresIn = 1800000L;
+    long expiresIn = jwtTokenProvider.getTokenValidityInMilliseconds();
 
     return TokenResponse.of(
             accessToken,

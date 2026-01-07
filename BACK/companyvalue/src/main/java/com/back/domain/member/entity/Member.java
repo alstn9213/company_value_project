@@ -27,10 +27,6 @@ public class Member extends BaseTime {
     @Column(nullable = false)
     private Role role;
 
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
-
     @Builder
     public Member(String email, String password, String nickname, Role role) {
         this.email = email;

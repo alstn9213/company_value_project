@@ -20,14 +20,17 @@ public class CustomUserDetailService implements UserDetailsService {
 
   private final MemberRepository memberRepository;
 
+  // AuthService의 login 메서드 안의 authenticate()가 호출되면
+  // Security가 UserDetailsService의 구현체를 찾아
+  // loadUserByUsername을 실행해서 DB의 회원 정보를 꺼내온다.
   @Override
-  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String email) {
     return memberRepository.findByEmail(email)
             .map(this::createUserDetails)
             .orElseThrow(() -> new UsernameNotFoundException(ErrorCode.MEMBER_NOT_FOUND.getMessage()));
   }
 
-  // DB의 Member를 Security의 UserDetails로 변환하는 헬퍼 메서드
+  // DB의 Member를 Security의 UserDetails로 변환하는 헬퍼
   private UserDetails createUserDetails(Member member) {
     GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getRole().getKey());
 
@@ -37,4 +40,5 @@ public class CustomUserDetailService implements UserDetailsService {
             Collections.singleton(grantedAuthority)
     );
   }
+
 }
