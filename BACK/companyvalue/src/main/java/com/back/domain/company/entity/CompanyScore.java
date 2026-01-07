@@ -68,12 +68,4 @@ public class CompanyScore extends BaseTime {
         this.isOpportunity = isOpportunity;
     }
 
-    public static CompanyScore empty(Company company) {
-        return CompanyScore.builder()
-                .company(company)
-                .totalScore(0)
-                .grade("N/A")
-                .isOpportunity(false)
-                .build();
-    }
 }

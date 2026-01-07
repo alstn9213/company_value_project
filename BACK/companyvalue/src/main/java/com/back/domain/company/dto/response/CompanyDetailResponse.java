@@ -14,10 +14,18 @@ public record CompanyDetailResponse(
         List<FinancialStatementResponse> financialHistory
 ) {
   public static CompanyDetailResponse of(Company company, CompanyScore score, List<FinancialStatement> history) {
+
+    // 점수 계산 여부에 따라 기본값 세팅
+    CompanyScoreResponse scoreDto = (score != null)
+            ? CompanyScoreResponse.from(score)
+            : CompanyScoreResponse.createDefault(company);
+
+    // 분기별 재무제표 리스트 만들기
     List<FinancialStatementResponse> historyDto = history.stream()
             .map(FinancialStatementResponse::from)
             .toList();
 
+    // 가장 최근 재무 제표 뽑아내기
     FinancialStatementResponse latestDto = history.stream()
             .findFirst()
             .map(FinancialStatementResponse::from)
@@ -25,7 +33,7 @@ public record CompanyDetailResponse(
 
     return new CompanyDetailResponse(
             CompanySummaryResponse.from(company),
-            CompanyScoreResponse.from(score),
+            scoreDto,
             latestDto,
             historyDto
     );

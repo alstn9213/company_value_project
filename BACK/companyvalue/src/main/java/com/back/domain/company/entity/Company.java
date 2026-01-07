@@ -1,5 +1,6 @@
 package com.back.domain.company.entity;
 
+import com.back.global.config.init.dto.CompanySeedDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,40 +9,41 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "company_id")
+  private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String ticker; // 예: AAPL, TSLA
+  @Column(unique = true, nullable = false)
+  private String ticker; // 예: AAPL, TSLA
 
-    @Column(nullable = false)
-    private String name; // 예: Apple Inc.
+  @Column(nullable = false)
+  private String name; // 예: Apple Inc.
 
-    private String sector; // 예: Technology
+  private String sector; // 예: Technology
 
-    private String exchange; // 예: NASDAQ, NYSE (미국 주식 구분)
+  private String exchange; // 예: NASDAQ, NYSE (미국 주식 구분)
 
-    private Long totalShares; // 총 발행 주식 수
+  private Long totalShares; // 총 발행 주식 수
 
-    @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
-    private CompanyScore companyScore;
+  @OneToOne(mappedBy = "company", fetch = FetchType.LAZY)
+  private CompanyScore companyScore;
+
+  @Builder
+  public Company(String ticker,
+                 String name,
+                 String sector,
+                 String exchange,
+                 Long totalShares,
+                 CompanyScore companyScore
+  ) {
+    this.ticker = ticker;
+    this.name = name;
+    this.sector = sector;
+    this.exchange = exchange;
+    this.totalShares = totalShares;
+    this.companyScore = companyScore;
+  }
 
 
-    @Builder
-    public Company(String ticker,
-                   String name,
-                   String sector,
-                   String exchange,
-                   Long totalShares,
-                   CompanyScore companyScore
-    ) {
-        this.ticker = ticker;
-        this.name = name;
-        this.sector = sector;
-        this.exchange = exchange;
-        this.totalShares = totalShares;
-        this.companyScore = companyScore;
-    }
 }

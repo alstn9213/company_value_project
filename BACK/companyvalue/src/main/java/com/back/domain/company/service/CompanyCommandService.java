@@ -33,8 +33,8 @@ public class CompanyCommandService {
       return false;
     }
 
-    // 회사 정보 저장
-    Company savedCompany = saveCompanyEntity(seedData);
+    Company newCompany = seedData.toEntity();
+    Company savedCompany = companyRepository.save(newCompany);
 
     // --- 연관 데이터 저장 (재무제표, 주가) ---
     saveFinancialStatements(savedCompany, seedData.financials());
@@ -45,17 +45,6 @@ public class CompanyCommandService {
   }
 
   // --- 헬퍼 메서드 ---
-
-  // 회사 정보 저장 헬퍼
-  private Company saveCompanyEntity(CompanySeedDto seedData) {
-    return companyRepository.save(Company.builder()
-            .ticker(seedData.ticker())
-            .name(seedData.name())
-            .sector(seedData.sector())
-            .exchange(seedData.exchange())
-            .totalShares(seedData.totalShares())
-            .build());
-  }
 
   // 재무제표 저장 헬퍼
   private void saveFinancialStatements(Company company, List<FinancialSeedDto> financials) {

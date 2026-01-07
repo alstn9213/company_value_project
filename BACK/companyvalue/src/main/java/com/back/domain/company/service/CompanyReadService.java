@@ -51,7 +51,7 @@ public class CompanyReadService {
             .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
 
     CompanyScore score = companyScoreRepository.findByCompany(company)
-            .orElse(CompanyScore.empty(company));
+            .orElse(null);
 
     List<FinancialStatement> history = financialStatementRepository.findByCompanyOrderByYearDescQuarterDesc(company);
 
