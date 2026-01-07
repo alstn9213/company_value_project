@@ -1,19 +1,11 @@
 package com.back.global.config.init;
 
-import com.back.domain.company.entity.Company;
-import com.back.domain.company.entity.StockPriceHistory;
-import com.back.domain.company.repository.CompanyRepository;
-import com.back.domain.company.repository.FinancialStatementRepository;
-import com.back.domain.company.repository.StockPriceHistoryRepository;
 import com.back.domain.company.service.CompanyCommandService;
-import com.back.domain.company.service.analysis.ScoringService;
+import com.back.domain.company.service.ScoringService;
 import com.back.global.config.init.dto.CompanySeedDto;
-import com.back.global.config.init.dto.FinancialSeedDto;
-import com.back.global.config.init.dto.StockSeedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;

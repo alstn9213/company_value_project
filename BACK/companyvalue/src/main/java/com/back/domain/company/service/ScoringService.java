@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis;
+package com.back.domain.company.service;
 
 import com.back.domain.company.dto.response.CompanyScoreResponse;
 import com.back.domain.company.entity.Company;
@@ -7,25 +7,20 @@ import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.entity.StockPriceHistory;
 import com.back.domain.company.repository.FinancialStatementRepository;
 import com.back.domain.company.repository.StockPriceHistoryRepository;
+import com.back.domain.company.service.analysis.MarketMetricCalculator;
+import com.back.domain.company.service.analysis.ScoreEvaluator;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.MarketMetrics;
 import com.back.domain.company.service.analysis.dto.ScoreEvaluationResult;
 import com.back.domain.company.service.analysis.dto.ScoringData;
 import com.back.domain.company.service.analysis.policy.PenaltyPolicy;
 import com.back.domain.company.service.analysis.strategy.ScoringAggregator;
-import com.back.domain.company.service.analysis.strategy.components.InvestmentStrategy;
-import com.back.domain.company.service.analysis.strategy.components.ProfitabilityStrategy;
-import com.back.domain.company.service.analysis.strategy.components.StabilityStrategy;
-import com.back.domain.company.service.analysis.strategy.components.ValuationStrategy;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.company.repository.CompanyScoreRepository;
 import com.back.domain.macro.repository.MacroRepository;
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,11 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
-
-import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
 
 @Slf4j
 @Service
@@ -78,25 +70,8 @@ public class ScoringService {
     log.info("모든 기업 점수 계산 완료.");
   }
 
-  public List<CompanyScoreResponse> getTopRankedCompanies() {
-    return companyScoreRepository.findTop10ByOrderByTotalScoreDesc()
-            .stream()
-            .map(CompanyScoreResponse::from)
-            .toList();
-  }
-
-  @Cacheable(value = "company_score", key = "#ticker", unless = "#result == null")
-  public CompanyScoreResponse getScoreByTicker(String ticker) {
-    Company company = companyRepository.findByTicker(ticker)
-            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
-
-    return companyScoreRepository.findByCompany(company)
-            .map(CompanyScoreResponse::from)
-            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_SCORE_NOT_FOUND));
-  }
-
-  @Transactional
-  public void calculateAndSaveScore(FinancialStatement fs) {
+  // 점수 계산하고 저장하는 헬퍼
+  private void calculateAndSaveScore(FinancialStatement fs) {
     validateFinancialData(fs);
 
     MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
@@ -123,6 +98,25 @@ public class ScoringService {
     saveScore(fs.getCompany(), result);
 
   }
+
+  public List<CompanyScoreResponse> getTopRankedCompanies() {
+    return companyScoreRepository.findTop10ByOrderByTotalScoreDesc()
+            .stream()
+            .map(CompanyScoreResponse::from)
+            .toList();
+  }
+
+  @Cacheable(value = "company_score", key = "#ticker", unless = "#result == null")
+  public CompanyScoreResponse getScoreByTicker(String ticker) {
+    Company company = companyRepository.findByTicker(ticker)
+            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
+
+    return companyScoreRepository.findByCompany(company)
+            .map(CompanyScoreResponse::from)
+            .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_SCORE_NOT_FOUND));
+  }
+
+
 
   // --- 헬퍼 메서드 ---
 

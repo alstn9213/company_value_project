@@ -31,9 +31,12 @@ public class CompanyReadService {
 
   // 기업 목록 페이지에 모든 기업들을 나열하는 메서드
   public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
-    Sort sortObj = Sort.by(Sort.Direction.ASC, "name");
-    if("score".equals(sort)) {
-      sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
+    // 점수 순으로 기업 나열하는 것이 기본값
+    Sort sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
+
+    // 이름순을 선택하면 이름 순으로 정렬
+    if ("name".equals(sort)) {
+      sortObj = Sort.by(Sort.Direction.ASC, "name");
     }
 
     Pageable pageable = PageRequest.of(page, size, sortObj);

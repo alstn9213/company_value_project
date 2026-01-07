@@ -13,18 +13,18 @@ public record CompanyDetailResponse(
         FinancialStatementResponse latestFinancial,
         List<FinancialStatementResponse> financialHistory
 ) {
-    public static CompanyDetailResponse of(Company company, CompanyScore score, List<FinancialStatement> history) {
-        List<FinancialStatementResponse> historyDto = history.stream()
-                .map(FinancialStatementResponse::from)
-                .toList();
+  public static CompanyDetailResponse of(Company company, CompanyScore score, List<FinancialStatement> history) {
+    List<FinancialStatementResponse> historyDto = history.stream()
+            .map(FinancialStatementResponse::from)
+            .toList();
 
-        FinancialStatement latest = history.isEmpty() ? new FinancialStatement() : history.get(0);
+    FinancialStatement latest = history.isEmpty() ? new FinancialStatement() : history.get(0);
 
-        return new CompanyDetailResponse(
-                CompanySummaryResponse.from(company),
-                CompanyScoreResponse.from(score),
-                FinancialStatementResponse.from(latest),
-                historyDto
-        );
-    }
+    return new CompanyDetailResponse(
+            CompanySummaryResponse.from(company),
+            CompanyScoreResponse.from(score),
+            FinancialStatementResponse.from(latest),
+            historyDto
+    );
+  }
 }

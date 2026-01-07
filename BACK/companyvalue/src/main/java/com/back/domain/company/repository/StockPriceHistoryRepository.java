@@ -11,11 +11,7 @@ public interface StockPriceHistoryRepository extends JpaRepository<StockPriceHis
     // 특정 기업의 주가 기록 조회 (날짜 오름차순 - 차트 그리기 용)
     List<StockPriceHistory> findByCompanyOrderByRecordedDateAsc(Company company);
 
-    boolean existsByCompanyAndRecordedDate(Company company, LocalDate date);
-
     // 기업의 가장 최근 주가 1개 조회 (점수 계산용)
     StockPriceHistory findTopByCompanyOrderByRecordedDateDesc(Company company);
 
-    // 특정 기업의 주가 기록 전체 삭제 (더미 데이터 갱신용)
-    void deleteByCompany(Company company);
 }

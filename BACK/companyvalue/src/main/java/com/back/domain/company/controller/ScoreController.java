@@ -1,8 +1,7 @@
 package com.back.domain.company.controller;
 
 import com.back.domain.company.dto.response.CompanyScoreResponse;
-import com.back.domain.company.repository.CompanyScoreRepository;
-import com.back.domain.company.service.analysis.ScoringService;
+import com.back.domain.company.service.ScoringService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScoreController {
 
-    private final ScoringService scoringService;
+  private final ScoringService scoringService;
 
-    // 상위 10개 우량 기업 조회
-    @GetMapping("/top")
-    public ResponseEntity<List<CompanyScoreResponse>> getTopRankedCompanies() {
-        return ResponseEntity.ok(scoringService.getTopRankedCompanies());
-    }
+  // 상위 10개 우량 기업 조회
+  @GetMapping("/top")
+  public ResponseEntity<List<CompanyScoreResponse>> getTopRankedCompanies() {
+    return ResponseEntity.ok(scoringService.getTopRankedCompanies());
+  }
 
-    @GetMapping("/{ticker}")
-    public ResponseEntity<CompanyScoreResponse> getCompanyScore(@PathVariable String ticker) {
-        return ResponseEntity.ok(scoringService.getScoreByTicker(ticker));
-    }
+  @GetMapping("/{ticker}")
+  public ResponseEntity<CompanyScoreResponse> getCompanyScore(@PathVariable String ticker) {
+    return ResponseEntity.ok(scoringService.getScoreByTicker(ticker));
+  }
 }

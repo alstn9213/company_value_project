@@ -69,37 +69,6 @@
 - 차트 내 장단기 금리차 역전 구간을 붉게 표시하여 위험 경고.
 
 
-## 🚀 실행 방법 (Local)
-
-**Docker Compose**를 통해 DB(MariaDB, Redis)와 애플리케이션을 한 번에 실행할 수 있습니다.
-
-### 1. 환경 변수 설정
-
-프로젝트 루트에 `.env` 파일을 생성합니다.
-
-```env
-DB_ROOT_PASSWORD=your_password
-DB_NAME=value
-```
-
-### 2. 컨테이너 실행
-
-```bash
-# 백엔드 및 DB 실행
-docker-compose up -d --build
-```
-
-### 3. 프론트엔드 실행
-
-```bash
-cd FRONT/companyvalue
-npm install
-npm run dev
-```
-
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:8080`
-
 ## API Reference
 ![alt text](images/image.png)
 ![alt text](images/image-1.png)

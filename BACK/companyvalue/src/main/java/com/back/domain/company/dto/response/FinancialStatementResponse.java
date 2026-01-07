@@ -17,19 +17,19 @@ public record FinancialStatementResponse(
         BigDecimal researchAndDevelopment,
         BigDecimal capitalExpenditure
 ) {
-    public static FinancialStatementResponse from(FinancialStatement fs) {
-        return new FinancialStatementResponse(
-                fs.getYear(),
-                fs.getQuarter(),
-                fs.getRevenue(),
-                fs.getOperatingProfit(),
-                fs.getNetIncome(),
-                fs.getTotalAssets(),
-                fs.getTotalLiabilities(),
-                fs.getTotalEquity(),
-                fs.getOperatingCashFlow(),
-                fs.getResearchAndDevelopment(),
-                fs.getCapitalExpenditure()
-        );
-    }
+  public static FinancialStatementResponse from(FinancialStatement fs) {
+    return new FinancialStatementResponse(
+            fs.getYear(),
+            fs.getQuarter(),
+            fs.getRevenue(),
+            fs.getOperatingProfit(),
+            fs.getNetIncome(),
+            fs.getTotalAssets(),
+            fs.getTotalLiabilities(),
+            fs.getTotalEquity(),
+            fs.getOperatingCashFlow(),
+            fs.getResearchAndDevelopment(),
+            fs.getCapitalExpenditure()
+    );
+  }
 }
