@@ -2,6 +2,8 @@ package com.back.domain.company.service.analysis.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.macro.entity.MacroEconomicData;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +15,7 @@ public class MacroConditionRule implements PenaltyRule {
   @Override
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
     if (macro.getUs10yTreasuryYield() == null || macro.getUs2yTreasuryYield() == null) {
-      log.warn("거시 경제 데이터가 없습니다.");
-      return 0;
+      throw new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND);
     }
 
     // 장단기 금리차 역전 체크

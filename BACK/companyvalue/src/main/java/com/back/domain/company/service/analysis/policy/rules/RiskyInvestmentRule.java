@@ -93,4 +93,5 @@ public class RiskyInvestmentRule implements PenaltyRule {
   private BigDecimal getValueOrDefault(BigDecimal value) {
     return value != null ? value : BigDecimal.ZERO;
   }
+
 }

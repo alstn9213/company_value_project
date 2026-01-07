@@ -29,9 +29,11 @@ public class CompanyCommandService {
   private final StockPriceHistoryRepository stockPriceHistoryRepository;
 
   @Transactional
-  public void registerCompany(CompanySeedDto seedData) {
+  public boolean registerCompany(CompanySeedDto seedData) {
     if (companyRepository.existsByTicker(seedData.ticker())) {
-      throw new BusinessException(ErrorCode.COMPANY_ALREADY_EXISTS);
+      // 초기화 로직 등에서는 예외보다 boolean 반환으로 흐름 제어가 유리함
+      log.info("이미 존재하는 기업입니다: {}", seedData.ticker());
+      return false;
     }
 
     Company newCompany = seedData.toEntity();
@@ -42,6 +44,7 @@ public class CompanyCommandService {
     saveStockPriceHistory(savedCompany, seedData.stockHistory());
 
     log.debug("기업 데이터 등록 완료: {}", seedData.ticker());
+    return true;
   }
 
   // --- 헬퍼 메서드 ---
