@@ -1,5 +1,7 @@
 package com.back.domain.macro.entity;
 
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -51,7 +53,7 @@ public class MacroEconomicData {
                          Double unemploymentRate
   ) {
     if (unemploymentRate != null && unemploymentRate < 0) {
-      throw new IllegalArgumentException("Unemployment rate cannot be negative");
+      throw new BusinessException(ErrorCode.INVALID_MACRO_VALUE);
     }
 
     this.fedFundsRate = fedFundsRate;

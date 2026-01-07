@@ -20,7 +20,8 @@ public enum ErrorCode {
 
   // Company
   COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "CP001", "해당 기업을 찾을 수 없습니다."),
-  COMPANY_SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "C005", "해당 기업의 분석 점수 데이터가 존재하지 않습니다."),
+  INVALID_SCORE_RANGE(HttpStatus.BAD_REQUEST, "CP002", "점수는 0에서 100 사이여야 합니다."),
+  COMPANY_SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "CP003", "해당 기업의 분석 점수 데이터가 존재하지 않습니다."),
 
   // Financial
   INVALID_FINANCIAL_DATA(HttpStatus.BAD_REQUEST, "F001", "유효하지 않은 재무 데이터입니다 (매출액, 자본, 부채 누락 등)."),
@@ -31,9 +32,7 @@ public enum ErrorCode {
   // Macro
   MACRO_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "MAC001", "거시 경제 데이터를 찾을 수 없습니다."),
   BOND_YIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "MAC002", "채권 금리 데이터가 누락되었습니다."),
-
-  // Scoring
-  INSUFFICIENT_DATA_FOR_SCORING(HttpStatus.BAD_REQUEST, "SC001", "평가를 진행하기 위한 데이터가 부족합니다. (재무제표 및 주가 데이터 누락)"),
+  INVALID_MACRO_VALUE(HttpStatus.BAD_REQUEST, "MAC003", "거시 경제 지표 값은 음수일 수 없습니다."),
 
   // Watchlist
   WATCHLIST_DUPLICATION(HttpStatus.BAD_REQUEST, "W001", "이미 관심 목록에 존재합니다."),

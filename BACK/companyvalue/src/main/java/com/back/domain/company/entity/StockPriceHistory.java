@@ -14,22 +14,22 @@ import java.time.LocalDate;
 )
 public class StockPriceHistory {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "company_id")
+  private Company company;
 
-    private LocalDate recordedDate;
+  private LocalDate recordedDate;
 
-    private BigDecimal closePrice;  // 종가
+  private BigDecimal closePrice;  // 종가
 
-    @Builder
-    public StockPriceHistory(Company company, LocalDate recordedDate, BigDecimal closePrice) {
-        this.company = company;
-        this.recordedDate = recordedDate;
-        this.closePrice = closePrice;
-    }
+  @Builder
+  public StockPriceHistory(Company company, LocalDate recordedDate, BigDecimal closePrice) {
+    this.company = company;
+    this.recordedDate = recordedDate;
+    this.closePrice = closePrice;
+  }
 }

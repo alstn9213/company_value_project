@@ -1,6 +1,8 @@
 package com.back.domain.company.entity;
 
 import com.back.domain.time.BaseTime;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,7 +43,7 @@ public class CompanyScore extends BaseTime {
             Boolean isOpportunity
     ) {
       if (totalScore != null && (totalScore < 0 || totalScore > 100)) {
-        throw new IllegalArgumentException("Total score must be between 0 and 100");
+        throw new BusinessException(ErrorCode.INVALID_SCORE_RANGE);
       }
 
         this.totalScore = totalScore;
