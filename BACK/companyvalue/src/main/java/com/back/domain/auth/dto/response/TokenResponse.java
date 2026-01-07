@@ -6,7 +6,7 @@ public record TokenResponse(
         Long expiresIn,
         String nickname // 프론트엔드 표시용
 ) {
-  public static TokenResponse of(String accessToken, String nickname, Long expiresIn) {
+  public static TokenResponse of(String accessToken, Long expiresIn, String nickname) {
     return new TokenResponse(accessToken, "Bearer", expiresIn, nickname);
   }
 }
