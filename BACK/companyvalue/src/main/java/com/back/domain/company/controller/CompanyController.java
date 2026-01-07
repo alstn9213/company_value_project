@@ -1,8 +1,8 @@
 package com.back.domain.company.controller;
 
 import com.back.domain.company.dto.response.*;
-import com.back.domain.company.service.core.CompanyReadService;
-import com.back.domain.company.service.stock.StockService;
+import com.back.domain.company.service.CompanyReadService;
+import com.back.domain.company.service.StockService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
