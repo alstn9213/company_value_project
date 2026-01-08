@@ -26,10 +26,10 @@ public class RiskyInvestmentRule implements PenaltyRule {
     if (macro.getUs10yTreasuryYield() < HIGH_INTEREST_RATE_THRESHOLD) return 0;
 
     if (exceedsDebtRatio(fs)) {
-      log.debug("페널티 적용 대상: 고금리 상황의 고부채 기업 (Ticker: {})", fs.getCompany().getTicker());
+      log.debug("[페널티] 고금리 상황의 고부채 기업 (Ticker: {})", fs.getCompany().getTicker());
 
       if (isAggressiveInvestment(fs)) {
-        log.debug("추가 페널티 적용: 공격적 투자 감행");
+        log.debug("[추가 페널티] 공격적 투자 감행");
         return PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE + PENALTY_SCORE_RISKY_INVESTMENT;
       }
       return PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE;

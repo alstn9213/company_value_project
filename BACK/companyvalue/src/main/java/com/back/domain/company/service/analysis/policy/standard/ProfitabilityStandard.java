@@ -29,9 +29,9 @@ public class ProfitabilityStandard {
   @Getter
   @RequiredArgsConstructor
   public enum OpMarginRule {
-    S_TIER(20.0, 15),
-    A_TIER(10.0, 10),
-    B_TIER(0.0, 5);
+    EXCELLENT(20.0, 15),
+    GOOD(10.0, 10),
+    POOR(0.0, 5);
 
     private final double threshold;
     private final int score;

@@ -3,6 +3,8 @@ package com.back.domain.company.service.analysis.strategy.components;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.ScoringData;
+import com.back.domain.company.service.analysis.policy.standard.StabilityStandard;
+import com.back.global.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -32,56 +34,44 @@ public class StabilityStrategy implements ScoringStrategy {
 
   // --- 헬퍼 메서드 ---
 
-  // 부채비율 점수 계산 헬퍼
+  // [부채비율] 점수 계산 헬퍼
   private int calculateDebtRatioScore(FinancialStatement fs) {
     BigDecimal totalLiabilities = fs.getTotalLiabilities();
     BigDecimal totalEquity = fs.getTotalEquity();
 
-    // 데이터 유효성 검사 (Null 체크 및 자본 잠식 체크)
-    if (totalLiabilities == null || totalEquity == null || totalEquity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.debug("부채, 자본 데이터가 누락됐거나 자본 잠식 상태입니다: {}", fs.getCompany().getName());
+    // 자본 잠식 걸러내기
+    if (totalEquity.compareTo(BigDecimal.ZERO) <= 0) {
+      log.info("자본 잠식 상태로 인한 안정성 점수 0점 처리: {}", fs.getCompany().getName());
       return 0;
     }
 
     // 부채비율 계산: (부채 / 자본) * 100
-    BigDecimal debtRatio = totalLiabilities.divide(totalEquity, 4, RoundingMode.HALF_UP)
-            .multiply(BigDecimal.valueOf(100));
+    double debtRatio = DecimalUtil.divide(totalLiabilities, totalEquity, 4)
+            .doubleValue() * 100;
 
-    // 업종별 평가 기준 분기
+    // 업종별 표준(Standard)을 사용하여 점수 계산
     if (isFinancialSector(fs.getCompany().getSector())) {
-      return scoreFinancialSector(debtRatio);
+      return StabilityStandard.FinancialDebt.calculate(debtRatio);
     } else {
-      return scoreGeneralSector(debtRatio);
+      return StabilityStandard.GeneralDebt.calculate(debtRatio);
     }
   }
 
-  // 금융업 부채비율 채점 (금융업은 부채비율이 높음)
-  private int scoreFinancialSector(BigDecimal debtRatio) {
-    if (debtRatio.compareTo(BigDecimal.valueOf(800)) < 0) return 20;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(1000)) < 0) return 10;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(1200)) < 0) return 5;
-    return 0;
-  }
 
-  // 일반 기업 부채비율 채점
-  private int scoreGeneralSector(BigDecimal debtRatio) {
-    if (debtRatio.compareTo(BigDecimal.valueOf(100)) < 0) return 20;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(200)) < 0) return 10;
-    else if (debtRatio.compareTo(BigDecimal.valueOf(300)) < 0) return 5;
-    return 0;
-  }
-
-  // 영업활동 현금흐름 점수 계산 헬퍼
+  // [영업활동 현금흐름] 점수 계산 헬퍼
   private int calculateCashFlowScore(FinancialStatement fs) {
     BigDecimal operatingCashFlow = fs.getOperatingCashFlow();
 
     if (operatingCashFlow == null) {
-      log.debug("영업활동 현금 흐름 데이터 누락: {}", fs.getCompany().getName());
+      log.warn("영업활동 현금 흐름 데이터 누락: {}", fs.getCompany().getName());
       return 0;
     }
 
     // 흑자인 경우 점수 부여
-    return operatingCashFlow.compareTo(BigDecimal.ZERO) > 0 ? 20 : 0;
+    // 흑자인 경우 Standard에 정의된 PASS 점수 부여
+    return operatingCashFlow.compareTo(BigDecimal.ZERO) > 0
+            ? StabilityStandard.CASH_FLOW_PASS_SCORE
+            : 0;
   }
 
 

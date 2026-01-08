@@ -22,7 +22,7 @@ public class FinancialStructureRule implements PenaltyRule {
 
     // 자본 잠식 체크
     if (equity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.debug("페널티 적용: 자본 잠식(기업: {})", fs.getCompany().getName());
+      log.debug("[페널티] 자본 잠식: {}", fs.getCompany().getName());
       penalty += PENALTY_SCORE_CAPITAL_IMPAIRMENT;
     }
 
@@ -36,7 +36,7 @@ public class FinancialStructureRule implements PenaltyRule {
             .multiply(new BigDecimal("100"));
 
     if (debtRatio.compareTo(limitRatio) > 0) {
-      log.debug("페널티 적용: 과도한 부채비율(기업: {}, 비율: {}%)", fs.getCompany().getName(), debtRatio);
+      log.debug("[페널티] 과도한 부채비율: {}", fs.getCompany().getName());
       penalty += PENALTY_SCORE_EXCESSIVE_DEBT;
     }
     return penalty;

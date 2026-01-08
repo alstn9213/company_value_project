@@ -32,7 +32,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
 
   // --- 헬퍼 메서드 ---
 
-  // ROE 점수 계산 헬퍼
+  // [ROE] 점수 계산 헬퍼
   private int calculateROEScore(FinancialStatement fs) {
     BigDecimal netIncome = fs.getNetIncome();
     BigDecimal equity = fs.getTotalEquity();
@@ -49,7 +49,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     return ProfitabilityStandard.RoeRule.calculate(roe);
   }
 
-  // 영업이익률 점수 계산 헬퍼
+  // [영업이익률] 점수 계산 헬퍼
   private int calculateOperatingMarginScore(FinancialStatement fs) {
     BigDecimal revenue = fs.getRevenue();
     BigDecimal operatingProfit = fs.getOperatingProfit();

@@ -22,10 +22,9 @@ public class StabilityStandard {
     private final double threshold;
     private final int score;
 
-    public static int calculate(BigDecimal debtRatio) {
-      double ratio = debtRatio.doubleValue();
+    public static int calculate(double debtRatio) {
       return Arrays.stream(values())
-              .filter(standard -> ratio < standard.threshold) // 부채비율은 '미만'일 때 점수 부여
+              .filter(standard -> debtRatio < standard.threshold) // 부채비율은 '미만'일 때 점수 부여
               .findFirst()
               .map(GeneralDebt::getScore)
               .orElse(0);
@@ -42,10 +41,9 @@ public class StabilityStandard {
     private final double threshold;
     private final int score;
 
-    public static int calculate(BigDecimal debtRatio) {
-      double ratio = debtRatio.doubleValue();
+    public static int calculate(double debtRatio) {
       return Arrays.stream(values())
-              .filter(standard -> ratio < standard.threshold)
+              .filter(standard -> debtRatio < standard.threshold)
               .findFirst()
               .map(FinancialDebt::getScore)
               .orElse(0);

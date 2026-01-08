@@ -20,7 +20,7 @@ public class MacroConditionRule implements PenaltyRule {
 
     // 장단기 금리차 역전 체크
     if (macro.getUs10yTreasuryYield() < macro.getUs2yTreasuryYield()) {
-      log.debug("페널티 적용: 장단기 금리차 역전");
+      log.debug("[페널티] 장단기 금리차 역전");
       return PENALTY_SCORE_MACRO;
     }
 
