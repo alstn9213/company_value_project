@@ -45,5 +45,9 @@ public class Company {
     this.companyScore = companyScore;
   }
 
+  public boolean isFinancialSector() {
+    return "Financial Services".equalsIgnoreCase(this.sector);
+  }
+
 
 }

@@ -1,6 +1,6 @@
 package com.back.domain.company.service.analysis.dto;
 
-public record ScoreEvaluationResult(
+public record ScoreEvaluationResultDto(
         int totalScore,
         int stability,
         int profitability,

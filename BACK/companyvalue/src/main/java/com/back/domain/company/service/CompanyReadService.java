@@ -29,7 +29,7 @@ public class CompanyReadService {
   private final CompanyScoreRepository companyScoreRepository;
   private final FinancialStatementRepository financialStatementRepository;
 
-  // 기업 목록 페이지에 모든 기업들을 나열하는 메서드
+  // 기업 목록 페이지에 모든 기업들을 나열하는 서비스
   public Page<CompanySummaryResponse> getAllCompanies(int page, int size, String sort) {
     // 점수 순으로 기업 나열하는 것이 기본값
     Sort sortObj = Sort.by(Sort.Direction.DESC, "companyScore.totalScore");
@@ -45,7 +45,7 @@ public class CompanyReadService {
             .map(CompanySummaryResponse::from);
   }
 
-  // 기업의 상세 정보를 가져오는 메서드
+  // 기업의 상세 정보를 가져오는 서비스
   public CompanyDetailResponse getCompanyDetail(String ticker) {
     Company company = companyRepository.findByTicker(ticker)
             .orElseThrow(()-> new BusinessException(ErrorCode.COMPANY_NOT_FOUND));
@@ -58,8 +58,8 @@ public class CompanyReadService {
     return CompanyDetailResponse.of(company, score, history);
   }
 
-  // top 10 회사 나열용 메서드
-  public List<CompanySummaryResponse> searchCompanies(String keyword) {
+  // top 10 회사 나열용 서비스
+  public List<CompanySummaryResponse> getTop10(String keyword) {
     return companyRepository.findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(keyword, keyword)
             .stream()
             .map(CompanySummaryResponse::from)

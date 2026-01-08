@@ -2,9 +2,8 @@ package com.back.domain.company.service.analysis.strategy.components;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
-import com.back.domain.company.service.analysis.dto.ScoringData;
+import com.back.domain.company.service.analysis.dto.ScoringDataDto;
 import com.back.domain.company.service.analysis.policy.standard.ProfitabilityStandard;
-import com.back.domain.company.service.analysis.policy.standard.StabilityStandard;
 import com.back.global.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -16,11 +15,12 @@ import java.math.BigDecimal;
 public class ProfitabilityStrategy implements ScoringStrategy {
 
   @Override
-  public int calculate(ScoringData data) {
+  public int calculate(ScoringDataDto data) {
+    String companyName = data.fs().getCompany().getName();
     FinancialStatement fs = data.fs();
 
-    int roeScore = calculateROEScore(fs);
-    int opMarginScore = calculateOperatingMarginScore(fs);
+    int roeScore = calculateROEScore(companyName, fs);
+    int opMarginScore = calculateOperatingMarginScore(companyName, fs);
 
     return roeScore + opMarginScore;
   }
@@ -33,34 +33,33 @@ public class ProfitabilityStrategy implements ScoringStrategy {
   // --- 헬퍼 메서드 ---
 
   // [ROE] 점수 계산 헬퍼
-  private int calculateROEScore(FinancialStatement fs) {
+  private int calculateROEScore(String companyName, FinancialStatement fs) {
     BigDecimal netIncome = fs.getNetIncome();
     BigDecimal equity = fs.getTotalEquity();
 
-    // ROE 계산: (당기순이익 / 자본총계) * 100
-    BigDecimal roe = DecimalUtil.divide(netIncome, equity, 4);
-
-    if (DecimalUtil.isZero(roe)) {
-      log.warn("순이익이나 자본 데이터가 누락: {}", fs.getCompany().getName());
+    if (netIncome == null || equity == null) {
+      log.warn("[데이터 누락] {}: 순이익={} 자본={}", companyName, netIncome, equity);
       return 0;
     }
 
-    // 점수 산정
+    // ROE = (당기순이익 / 자본총계) * 100
+    BigDecimal roe = DecimalUtil.checkNullAndDivide(netIncome, equity, 4);
+
     return ProfitabilityStandard.RoeRule.calculate(roe);
   }
 
   // [영업이익률] 점수 계산 헬퍼
-  private int calculateOperatingMarginScore(FinancialStatement fs) {
+  private int calculateOperatingMarginScore(String companyName, FinancialStatement fs) {
     BigDecimal revenue = fs.getRevenue();
     BigDecimal operatingProfit = fs.getOperatingProfit();
 
-    // 영업이익률 계산: (영업이익 / 매출액) * 100
-    BigDecimal opMargin = DecimalUtil.divide(operatingProfit, revenue, 4);
-
-    if (DecimalUtil.isZero(opMargin) || DecimalUtil.isZero(revenue)) {
-      log.warn("매출액이나 영업이익률 데이터가 누락됐거나 매출이 없는 스타트업: {}", fs.getCompany().getName());
+    if (operatingProfit == null || revenue == null) {
+      log.warn("[데이터 누락] {}: 매출={}, 영업이익={}", companyName, revenue, operatingProfit);
       return 0;
     }
+
+    // 영업이익률 = (영업이익 / 매출액) * 100
+    BigDecimal opMargin = DecimalUtil.checkNullAndDivide(operatingProfit, revenue, 4);
 
    return ProfitabilityStandard.OpMarginRule.calculate(opMargin);
   }

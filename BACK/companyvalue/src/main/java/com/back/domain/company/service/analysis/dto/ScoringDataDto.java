@@ -4,9 +4,9 @@ import com.back.domain.company.entity.FinancialStatement;
 
 import java.math.BigDecimal;
 
-public record ScoringData(
+public record ScoringDataDto(
         FinancialStatement fs,
-        MarketMetrics metrics,
+        MarketMetricsDto metrics,
         BigDecimal latestStockPrice
 ) {
 

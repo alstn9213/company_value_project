@@ -40,7 +40,7 @@ public class CompanyController {
             @Parameter(description = "검색할 기업명 또는 키워드", example = "Apple")
             @RequestParam String keyword
     ) {
-        return ResponseEntity.ok(companyReadService.searchCompanies(keyword));
+        return ResponseEntity.ok(companyReadService.getTop10(keyword));
     }
 
     @GetMapping("/{ticker}")

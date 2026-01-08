@@ -24,6 +24,7 @@ public class CompanyDataInitializer {
     log.info("[CompanyDataInitializer] 데이터 초기화를 시작합니다...");
 
     List<CompanySeedDto> seedDataList = seedDataLoader.loadSeedData();
+
     if (seedDataList.isEmpty()) {
       log.warn("시드 데이터가 비어있습니다. 초기화를 종료합니다.");
       return;
@@ -42,8 +43,10 @@ public class CompanyDataInitializer {
 
     for (CompanySeedDto seedData : seedDataList) {
       String ticker = seedData.ticker();
+
       if (processedTickers.contains(seedData.ticker())) continue;
       processedTickers.add(ticker);
+
       try {
         boolean isCreated = companyCommandService.registerCompany(seedData);
         if (isCreated) count++;

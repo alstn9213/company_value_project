@@ -1,9 +1,11 @@
 package com.back.domain.company.service.analysis.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
+import com.back.domain.company.service.analysis.constant.ScoringConstants;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;
+import com.back.global.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -45,30 +47,24 @@ public class RiskyInvestmentRule implements PenaltyRule {
 
   // 부채 비율 판별 헬퍼
   private boolean exceedsDebtRatio(FinancialStatement fs) {
+    String companyName = fs.getCompany().getName();
     BigDecimal equity = fs.getTotalEquity();
-    String company = fs.getCompany().getName();
+    BigDecimal liabilities = fs.getTotalLiabilities();
 
-    if (equity == null) {
-      log.warn("[페널티] 자본 데이터 누락으로 부채 비율 계산 불가: {}", company);
+    if (equity == null || liabilities == null) {
+      log.warn("[데이터 누락] {}: 자본={} 부채={}", companyName, equity, liabilities);
       throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
     }
 
     if (equity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.debug("자본 잠식: {}, 자본: {} -> 부채 비율 기준 초과로 간주", company, equity);
+      log.debug("자본 잠식: {}, 자본: {} -> 부채 비율 기준 초과로 간주", companyName, equity);
       return true;
     }
 
-    BigDecimal liabilities = fs.getTotalLiabilities();
-    if (liabilities == null) {
-      log.warn("부채 비율 계산 불가: 부채 데이터 누락: {})", fs.getCompany().getName());
-      throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
-    }
+    BigDecimal debtRatio = DecimalUtil.checkNullAndDivide(liabilities, equity, 4);
 
-    BigDecimal debtRatio = liabilities.divide(equity, 4, RoundingMode.HALF_UP)
-            .multiply(BigDecimal.valueOf(100));
-
-    boolean isFinance = SECTOR_FINANCIAL.equalsIgnoreCase(fs.getCompany().getSector());
-    double threshold = isFinance ? HIGH_DEBT_RATIO_FINANCIAL : HIGH_DEBT_RATIO_GENERAL;
+    boolean isFinance = fs.getCompany().isFinancialSector();
+    double threshold = ScoringConstants.getDebtRatioLimit(isFinance).doubleValue();
 
     return debtRatio.doubleValue() > threshold;
   }
@@ -88,7 +84,7 @@ public class RiskyInvestmentRule implements PenaltyRule {
     BigDecimal invest = getValueOrDefault(fs.getResearchAndDevelopment())
             .add(getValueOrDefault(fs.getCapitalExpenditure()));
 
-    double investRatio = invest.divide(revenue, 4, RoundingMode.HALF_UP).doubleValue() * 100;
+    double investRatio = DecimalUtil.checkNullAndDivide(invest, revenue, 4).doubleValue();
     return investRatio >= AGGRESSIVE_INVESTMENT_RATIO;
   }
 
