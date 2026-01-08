@@ -3,12 +3,13 @@ package com.back.domain.company.service.analysis.strategy.components;
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.ScoringData;
+import com.back.domain.company.service.analysis.policy.standard.ProfitabilityStandard;
+import com.back.domain.company.service.analysis.policy.standard.StabilityStandard;
 import com.back.global.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 @Slf4j
 @Component
@@ -45,11 +46,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     }
 
     // 점수 산정
-    if (roe >= 20) return 15;
-    else if (roe >= 10) return 10;
-    else if (roe >= 0) return 5;
-
-    return 0;
+    return ProfitabilityStandard.RoeRule.calculate(roe);
   }
 
   // 영업이익률 점수 계산 헬퍼
@@ -65,12 +62,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
       return 0;
     }
 
-    // 점수 산정
-    if (opMargin >= 20) return 15;
-    else if (opMargin >= 10) return 10;
-    else if (opMargin >= 0) return 5;
-
-    return 0;
+   return ProfitabilityStandard.OpMarginRule.calculate(opMargin);
   }
 
 
