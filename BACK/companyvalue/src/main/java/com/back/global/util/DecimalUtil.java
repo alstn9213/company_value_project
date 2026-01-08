@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 
 public class DecimalUtil {
 
-  private static final int DEFAULT_CALC_SCALE = 4;
 
   private DecimalUtil() {}
 
@@ -25,8 +24,13 @@ public class DecimalUtil {
             .setScale(2, RoundingMode.HALF_UP);
   }
 
-  // 0 체크 헬퍼
-  private static boolean isZero(BigDecimal value) {
+  // 값이 양수인지 확인 (null 이 아니고 0보다 큰 경우)
+  public static boolean isPositive(BigDecimal value) {
+    return value != null && value.compareTo(BigDecimal.ZERO) > 0;
+  }
+
+  // 값이 0인지 확인
+  public static boolean isZero(BigDecimal value) {
     return value.compareTo(BigDecimal.ZERO) == 0;
   }
 

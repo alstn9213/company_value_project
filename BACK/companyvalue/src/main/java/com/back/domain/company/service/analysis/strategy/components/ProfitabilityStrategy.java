@@ -38,10 +38,10 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     BigDecimal equity = fs.getTotalEquity();
 
     // ROE 계산: (당기순이익 / 자본총계) * 100
-    double roe = DecimalUtil.divide(netIncome, equity, 4).doubleValue() * 100;
+    BigDecimal roe = DecimalUtil.divide(netIncome, equity, 4);
 
-    if (roe == 0 || equity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.warn("순이익이나 자본 데이터가 누락됐거나 자본 잠식 상태: {}", fs.getCompany().getName());
+    if (DecimalUtil.isZero(roe)) {
+      log.warn("순이익이나 자본 데이터가 누락: {}", fs.getCompany().getName());
       return 0;
     }
 
@@ -55,9 +55,9 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     BigDecimal operatingProfit = fs.getOperatingProfit();
 
     // 영업이익률 계산: (영업이익 / 매출액) * 100
-    double opMargin = DecimalUtil.divide(operatingProfit, revenue, 4).doubleValue() * 100;
+    BigDecimal opMargin = DecimalUtil.divide(operatingProfit, revenue, 4);
 
-    if (opMargin == 0 || revenue.compareTo(BigDecimal.ZERO) == 0) {
+    if (DecimalUtil.isZero(opMargin) || DecimalUtil.isZero(revenue)) {
       log.warn("매출액이나 영업이익률 데이터가 누락됐거나 매출이 없는 스타트업: {}", fs.getCompany().getName());
       return 0;
     }

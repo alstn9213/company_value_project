@@ -46,8 +46,7 @@ public class StabilityStrategy implements ScoringStrategy {
     }
 
     // 부채비율 계산: (부채 / 자본) * 100
-    double debtRatio = DecimalUtil.divide(totalLiabilities, totalEquity, 4)
-            .doubleValue() * 100;
+    BigDecimal debtRatio = DecimalUtil.calculatePercentage(totalLiabilities, totalEquity);
 
     // 업종별 표준(Standard)을 사용하여 점수 계산
     if (isFinancialSector(fs.getCompany().getSector())) {

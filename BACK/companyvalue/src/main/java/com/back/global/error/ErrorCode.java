@@ -34,7 +34,7 @@ public enum ErrorCode {
 
   // Macro
   MACRO_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "거시 경제 데이터를 찾을 수 없습니다."),
-  BOND_YIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "채권 금리 데이터가 누락되었습니다."),
+  BOND_YIELD_NOT_FOUND(HttpStatus.NOT_FOUND, "10년물 채권 금리 데이터가 누락되었습니다."),
   INVALID_MACRO_VALUE(HttpStatus.BAD_REQUEST,  "거시 경제 지표 값은 음수일 수 없습니다."),
 
   // Watchlist

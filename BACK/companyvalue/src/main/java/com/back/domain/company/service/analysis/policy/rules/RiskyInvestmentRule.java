@@ -18,12 +18,15 @@ public class RiskyInvestmentRule implements PenaltyRule {
 
   @Override
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
-    if (macro.getUs10yTreasuryYield() == null) {
-      log.warn("고금리 판단 불가: 10년물 국채 금리 누락");
+    Double us10Y = macro.getUs10yTreasuryYield();
+
+    if (us10Y == null) {
       throw new BusinessException(ErrorCode.BOND_YIELD_NOT_FOUND);
     }
 
-    if (macro.getUs10yTreasuryYield() < HIGH_INTEREST_RATE_THRESHOLD) return 0;
+    if (us10Y < HIGH_INTEREST_RATE_THRESHOLD) {
+      return 0;
+    }
 
     if (exceedsDebtRatio(fs)) {
       log.debug("[페널티] 고금리 상황의 고부채 기업 (Ticker: {})", fs.getCompany().getTicker());
@@ -43,20 +46,21 @@ public class RiskyInvestmentRule implements PenaltyRule {
   // 부채 비율 판별 헬퍼
   private boolean exceedsDebtRatio(FinancialStatement fs) {
     BigDecimal equity = fs.getTotalEquity();
+    String company = fs.getCompany().getName();
 
     if (equity == null) {
-      log.warn("부채 비율 계산 불가: 자본 데이터 누락 (Company: {})", fs.getCompany().getName());
+      log.warn("[페널티] 자본 데이터 누락으로 부채 비율 계산 불가: {}", company);
       throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
     }
 
     if (equity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.debug("자본 잠식 확인 (자본: {}) -> 부채 비율 기준 초과로 간주", equity);
+      log.debug("자본 잠식: {}, 자본: {} -> 부채 비율 기준 초과로 간주", company, equity);
       return true;
     }
 
     BigDecimal liabilities = fs.getTotalLiabilities();
     if (liabilities == null) {
-      log.warn("부채 비율 계산 불가: 부채 데이터 누락 - 스킵 처리 (Company: {})", fs.getCompany().getName());
+      log.warn("부채 비율 계산 불가: 부채 데이터 누락: {})", fs.getCompany().getName());
       throw new BusinessException(ErrorCode.INVALID_FINANCIAL_DATA);
     }
 

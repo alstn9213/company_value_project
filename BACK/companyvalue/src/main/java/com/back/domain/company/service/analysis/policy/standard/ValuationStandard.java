@@ -3,6 +3,7 @@ package com.back.domain.company.service.analysis.policy.standard;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 public class ValuationStandard {
@@ -21,9 +22,12 @@ public class ValuationStandard {
     private final double max;
     private final int score;
 
-    public static int calculate(double per) {
+    public static int calculate(BigDecimal per) {
+      if (per == null) return 0;
+      double value = per.doubleValue();
+
       return Arrays.stream(values())
-              .filter(rule -> per >= rule.min && per < rule.max)
+              .filter(rule -> value >= rule.min && value < rule.max)
               .findFirst()
               .map(PerRule::getScore)
               .orElse(0);
@@ -44,9 +48,12 @@ public class ValuationStandard {
     private final double max;
     private final int score;
 
-    public static int calculate(double pbr) {
+    public static int calculate(BigDecimal pbr) {
+      if (pbr == null) return 0;
+      double value = pbr.doubleValue();
+
       return Arrays.stream(values())
-              .filter(rule -> pbr >= rule.min && pbr < rule.max)
+              .filter(rule -> value >= rule.min && value < rule.max)
               .findFirst()
               .map(PbrRule::getScore)
               .orElse(0);

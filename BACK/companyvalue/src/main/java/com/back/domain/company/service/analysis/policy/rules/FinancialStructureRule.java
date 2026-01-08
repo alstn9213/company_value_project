@@ -2,6 +2,7 @@ package com.back.domain.company.service.analysis.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.macro.entity.MacroEconomicData;
+import com.back.global.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +17,12 @@ public class FinancialStructureRule implements PenaltyRule {
 
   @Override
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
-    BigDecimal equity = fs.getTotalEquity();
     BigDecimal liabilities = fs.getTotalLiabilities();
+    BigDecimal equity = fs.getTotalEquity();
+    BigDecimal debtRatio = DecimalUtil.divide(liabilities, equity, 4);
+
+    boolean isFinancial = SECTOR_FINANCIAL.equalsIgnoreCase(fs.getCompany().getSector());
+
     int penalty = 0;
 
     // 자본 잠식 체크
@@ -27,13 +32,9 @@ public class FinancialStructureRule implements PenaltyRule {
     }
 
     // 부채 비율 체크
-    boolean isFinancial = SECTOR_FINANCIAL.equalsIgnoreCase(fs.getCompany().getSector());
     BigDecimal limitRatio = isFinancial
             ? BigDecimal.valueOf(HIGH_DEBT_RATIO_FINANCIAL)
             : BigDecimal.valueOf(HIGH_DEBT_RATIO_GENERAL);
-
-    BigDecimal debtRatio = liabilities.divide(equity, 4, RoundingMode.HALF_UP)
-            .multiply(new BigDecimal("100"));
 
     if (debtRatio.compareTo(limitRatio) > 0) {
       log.debug("[페널티] 과도한 부채비율: {}", fs.getCompany().getName());

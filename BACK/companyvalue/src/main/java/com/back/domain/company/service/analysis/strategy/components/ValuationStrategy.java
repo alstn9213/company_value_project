@@ -1,6 +1,5 @@
 package com.back.domain.company.service.analysis.strategy.components;
 
-import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoreCategory;
 import com.back.domain.company.service.analysis.dto.MarketMetrics;
 import com.back.domain.company.service.analysis.dto.ScoringData;
@@ -16,16 +15,25 @@ public class ValuationStrategy implements ScoringStrategy {
 
   @Override
   public int calculate(ScoringData data) {
+    String companyName = data.fs().getCompany().getName();
     MarketMetrics metrics = data.metrics();
     BigDecimal pbr = metrics.pbr();
     BigDecimal per = metrics.per();
 
-    if (isInvalidMetric(metrics.per()) || isInvalidMetric(metrics.pbr())) {
-      log.debug("Valuation 데이터 부적합 (적자 또는 데이터 부족): {}", data.fs().getCompany().getName());
+    if (per == null || pbr == null) {
+      log.warn("Valuation 데이터 부족 [Company: {}]: PER={}, PBR={}", companyName, per, pbr);
       return 0;
     }
 
-    return ValuationStandard.PbrRule.calculate(pbr) + ValuationStandard.PerRule.calculate(per);
+    if (isNotPositive(per) || isNotPositive(pbr)) {
+      log.info("Valuation 평가 제외 (적자 또는 자본잠식) [Company: {}]: PER={}, PBR={}", companyName, per, pbr);
+      return 0;
+    }
+
+    int pbrScore = ValuationStandard.PbrRule.calculate(pbr);
+    int perScore = ValuationStandard.PerRule.calculate(per);
+
+    return pbrScore + perScore;
   }
 
   @Override
@@ -36,25 +44,8 @@ public class ValuationStrategy implements ScoringStrategy {
 
   // --- 헬퍼 메서드 ---
 
-  private int calculatePERScore(MarketMetrics marketMetrics) {
-    double rawPer = marketMetrics.per().doubleValue();
-
-    if (rawPer == null) {
-      log.warn("per");
-    }
-
-    double per = rawPer.doubleValue();
-    return ValuationStandard.PbrRule.calculate(per);
-  }
-
-  private int calculatePBRSCore(FinancialStatement fs) {
-    return ValuationStandard.PerRule.calculate(per);
-  }
-
-
-  // 유효한 가치 지표인지 판별하는 헬퍼
-  private boolean isInvalidMetric(BigDecimal value) {
-    return value == null || value.compareTo(BigDecimal.ZERO) <= 0;
+  private boolean isNotPositive(BigDecimal value) {
+    return value.compareTo(BigDecimal.ZERO) <= 0;
   }
 
 

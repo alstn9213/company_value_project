@@ -10,11 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
-import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
 
 @Slf4j
 @Primary
@@ -27,7 +24,7 @@ public class CompositePenaltyPolicy implements PenaltyPolicy {
     @Override
     public int calculatePenalty(FinancialStatement fs, MacroEconomicData macro) {
       if (macro == null) {
-        log.warn("[CompositePenaltyPolicy] 거시 경제 데이터 누락");
+        throw new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND);
       }
 
       return rules.stream()
