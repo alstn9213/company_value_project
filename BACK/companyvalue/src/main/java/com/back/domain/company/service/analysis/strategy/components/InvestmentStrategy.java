@@ -21,7 +21,7 @@ public class InvestmentStrategy implements ScoringStrategy {
     BigDecimal capex = fs.getCapitalExpenditure();
 
     if (revenue == null || rnd == null || capex == null) {
-      log.debug("Investment 데이터 누락: {}", fs.getCompany().getName());
+      log.warn("Investment 데이터 누락: {}", fs.getCompany().getName());
       return 0;
     }
 
