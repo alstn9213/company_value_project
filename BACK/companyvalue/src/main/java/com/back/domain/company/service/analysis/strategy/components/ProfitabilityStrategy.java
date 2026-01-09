@@ -53,7 +53,7 @@ public class ProfitabilityStrategy implements ScoringStrategy {
     BigDecimal revenue = fs.getRevenue();
     BigDecimal operatingProfit = fs.getOperatingProfit();
 
-    if (operatingProfit == null || revenue == null) {
+    if (revenue == null || operatingProfit == null) {
       log.warn("[데이터 누락] {}: 매출={}, 영업이익={}", companyName, revenue, operatingProfit);
       return 0;
     }

@@ -14,6 +14,7 @@ import static com.back.domain.company.service.analysis.constant.ScoringConstants
 public class MacroConditionRule implements PenaltyRule {
   @Override
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
+
     if (macro.getUs10yTreasuryYield() == null || macro.getUs2yTreasuryYield() == null) {
       throw new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND);
     }
