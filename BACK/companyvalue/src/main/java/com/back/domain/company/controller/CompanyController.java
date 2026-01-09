@@ -40,7 +40,7 @@ public class CompanyController {
             @Parameter(description = "검색할 기업명 또는 키워드", example = "Apple")
             @RequestParam String keyword
     ) {
-        return ResponseEntity.ok(companyReadService.getTop10(keyword));
+        return ResponseEntity.ok(companyReadService.searchCompanies(keyword));
     }
 
     @GetMapping("/{ticker}")
@@ -53,7 +53,7 @@ public class CompanyController {
     }
 
     @GetMapping("/{ticker}/chart")
-    @Operation(summary = "주가 차트 데이터 조회", description = "특정 기업의 주가 히스토리 데이터를 조회합니다.")
+    @Operation(summary = "주가 차트 데이터 조회", description = "특정 기업의 주가 데이터를 조회합니다.")
     public ResponseEntity<List<StockHistoryResponse>> getCompanyChart(
             @Parameter(description = "기업 티커 (예: AAPL)", example = "AAPL")
             @PathVariable String ticker

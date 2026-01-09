@@ -1,19 +1,13 @@
 import { Filter, Search } from "lucide-react";
 
 interface CompanyFilterHeaderProps {
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
   sortOption: string;
   onSortChange: (value: string) => void;
-  isSearchActive: boolean; // 검색 중일 때 정렬 비활성화 등을 위해
 }
 
 const CompanyFilterHeader = ({
-  searchTerm,
-  onSearchChange,
   sortOption,
   onSortChange,
-  isSearchActive,
 }: CompanyFilterHeaderProps) => {
   return (
     <div className="flex flex-col md:flex-row justify-between items-end gap-4 border-b border-slate-800 pb-4">
@@ -33,26 +27,11 @@ const CompanyFilterHeader = ({
           <select
             value={sortOption}
             onChange={(e) => onSortChange(e.target.value)}
-            disabled={isSearchActive}
             className="pl-9 pr-8 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <option value="name">"이름순 (A-Z)"</option>
             <option value="score">"점수 높은순"</option>
+            <option value="name">"이름순 (A-Z)"</option>
           </select>
-        </div>
-
-        {/* 검색창 */}
-        <div className="relative flex-1 md:w-64">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-slate-400" />
-          </div>
-          <input
-            type="text"
-            placeholder="티커 또는 기업명..."
-            className="block w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-500"
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-          />
         </div>
       </div>
     </div>

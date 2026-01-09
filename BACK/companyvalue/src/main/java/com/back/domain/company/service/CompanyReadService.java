@@ -58,8 +58,8 @@ public class CompanyReadService {
     return CompanyDetailResponse.of(company, score, history);
   }
 
-  // top 10 회사 나열용 서비스
-  public List<CompanySummaryResponse> getTop10(String keyword) {
+  // 기업 검색시 드롭다운에 표시할 기업 목록을 가져오는 서비스
+  public List<CompanySummaryResponse> searchCompanies(String keyword) {
     return companyRepository.findTop10ByTickerContainingIgnoreCaseOrNameContainingIgnoreCase(keyword, keyword)
             .stream()
             .map(CompanySummaryResponse::from)
