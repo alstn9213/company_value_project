@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { companyApi } from "../../api/companyApi";
 import { ScoreResult } from "../../types/company";

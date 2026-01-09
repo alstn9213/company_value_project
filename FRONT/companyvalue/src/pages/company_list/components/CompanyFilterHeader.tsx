@@ -1,4 +1,4 @@
-import { Filter, Search } from "lucide-react";
+import { Filter } from "lucide-react";
 
 interface CompanyFilterHeaderProps {
   sortOption: string;
