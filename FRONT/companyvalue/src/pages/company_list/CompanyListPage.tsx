@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { companyApi } from "../../api/companyApi";
-import { ScoreResult } from "../../types/company";
-import axiosClient from "../../api/axiosClient";
-import TopRatedCompanies from "./components/TopRatedCompanies";
 import CompanyFilterHeader from "./components/CompanyFilterHeader";
 import CompanyGridSection from "./components/CompanyGridSection";
 import Pagination from "../../components/common/Pagination";
@@ -11,18 +8,6 @@ import Pagination from "../../components/common/Pagination";
 const CompanyListPage = () => {
   const [page, setPage] = useState(0);
   const [sortOption, setSortOption] = useState("score");
-
-  // Top 5 우량주 데이터 조회
-  const { data: topRanked } = useQuery({
-    queryKey: ["topRankedCompanies"],
-    queryFn: async () => {
-      const res = await axiosClient.get<ScoreResult[]>("/api/scores/top");
-      return res.data;
-    },
-    staleTime: (1000 * 60) * 5,// 5분 캐싱
-  });
-
-  // 전체 목록 쿼리 (검색어가 없을 때 실행)
   const {
     data: pageData,
     isLoading: isPageLoading,
@@ -34,8 +19,6 @@ const CompanyListPage = () => {
     // v5 변경사항: keepPreviousData: true -> placeholderData: keepPreviousData
   });
 
-  
-
   // 현재 표시할 데이터 결정
   const companies = pageData?.content;
   const isLoading = isPageLoading;
@@ -43,18 +26,13 @@ const CompanyListPage = () => {
   // 페이지네이션 노출 여부 조건 
   const showPagination = !!pageData;
 
-  // 현재 페이지(number)가 (전체 페이지 수 - 1)보다 크거나 같으면 마지막 페이지입니다.
+  // 현재 페이지(number)가 (전체 페이지 수 - 1)보다 크거나 같으면 마지막 페이지
   const currentPage = pageData?.page.number ?? 0;
   const totalPages = pageData?.page.totalPages ?? 0;
   const isLastPage = totalPages === 0 || currentPage >= totalPages - 1;
   
   return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-10">
-      {/* Top 5 섹션 */}
-      {topRanked && (
-        <TopRatedCompanies companies={topRanked}/>
-      )}
-
+    <div className="max-w-7xl mx-auto space-y-10 pb-10">      
       <div className="space-y-6">
 
         {/* 필터 및 검색 헤더 */}
