@@ -2,8 +2,10 @@ package com.back.domain.company.service.analysis.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoringConstants;
+import com.back.domain.company.service.analysis.validator.FinancialDataValidator;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.global.util.DecimalUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,10 +16,20 @@ import static com.back.domain.company.service.analysis.constant.ScoringConstants
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class FinancialStructureRule implements PenaltyRule {
+
+  private final FinancialDataValidator validator;
 
   @Override
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
+
+    if (!validator.hasRequiredFields(fs,
+            FinancialStatement::getTotalLiabilities,
+            FinancialStatement::getTotalEquity)) {
+      return 0; // 데이터가 없으면 페널티 계산 불가 (0 반환)
+    }
+
     String company = fs.getCompany().getName();
     int penalty = 0;
 
@@ -43,4 +55,5 @@ public class FinancialStructureRule implements PenaltyRule {
 
     return penalty;
   }
+
 }
