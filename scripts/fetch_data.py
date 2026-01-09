@@ -4,7 +4,8 @@ import json
 import pandas as pd
 from datetime import datetime
 
-target_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "JPM", "JNJ", "V", "PG", "NVDA"]
+target_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "JPM", "JNJ", "V", "PG", "NVDA",
+                  "META", "NFLX", "AMD", "KO", "PEP", "WMT", "XOM", "DIS", "MCD", "BAC"]
 
 result_data = []
 
