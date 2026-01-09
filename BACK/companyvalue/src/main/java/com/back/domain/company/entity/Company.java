@@ -1,6 +1,5 @@
 package com.back.domain.company.entity;
 
-import com.back.global.config.init.dto.CompanySeedDto;
 import jakarta.persistence.*;
 import lombok.*;
 

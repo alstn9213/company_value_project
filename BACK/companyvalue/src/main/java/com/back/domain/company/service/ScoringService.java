@@ -52,56 +52,54 @@ public class ScoringService {
   @Transactional
   public void calculateAllScores() {
     log.info("모든 기업의 평가 점수 계산을 시작합니다...");
+
+    // 거시 경제 데이터는 모든 기업 평가에 쓰이니까 맨 먼저 정의하는게 효율적임
+    MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
+            .orElseThrow(() -> new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND));
+
     List<Company> companies = companyRepository.findAll();
 
     for (Company company : companies) {
-      String companyName = company.getName();
-
       try {
-        FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
-                .orElseThrow(() -> new BusinessException(ErrorCode.FINANCIAL_STATEMENT_NOT_FOUND));
-        calculateAndSaveScore(fs);
-
-      } catch (BusinessException e) {
-        log.warn("점수 계산 스킵 {}: {}", companyName, e.getMessage());
-
+        processCompanyScore(company, macro);
       } catch (Exception e) {
-        log.error("점수 계산 중 오류 발생 {}: {}", companyName, e.getMessage());
+        log.error("점수 계산 중 오류 발생 {}: {}", company.getName(), e.getMessage());
       }
     }
     log.info("모든 기업 점수 계산 완료.");
   }
 
-  // 특정 기업의 점수 계산하고 저장하는 헬퍼
-  private void calculateAndSaveScore(FinancialStatement fs) {
+  // 오케스트레이션 (데이터 준비 -> 계산 -> 저장) 헬퍼
+  private void processCompanyScore(Company company, MacroEconomicData macro) {
+    FinancialStatement fs = financialStatementRepository.findTopByCompanyOrderByYearDescQuarterDesc(company)
+            .orElseThrow(() -> new BusinessException(ErrorCode.FINANCIAL_STATEMENT_NOT_FOUND));
 
     validateFinancialData(fs);
 
-    MacroEconomicData macro = macroRepository.findTopByOrderByRecordedDateDesc()
-            .orElseThrow(() -> new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND));
-
-    StockPriceHistory latestStockData = stockPriceHistoryRepository.findTopByCompanyOrderByRecordedDateDesc(fs.getCompany())
+    StockPriceHistory latestStockData = stockPriceHistoryRepository.findTopByCompanyOrderByRecordedDateDesc(company)
             .orElseThrow(() -> new BusinessException(ErrorCode.LATEST_STOCK_NOT_FOUND));
 
-    BigDecimal stockPrice = latestStockData.getClosePrice();
+    ScoreEvaluationResultDto result = calculateScore(fs, latestStockData.getClosePrice(), macro);
 
-    // 기업의 가치들 계산
+    saveScore(company, result);
+  }
+
+  // 점수 계산 헬퍼
+  private ScoreEvaluationResultDto calculateScore(FinancialStatement fs, BigDecimal stockPrice, MacroEconomicData macro) {
+    // 기업 가치 지표 계산
     MarketMetricsDto metrics = marketMetricCalculator.calculate(fs, stockPrice);
 
-    // 점수 매기는데 필요한 데이터들을 모은 객체
+    // 점수 계산용 데이터 객체 생성
     ScoringDataDto scoringData = new ScoringDataDto(fs, metrics, stockPrice);
 
-    // 모든 전략 실행 (Map으로 결과 받음)
+    // 전략 실행
     Map<ScoreCategory, Integer> componentScores = scoringAggregator.calculateAll(scoringData);
 
     // 페널티 계산
     int penalty = penaltyPolicy.calculatePenalty(fs, macro);
 
-    // 총점 계산
-    ScoreEvaluationResultDto result = scoreEvaluator.evaluate(componentScores, penalty, fs);
-
-    saveScore(fs.getCompany(), result);
-
+    // 최종 평가
+    return scoreEvaluator.evaluate(componentScores, penalty, fs);
   }
 
   // 점수 상위 10등 회사들 가져오는 서비스
@@ -125,7 +123,7 @@ public class ScoringService {
 
 
 
-  // --- 헬퍼 메서드 ---
+  // --- 기본 헬퍼 메서드 ---
 
   // NPE 방지를 위한 데이터 검증 헬퍼
   private void validateFinancialData(FinancialStatement fs) {
@@ -141,18 +139,12 @@ public class ScoringService {
 
   // 점수 저장 헬퍼
   private void saveScore(Company company, ScoreEvaluationResultDto result) {
+    // 기존 점수를 조회하고 없으면 점수 객체 생성
     CompanyScore score = companyScoreRepository.findByCompany(company)
             .orElseGet(() -> CompanyScore.builder().company(company).build());
 
-    score.updateScore(
-            result.totalScore(),
-            result.stability(),
-            result.profitability(),
-            result.valuation(),
-            result.investment(),
-            result.grade(),
-            result.isOpportunity()
-    );
+    score.updateScore(result);
+
     companyScoreRepository.save(score);
   }
 }

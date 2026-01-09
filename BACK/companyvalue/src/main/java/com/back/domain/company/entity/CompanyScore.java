@@ -1,5 +1,6 @@
 package com.back.domain.company.entity;
 
+import com.back.domain.company.service.analysis.dto.ScoreEvaluationResultDto;
 import com.back.domain.time.BaseTime;
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;
@@ -32,29 +33,6 @@ public class CompanyScore extends BaseTime {
     private String grade; // 등급 (S, A, B, F 등)
     private Boolean isOpportunity; // 저점 매수 기회 여부
 
-    // 점수 최신화 메서드
-    public void updateScore(
-            Integer totalScore,
-            Integer stabilityScore,
-            Integer profitabilityScore,
-            Integer valuationScore,
-            Integer investmentScore,
-            String grade,
-            Boolean isOpportunity
-    ) {
-      if (totalScore != null && (totalScore < 0 || totalScore > 100)) {
-        throw new BusinessException(ErrorCode.INVALID_SCORE_RANGE);
-      }
-
-        this.totalScore = totalScore;
-        this.stabilityScore = stabilityScore;
-        this.profitabilityScore = profitabilityScore;
-        this.valuationScore = valuationScore;
-        this.investmentScore = investmentScore;
-        this.grade = grade;
-        this.isOpportunity = isOpportunity;
-    }
-
     @Builder
     public CompanyScore(
             Company company,
@@ -67,5 +45,19 @@ public class CompanyScore extends BaseTime {
         this.grade = grade;
         this.isOpportunity = isOpportunity;
     }
+
+  // 점수 최신화 메서드
+  // 원래는 계층 분리때문에 엔티티에 DTO클래스를 import해오는 건 권장하지 않으나
+  // 프로젝트 규모가 작아서 이 메서드를 일단 엔티티에 정의해둠
+  // 나중에 이 메서드를 분리하고 싶으면 따로 DTO를 만들자.
+  public void updateScore(ScoreEvaluationResultDto result) {
+    this.totalScore = result.totalScore();
+    this.stabilityScore = result.stability();
+    this.profitabilityScore = result.profitability();
+    this.valuationScore = result.valuation();
+    this.investmentScore = result.investment();
+    this.grade = result.grade();
+    this.isOpportunity = result.isOpportunity();
+  }
 
 }

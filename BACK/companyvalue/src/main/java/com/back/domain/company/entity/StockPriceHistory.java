@@ -32,4 +32,6 @@ public class StockPriceHistory {
     this.recordedDate = recordedDate;
     this.closePrice = closePrice;
   }
+
+
 }

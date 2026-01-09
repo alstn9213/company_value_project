@@ -31,10 +31,10 @@ public class RiskyInvestmentRule implements PenaltyRule {
     }
 
     if (exceedsDebtRatio(fs)) {
-      log.debug("[페널티] 고금리 상황의 고부채 기업 (Ticker: {})", fs.getCompany().getTicker());
+      log.debug("[페널티] 고금리 상황의 고부채 기업 {}: ", fs.getCompany().getName());
 
       if (isAggressiveInvestment(fs)) {
-        log.debug("[추가 페널티] 공격적 투자 감행");
+        log.debug("[추가 페널티] 고부채 기업이 공격적 투자 감행");
         return PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE + PENALTY_SCORE_RISKY_INVESTMENT;
       }
       return PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE;
