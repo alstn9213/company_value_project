@@ -116,7 +116,7 @@ public class MacroDataService {
   // 직전 데이터를 Map으로 다루기 위해 엔티티를 Map으로 변환하는 헬퍼 메서드
   private Map<MacroIndicator, Double> convertToMap(MacroEconomicData entity) {
     Map<MacroIndicator, Double> map = new EnumMap<>(MacroIndicator.class);
-    if(entity == null) return map; // null이면 빈 맵 반환
+    if (entity == null) return map; // null이면 빈 맵 반환
 
     // Enum과 Entity 필드 매핑
     map.put(MacroIndicator.FED_FUNDS, entity.getFedFundsRate());

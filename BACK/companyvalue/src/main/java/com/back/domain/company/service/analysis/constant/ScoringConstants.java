@@ -11,11 +11,11 @@ public class ScoringConstants {
   public static final double AGGRESSIVE_INVESTMENT_RATIO = 10.0;  // 공격적 투자 기준 (매출 대비 10%)
 
   // --- 페널티 점수 ---
-  public static final int PENALTY_SCORE_MACRO = 10;               // 장단기 금리차 역전 시
-  public static final int PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE = 15; // 이자율이 높고 부채 비율도 높을 때
-  public static final int PENALTY_SCORE_RISKY_INVESTMENT = 5;    // 위험 투자 시
-  public static final int PENALTY_SCORE_CAPITAL_IMPAIRMENT = 40;  // 자본잠식 시 (매우 큰 페널티)
-  public static final int PENALTY_SCORE_EXCESSIVE_DEBT = 20;      // 부채비율 400% 초과 시
+  public static final int PENALTY_SCORE_MACRO = 10;               // 장단기 금리차 역전시
+  public static final int PENALTY_SCORE_HiGH_DEBT_IN_HIGH_RATE = 15; // 이자율이 높고 부채 비율도 높을시
+  public static final int PENALTY_SCORE_RISKY_INVESTMENT = 5;    // 위험투자시
+  public static final int PENALTY_SCORE_CAPITAL_IMPAIRMENT = 40;  // 자본잠식시 (매우 큰 페널티)
+  public static final int PENALTY_SCORE_EXCESSIVE_DEBT = 20;      // 부채비율 기준 초과시
 
   // --- 저점 매수(Opportunity) 기준 ---
   public static final int OPPORTUNITY_VALUATION_THRESHOLD = 20;   // 밸류에이션 점수 기준

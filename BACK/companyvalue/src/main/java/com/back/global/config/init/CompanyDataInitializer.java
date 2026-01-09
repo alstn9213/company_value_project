@@ -38,20 +38,25 @@ public class CompanyDataInitializer {
 
   // 신규 기업 저장하는 헬퍼
   private int processSeedData(List<CompanySeedDto> seedDataList) {
-    int count = 0;
     Set<String> processedTickers = new HashSet<>();
+    int count = 0;
 
     for (CompanySeedDto seedData : seedDataList) {
       String ticker = seedData.ticker();
 
-      if (processedTickers.contains(seedData.ticker())) continue;
+      if (processedTickers.contains(seedData.ticker())) {
+        log.info("이미 저장된 기업입니다.");
+        continue;
+      }
+
       processedTickers.add(ticker);
 
       try {
         boolean isCreated = companyCommandService.registerCompany(seedData);
         if (isCreated) count++;
+
       } catch (Exception e) {
-        log.error("기업 데이터 저장 실패 (Ticker: {}): {}", seedData.ticker(), e.getMessage());
+        log.error("[데이터 저장 실패] {}: {}", seedData.ticker(), e.getMessage());
       }
     }
 
@@ -60,10 +65,10 @@ public class CompanyDataInitializer {
 
   // 신규 기업이 저장될 경우 점수 산출하는 헬퍼
   private void handlePostInitialization(int newCompanyCount) {
-    log.info("[CompanyDataInitializer] 데이터 적재 완료. 신규 : {} 거", newCompanyCount);
+    log.info("[CompanyDataInitializer] 데이터 적재 완료: 신규 {}건", newCompanyCount);
     if (newCompanyCount > 0) {
-      log.info("신규 데이터가 감지되어 전체 점수 재산출을 진행합니다.");
-      scoringService.calculateAllScores();
+      log.info("[신규 데이터 감지] 전체 점수 재산출을 진행합니다.");
+      scoringService.calculateScoresAndSave();
     }
   }
 

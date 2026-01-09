@@ -2,7 +2,6 @@ package com.back.domain.company.service.analysis.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.company.service.analysis.constant.ScoringConstants;
-import com.back.domain.company.service.analysis.validator.FinancialDataValidator;
 import com.back.domain.macro.entity.MacroEconomicData;
 import com.back.global.util.DecimalUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,41 +18,53 @@ import static com.back.domain.company.service.analysis.constant.ScoringConstants
 @RequiredArgsConstructor
 public class FinancialStructureRule implements PenaltyRule {
 
-  private final FinancialDataValidator validator;
 
   @Override
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
-
-    if (!validator.hasRequiredFields(fs,
-            FinancialStatement::getTotalLiabilities,
-            FinancialStatement::getTotalEquity)) {
-      return 0; // 데이터가 없으면 페널티 계산 불가 (0 반환)
-    }
-
-    String company = fs.getCompany().getName();
+    String companyName = fs.getCompany().getName();
     int penalty = 0;
 
+    // 자본잠식 페널티 계산
+    penalty += calculateCapitalImpairmentPenalty(fs, companyName);
+
+    // 부채 페널티 계산
+    penalty += calculateDebtRatioPenalty(fs, companyName);
+
+    return penalty;
+  }
+
+  // --- 헬퍼 메서드 ---
+
+  // [자본잠식] 페널티 계산 헬퍼
+  private int calculateCapitalImpairmentPenalty(FinancialStatement fs, String companyName) {
+    BigDecimal equity = fs.getTotalEquity();
+
+    if (equity.compareTo(BigDecimal.ZERO) <= 0) {
+      log.debug("[페널티] 자본 잠식: {}", companyName);
+      return PENALTY_SCORE_CAPITAL_IMPAIRMENT;
+    }
+
+    return 0;
+  }
+
+  // [부채비율] 페널티 계산 헬퍼
+  private int calculateDebtRatioPenalty(FinancialStatement fs, String companyName) {
     BigDecimal liabilities = fs.getTotalLiabilities();
     BigDecimal equity = fs.getTotalEquity();
 
-    // 자본 잠식 페널티 계산
-    if (equity.compareTo(BigDecimal.ZERO) <= 0) {
-      log.debug("[페널티] 자본 잠식: {}", company);
-      penalty += PENALTY_SCORE_CAPITAL_IMPAIRMENT;
-    }
-
+    // 부채비율 = (부채 / 자본) * 100
     BigDecimal debtRatio = DecimalUtil.checkNullAndDivide(liabilities, equity, 4);
 
+    // 업종별 부채 비율 기준 설정
     boolean isFinance = fs.getCompany().isFinancialSector();
     BigDecimal limitRatio = ScoringConstants.getDebtRatioLimit(isFinance);
 
-    // 부채 페널티 계산
     if (debtRatio.compareTo(limitRatio) > 0) {
-      log.debug("[페널티] 과도한 부채비율: {}", company);
-      penalty += PENALTY_SCORE_EXCESSIVE_DEBT;
+      log.debug("[페널티] 과도한 부채비율: {}", companyName);
+      return PENALTY_SCORE_EXCESSIVE_DEBT;
     }
 
-    return penalty;
+    return 0;
   }
 
 }

@@ -31,11 +31,12 @@ public class CompanyCommandService {
   @Transactional
   public boolean registerCompany(CompanySeedDto seedData) {
     if (companyRepository.existsByTicker(seedData.ticker())) {
-      // 초기화 로직 등에서는 예외보다 boolean 반환으로 흐름 제어가 유리함
+      // 초기화 로직에서는 예외보다 boolean 반환으로 흐름 제어가 유리함
       log.info("이미 존재하는 기업입니다: {}", seedData.ticker());
       return false;
     }
 
+    // --- 신규 기업 저장 ---
     Company newCompany = seedData.toEntity();
     Company savedCompany = companyRepository.save(newCompany);
 
@@ -52,6 +53,7 @@ public class CompanyCommandService {
   // 재무제표 저장 헬퍼
   private void saveFinancialStatements(Company company, List<FinancialSeedDto> financials) {
     if (financials == null || financials.isEmpty()) {
+      log.warn("[데이터 누락] {}: 재무제표", company.getName());
       throw new BusinessException(ErrorCode.REQUIRED_DATA_MISSING);
     }
 
@@ -65,6 +67,7 @@ public class CompanyCommandService {
   // 주가 저장 헬퍼
   private void saveStockPriceHistory(Company company, List<StockSeedDto> stockHistory) {
     if (stockHistory == null || stockHistory.isEmpty()) {
+      log.warn("[데이터 누락] {}: 주가 기록", company.getName());
       throw new BusinessException(ErrorCode.REQUIRED_DATA_MISSING);
     }
 

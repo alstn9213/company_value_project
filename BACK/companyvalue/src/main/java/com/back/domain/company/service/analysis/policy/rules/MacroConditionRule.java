@@ -16,6 +16,7 @@ public class MacroConditionRule implements PenaltyRule {
   public int apply(FinancialStatement fs, MacroEconomicData macro) {
 
     if (macro.getUs10yTreasuryYield() == null || macro.getUs2yTreasuryYield() == null) {
+      log.warn("[데이터 누락] 거시 경제 금리");
       throw new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND);
     }
 

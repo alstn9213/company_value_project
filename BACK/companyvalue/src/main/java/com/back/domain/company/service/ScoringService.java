@@ -50,7 +50,7 @@ public class ScoringService {
   private final ScoreEvaluator scoreEvaluator;
 
   @Transactional
-  public void calculateAllScores() {
+  public void calculateScoresAndSave() {
     log.info("모든 기업의 평가 점수 계산을 시작합니다...");
 
     // 거시 경제 데이터는 모든 기업 평가에 쓰이니까 맨 먼저 정의하는게 효율적임
