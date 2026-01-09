@@ -16,11 +16,6 @@ export const formatCurrency = (value: number | undefined): string => {
 
 // 등급별 색상 반환
 export const getGradeColor = (grade: string) => {
-
-  if (grade.includes("F")) {
-      return "text-red-400 border-red-400 bg-red-400/10";
-  }
-
   switch (grade) {
     case "S": return "text-purple-400 border-purple-400 bg-purple-400/10";
     case "A": return "text-blue-400 border-blue-400 bg-blue-400/10";

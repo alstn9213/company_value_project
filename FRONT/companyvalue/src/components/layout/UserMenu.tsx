@@ -25,7 +25,7 @@ const UserMenu = () => {
           </p>
         </div>
         
-        <div className="h-8 w-[1px] bg-slate-800 hidden sm:block"></div>
+        <div className="h-8 w-px bg-slate-800 hidden sm:block"></div>
         
         <button
           onClick={handleLogout}

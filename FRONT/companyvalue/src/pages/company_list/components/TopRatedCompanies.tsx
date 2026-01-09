@@ -15,7 +15,7 @@ const TopRatedCompanies = ({ companies }: TopRatedCompaniesProps) => {
       <h2 className="text-2xl font-bold text-white flex items-center gap-2 px-1">
         <Trophy className="text-yellow-400 fill-yellow-400" />
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-amber-400">
-          "이달의 추천 우량주 Top 5"
+          이달의 추천 우량주 Top 5
         </span>
       </h2>
 
@@ -34,46 +34,23 @@ const TopRatedCompanies = ({ companies }: TopRatedCompaniesProps) => {
             )}
 
             <div className="flex justify-between items-start mb-4">
-              <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold border-2 ${getGradeColor(
-                  item.grade
-                )}`}
-              >
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold border-2 ${getGradeColor(item.grade)}`}>
                 {item.grade}
               </div>
               <div className="text-right">
-                <span
-                  className={`text-2xl font-bold ${getScoreColor(
-                    item.totalScore
-                  )}`}
-                >
+                <span className={`text-2xl font-bold ${getScoreColor(item.totalScore)}`}>
                   {item.totalScore}
                 </span>
                 <span className="text-xs text-slate-500 block">"점"</span>
               </div>
             </div>
 
+            {/*  */}
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-white truncate group-hover:text-blue-400 transition-colors">
                 {item.ticker}
               </h3>
               <p className="text-sm text-slate-400 truncate">{item.name}</p>
-            </div>
-
-            {/* 하단 점수 요약 바 */}
-            <div className="mt-4 pt-4 border-t border-slate-700/50 flex justify-between text-xs text-slate-500">
-              <div className="flex flex-col gap-1">
-                <span>"안정성"</span>
-                <span className="text-slate-300">
-                  {item.stabilityScore}/40
-                </span>
-              </div>
-              <div className="flex flex-col gap-1 text-right">
-                <span>"수익성"</span>
-                <span className="text-slate-300">
-                  {item.profitabilityScore}/30
-                </span>
-              </div>
             </div>
           </Link>
         ))}
