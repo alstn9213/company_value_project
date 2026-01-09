@@ -118,13 +118,6 @@ const EconomicChart = ({ history, isLoading }: EconomicChartProps) => {
                   x2={interval.end}
                   fill="#ef4444"
                   fillOpacity={0.15} // 투명도 조절로 라인 가시성 확보
-                  label={{
-                    value: "⚠️ 역전 구간",
-                    position: "insideTop",
-                    fill: "#ef4444",
-                    fontSize: 11,
-                    fontWeight: "bold",
-                  }}
                 />
               ))}
 

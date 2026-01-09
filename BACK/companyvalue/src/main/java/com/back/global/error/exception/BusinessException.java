@@ -12,4 +12,10 @@ public class BusinessException extends RuntimeException {
     super(errorCode.getMessage());
     this.errorCode = errorCode;
   }
+
+  // 원본 예외(cause)를 함께 받는 생성자
+  public BusinessException(ErrorCode errorCode, Throwable cause) {
+    super(errorCode.getMessage(), cause); // 부모(RuntimeException)에 메시지와 원본 에러 전달
+    this.errorCode = errorCode;
+  }
 }

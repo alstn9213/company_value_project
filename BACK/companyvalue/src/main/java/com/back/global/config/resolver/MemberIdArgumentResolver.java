@@ -41,7 +41,7 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
                 return Long.parseLong(user.getUsername());
             } catch (NumberFormatException e) {
                 // 혹시 모를 파싱 에러 방어 (일어나면 안 되는 상황)
-                throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+                throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, e);
             }
         }
 

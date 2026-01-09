@@ -10,6 +10,7 @@ public enum ErrorCode {
 
   // Common
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다."),
+  JSON_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 파싱 중 오류가 발생했습니다."),
   INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "잘못된 입력입니다."),
 
   // Member

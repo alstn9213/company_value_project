@@ -1,5 +1,7 @@
 package com.back.infra.external;
 
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +49,8 @@ public class DataFetchService {
     try {
       return objectMapper.readTree(jsonResponse);
     } catch (Exception e) {
-      log.error("JSON 파싱 에러: {}", e.getMessage());
-      throw new RuntimeException("데이터 파싱 중 오류 발생");
+      log.error("JSON 파싱 에러: {}", e.getMessage(), e);
+      throw new BusinessException(ErrorCode.JSON_PARSING_ERROR, e);
     }
   }
 }
