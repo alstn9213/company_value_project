@@ -1,12 +1,6 @@
+import { MAX_SCORES } from "../constants/maxScores";
 import { SCORE_TERMS } from "../constants/scoreTerm";
 import ScoreRow from "./rows/ScoreRow";
-
-const MAX_SCORES = {
-  STABILITY: 40,
-  PROFITABILITY: 30,
-  VALUATION: 20,
-  INVESTMENT: 10,
-};
 
 interface CompanyScore {
   stabilityScore: number;

@@ -1,8 +1,9 @@
 import { TrendingUp } from "lucide-react";
 import ScoreRadarChart, { ChartDataPoint } from "./charts/ScoreRadarChart";
 import RiskPenaltyAlert from "./RiskPenaltyAlert";
-import TotalScoreDisplay from "./TotalScoreDisplay";
+import TotalScoreDisplay from "../layouts/TotalScoreDisplay";
 import ScoreDetailList from "./ScoreDetailList";
+import { MAX_SCORES } from "../constants/maxScores";
 
 interface CompanyScore {
   ticker: string;
@@ -15,13 +16,6 @@ interface CompanyScore {
   investmentScore: number;
   isOpportunity: boolean;
 }
-
-const MAX_SCORES = {
-  STABILITY: 40,
-  PROFITABILITY: 30,
-  VALUATION: 20,
-  INVESTMENT: 10,
-};
 
 interface Props {
   score: CompanyScore;
