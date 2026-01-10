@@ -1,8 +1,8 @@
 import { TrendingUp } from "lucide-react";
 import ScoreRadarChart, { ChartDataPoint } from "./charts/ScoreRadarChart";
-import RiskPenaltyAlert from "./analysis/RiskPenaltyAlert";
-import TotalScoreDisplay from "./analysis/TotalScoreDisplay";
-import ScoreDetailList from "./analysis/ScoreDetailList";
+import RiskPenaltyAlert from "./RiskPenaltyAlert";
+import TotalScoreDisplay from "./TotalScoreDisplay";
+import ScoreDetailList from "./ScoreDetailList";
 
 interface CompanyScore {
   ticker: string;

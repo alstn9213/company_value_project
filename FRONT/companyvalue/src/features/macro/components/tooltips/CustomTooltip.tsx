@@ -1,5 +1,5 @@
-import { MacroData } from "../../../../../types/macro";
 import { AlertTriangle } from "lucide-react";
+import { MacroData } from "../../../../types/macro";
 
 interface CustomTooltipProps {
   active?: boolean;

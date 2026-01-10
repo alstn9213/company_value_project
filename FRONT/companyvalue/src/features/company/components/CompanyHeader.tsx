@@ -1,6 +1,6 @@
-import { useAddWatchlist } from "../../../hooks/useAddWatchlist";
 import { Company, ScoreResult } from "../../../types/company";
-import { WatchlistButton } from "../../watchlist/WatchlistButton";
+import { WatchlistButton } from "../../watchlist/components/WatchlistButton";
+import { useAddWatchlist } from "../../watchlist/hooks/useAddWatchlist";
 import { CompanyProfile } from "../layouts/CompanyProfile";
 import { InvestmentGradeBadge } from "../layouts/InvestmentGradeBadge";
 

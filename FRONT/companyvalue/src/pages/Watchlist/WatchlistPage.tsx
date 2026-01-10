@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { useWatchlist } from "../../hooks/useWatchlist"; 
-import WatchlistCard from "../../features/watchlist/WatchlistCard";
+import { useWatchlist } from "../../features/watchlist/hooks/useWatchlist"; 
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
+import WatchlistCard from "../../features/watchlist/components/WatchlistCard";
 
 const WatchlistPage = () => {
   const { watchlist, isLoading, handleDelete } = useWatchlist();

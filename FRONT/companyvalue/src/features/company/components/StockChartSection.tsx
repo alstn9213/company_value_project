@@ -5,18 +5,19 @@ import LoadingState from "../../../components/common/LoadingState";
 import EmptyState from "../../../components/common/EmptyState";
 import { BarChart2 } from "lucide-react";
 import ErrorState from "../../../components/common/ErrorState";
+import { useStockHistory } from "../hooks/useStockHistory";
 
-interface Props {
+interface StockChartSectionProps {
   ticker: string;
 }
 
-const StockChartSection = ({ticker}: Props) => {
-  const {data: stockHistory, isPending, isError, refetch} = useQuery({
-    queryKey: ["companyStock", ticker],
-    queryFn: async () => companyApi.getStockHistory(ticker),
-    enabled: !!ticker,
-    staleTime: 1000 * 60 * 60, // 1시간 캐싱
-  });
+const StockChartSection = ({ticker}: StockChartSectionProps) => {
+  const { 
+    data: stockHistory, 
+    isPending, 
+    isError, 
+    refetch 
+  } = useStockHistory(ticker);
 
   // 공통 컨테이너 스타일: 높이 고정 및 중앙 정렬 (Layout Shift 방지)
   const containerClass = "w-full h-[350px] bg-slate-800/30 rounded-xl flex items-center justify-center border border-slate-700/50";

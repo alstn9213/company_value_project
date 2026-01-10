@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { watchlistApi } from "../api/watchlistApi";
+import { watchlistApi } from "../../../api/watchlistApi";
 
 export const useWatchlist = () => {
   const queryClient = useQueryClient();

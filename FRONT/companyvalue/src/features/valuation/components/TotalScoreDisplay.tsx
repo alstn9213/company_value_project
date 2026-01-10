@@ -1,4 +1,4 @@
-import { getScoreColor } from "../../../../utils/formatters";
+import { getScoreColor } from "../../../utils/formatters";
 
 interface Props {
   totalScore: number;

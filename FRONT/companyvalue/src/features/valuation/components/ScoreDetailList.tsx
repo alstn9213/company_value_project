@@ -1,5 +1,5 @@
-import { SCORE_TERMS } from "../../constants/scoreTerm";
-import ScoreRow from "../rows/ScoreRow";
+import { SCORE_TERMS } from "../constants/scoreTerm";
+import ScoreRow from "./rows/ScoreRow";
 
 const MAX_SCORES = {
   STABILITY: 40,
