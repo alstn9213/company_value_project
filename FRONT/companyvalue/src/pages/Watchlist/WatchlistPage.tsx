@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useWatchlist } from "../../hooks/useWatchlist"; // Hook 경로 확인 필요
-import WatchlistCard from "./components/WatchlistCard";
+import WatchlistCard from "../../components/ui/WatchlistCard";
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
 

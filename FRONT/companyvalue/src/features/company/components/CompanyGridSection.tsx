@@ -1,6 +1,6 @@
 import { Company } from "../../../types/company";
 import EmptyState from "../../../components/common/EmptyState";
-import CompanyCardSkeleton from "./skeletons/CompanyCardSkeleton";
+import CompanyCardSkeleton from "../../../components/ui/CompanyCardSkeleton";
 import CompanyCard from "./CompanyCard";
 
 interface CompanyGridSectionProps {

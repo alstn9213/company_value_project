@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Trash2, TrendingUp } from "lucide-react";
-import { getGradeColor, getScoreColor } from "../../../utils/formatters";
-import { WatchlistItem } from "../../../types/watchlist";
+import { getGradeColor, getScoreColor } from "../../utils/formatters";
+import { WatchlistItem } from "../../types/watchlist";
 
 interface WatchlistCardProps {
   item: WatchlistItem;

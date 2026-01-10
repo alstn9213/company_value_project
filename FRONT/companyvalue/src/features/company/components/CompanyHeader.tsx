@@ -1,7 +1,7 @@
 import { useAddWatchlist } from "../../../hooks/useAddWatchlist";
-import { CompanyProfile } from "./header/CompanyProfile";
-import { WatchlistButton } from "./header/WatchlistButton";
-import { InvestmentGradeBadge } from "./header/InvestmentGradeBadge";
+import { CompanyProfile } from "./CompanyProfile";
+import { WatchlistButton } from "../../ui/WatchlistButton";
+import { InvestmentGradeBadge } from "./InvestmentGradeBadge";
 
 interface CompanyInfo {
   ticker: string;

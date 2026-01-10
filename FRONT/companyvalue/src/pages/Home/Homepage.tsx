@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { macroApi } from "../../api/macroApi";
 import axiosClient from "../../api/axiosClient";
 import { ScoreResult } from "../../types/company";
-import MajorIndicators from "./components/MajorIndicators";
-import MacroTrendSection from "./components/MacroTrendSection";
-import TopRankingList from "./components/TopRankingList";
+import MajorIndicators from "../../features/macro/components/MajorIndicators";
+import MacroTrendSection from "../../features/macro/components/MacroTrendSection";
+import TopRankingList from "../../features/macro/components/TopRankingList";
 
 const HomePage = () => {
   const { data: latest, isLoading: isLatestLoading } = useQuery({

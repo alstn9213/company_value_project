@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { companyApi } from "../../api/companyApi";
-import CompanyFilterHeader from "./components/CompanyFilterHeader";
-import CompanyGridSection from "./components/CompanyGridSection";
+import CompanyFilterHeader from "../../components/layout/CompanyFilterHeader";
+import CompanyGridSection from "../../features/company/components/CompanyGridSection";
 import Pagination from "../../components/common/Pagination";
 
 const CompanyListPage = () => {

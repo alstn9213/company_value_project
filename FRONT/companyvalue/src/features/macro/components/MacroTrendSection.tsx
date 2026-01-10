@@ -3,8 +3,8 @@ import EmptyState from "../../../components/common/EmptyState";
 import Skeleton from "../../../components/common/Skeleton";
 import { MacroData } from "../../../types/macro";
 import EconomicChart from "./charts/EconomicChart";
-import ChartGuide from "./guides/ChartGuide";
-import MarketGuide from "./guides/MarketGuide";
+import ChartGuide from "../../../features/macro/components/guides/ChartGuide";
+import MarketGuide from "../../../features/macro/components/guides/MarketGuide";
 
 interface MacroTrendSectionProps {
   latestDate?: string; 
