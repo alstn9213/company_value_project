@@ -1,4 +1,4 @@
-import { SCORE_TERMS } from "../../constants/financialTerms";
+import { SCORE_TERMS } from "../../constants/scoreTerm";
 import ScoreRow from "../rows/ScoreRow";
 
 const MAX_SCORES = {

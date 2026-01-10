@@ -4,7 +4,7 @@ import axiosClient from "../../api/axiosClient";
 import { ScoreResult } from "../../types/company";
 import MajorIndicators from "../../features/macro/components/MajorIndicators";
 import MacroTrendSection from "../../features/macro/components/MacroTrendSection";
-import TopRankingList from "../../features/macro/components/TopRankingList";
+import TopRankingList from "../../features/company/components/TopRankingList";
 
 const HomePage = () => {
   const { data: latest, isLoading: isLatestLoading } = useQuery({

@@ -1,7 +1,6 @@
 import { FinancialData } from "../../../../types/company";
 import { FINANCIAL_TERMS } from "../../constants/financialTerms";
 import FinancialRow from "../rows/FinancialRow";
-// FinancialData 타입 위치에 따라 import 경로 수정 필요
 
 interface Props {
   data: FinancialData;

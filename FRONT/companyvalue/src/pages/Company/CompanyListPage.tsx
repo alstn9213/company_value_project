@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { companyApi } from "../../api/companyApi";
-import CompanyFilterHeader from "../../components/layout/CompanyFilterHeader";
+import CompanyFilterHeader from "../../features/company/layouts/CompanyFilterHeader";
 import CompanyGridSection from "../../features/company/components/CompanyGridSection";
 import Pagination from "../../components/common/Pagination";
 

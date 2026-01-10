@@ -1,26 +1,15 @@
 import { useAddWatchlist } from "../../../hooks/useAddWatchlist";
-import { CompanyProfile } from "./CompanyProfile";
-import { WatchlistButton } from "../../ui/WatchlistButton";
-import { InvestmentGradeBadge } from "./InvestmentGradeBadge";
-
-interface CompanyInfo {
-  ticker: string;
-  name: string;
-  exchange: string;
-  sector: string;
-}
-
-interface CompanyScore {
-  grade: string;
-  isOpportunity: boolean;
-}
+import { Company, ScoreResult } from "../../../types/company";
+import { WatchlistButton } from "../../watchlist/WatchlistButton";
+import { CompanyProfile } from "../layouts/CompanyProfile";
+import { InvestmentGradeBadge } from "../layouts/InvestmentGradeBadge";
 
 interface Props {
-  info: CompanyInfo;
-  score: CompanyScore;
+  info: Company;
+  score: ScoreResult;
 }
 
-const CompanyHeader = ({info, score}: Props) => {
+const CompanyHeader = ({ info, score }: Props) => {
   const { addWatchlist, isPending } = useAddWatchlist();
 
  return (

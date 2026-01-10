@@ -1,5 +1,5 @@
 import { HelpCircle } from "lucide-react";
-import { TermDefinition } from "../../pages/company_detail/constants/financialTerms";
+import { TermDefinition } from "../../types/term";
 
 interface Props {
   label: string;

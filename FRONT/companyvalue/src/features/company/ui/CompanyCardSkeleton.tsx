@@ -1,4 +1,4 @@
-import Skeleton from "../../../../components/common/Skeleton";
+import Skeleton from "../../../components/ui/Skeleton";
 
 const CompanyCardSkeleton = () => {
   return (

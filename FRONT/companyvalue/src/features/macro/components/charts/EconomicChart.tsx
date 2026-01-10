@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { MacroData } from "../../../../types/macro";
-import Skeleton from "../../../../components/common/Skeleton";
-import CustomTooltip from "./tooltips/CustomTooltip";
+import CustomTooltip from "../tooltips/CustomTooltip";
+import Skeleton from "../../../../components/ui/Skeleton";
 
 interface EconomicChartProps {
   history?: MacroData[];

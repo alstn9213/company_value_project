@@ -3,7 +3,7 @@ import { ScoreResult } from "../../../types/company";
 import { getGradeColor } from "../../../utils/formatters";
 import EmptyState from "../../../components/common/EmptyState";
 import { ClipboardList } from "lucide-react";
-import Skeleton from "../../../components/common/Skeleton";
+import Skeleton from "../../../components/ui/Skeleton";
 
 interface TopRankingListProps {
   companies: ScoreResult[];

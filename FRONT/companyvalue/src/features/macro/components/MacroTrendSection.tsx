@@ -1,10 +1,10 @@
 import { LineChart } from "lucide-react";
 import EmptyState from "../../../components/common/EmptyState";
-import Skeleton from "../../../components/common/Skeleton";
 import { MacroData } from "../../../types/macro";
 import EconomicChart from "./charts/EconomicChart";
-import ChartGuide from "../../../features/macro/components/guides/ChartGuide";
-import MarketGuide from "../../../features/macro/components/guides/MarketGuide";
+import ChartGuide from "./guides/ChartGuide";
+import MarketGuide from "./guides/MarketGuide";
+import Skeleton from "../../../components/ui/Skeleton";
 
 interface MacroTrendSectionProps {
   latestDate?: string; 

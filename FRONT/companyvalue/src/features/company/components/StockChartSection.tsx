@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { companyApi } from "../../../api/companyApi";
-import StockPriceChart from "./charts/StockPriceChart";
+import StockPriceChart from "../../valuation/components/charts/StockPriceChart";
 import LoadingState from "../../../components/common/LoadingState";
 import EmptyState from "../../../components/common/EmptyState";
 import { BarChart2 } from "lucide-react";

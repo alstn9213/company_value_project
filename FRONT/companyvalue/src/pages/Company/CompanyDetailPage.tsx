@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { companyApi } from "../../api/companyApi";
 import { ArrowLeft } from "lucide-react";
-import CompanyHeader from "./components/CompanyHeader";
-import ScoreAnalysis from "./components/ScoreAnalysis";
-import StockChartSection from "./components/StockChartSection";
-import FinancialSummary from "./components/FinancialSummary";
+import CompanyHeader from "../../features/company/components/CompanyHeader";
+import ScoreAnalysis from "../../features/valuation/components/ScoreAnalysis";
+import StockChartSection from "../../features/company/components/StockChartSection";
+import FinancialSummary from "../../features/company/components/FinancialSummary";
 
 const CompanyDetailPage = () => {
   const {ticker} = useParams<{ ticker: string }>();
