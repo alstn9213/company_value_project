@@ -12,7 +12,7 @@ export const useCompanyDetail = (ticker: string | undefined) => {
     queryKey: ticker ? COMPANY_DETAIL_KEYS.detail(ticker) : [],
     queryFn: () => companyApi.getDetail(ticker!),
     enabled: !!ticker, // ticker가 존재할 때만 실행
-    staleTime: 1000 * 60 * 5, // 5분간 데이터를 신선한 상태로 유지 (예시)
+    staleTime: 1000 * 60 * 5, // 5분간 데이터를 신선한 상태로 유지
     retry: 1, // 실패 시 1회 재시도
   });
 };
