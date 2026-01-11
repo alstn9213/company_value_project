@@ -1,8 +1,8 @@
-package com.back.domain.company.service.analysis.strategy;
+package com.back.domain.valuation.strategy;
 
-import com.back.domain.company.service.analysis.constant.ScoreCategory;
-import com.back.domain.company.service.analysis.dto.ScoringDataDto;
-import com.back.domain.company.service.analysis.strategy.components.ScoringStrategy;
+import com.back.domain.valuation.constant.ScoreCategory;
+import com.back.domain.valuation.model.ScoringDataDto;
+import com.back.domain.valuation.strategy.components.ScoringStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

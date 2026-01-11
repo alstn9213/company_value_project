@@ -1,4 +1,4 @@
-package com.back.domain.member.dto;
+package com.back.domain.member.dto.request;
 
 public record SignUpRequest(
         String email,

@@ -2,7 +2,7 @@ package com.back.domain.macro.service;
 
 import com.back.domain.macro.dto.FredApiResponse;
 import com.back.domain.macro.entity.MacroIndicator;
-import com.back.infra.external.DataFetchService;
+import com.back.infra.client.fred.DataFetchService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis.policy;
+package com.back.domain.valuation.policy;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.macro.entity.MacroEconomicData;

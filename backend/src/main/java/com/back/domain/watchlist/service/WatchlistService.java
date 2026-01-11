@@ -1,11 +1,10 @@
 package com.back.domain.watchlist.service;
 
 import com.back.domain.company.entity.Company;
-import com.back.domain.company.entity.CompanyScore;
 import com.back.domain.company.repository.CompanyRepository;
 import com.back.domain.member.entity.Member;
 import com.back.domain.member.repository.MemberRepository;
-import com.back.domain.watchlist.dto.WatchlistResponse;
+import com.back.domain.watchlist.dto.response.WatchlistResponse;
 import com.back.domain.watchlist.entity.Watchlist;
 import com.back.domain.watchlist.repository.WatchlistRepository;
 import com.back.global.error.ErrorCode;

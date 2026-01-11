@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis.constant;
+package com.back.domain.valuation.constant;
 
 import java.math.BigDecimal;
 

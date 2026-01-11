@@ -1,4 +1,4 @@
-package com.back.domain.company.controller;
+package com.back.api.company;
 
 import com.back.domain.company.dto.response.*;
 import com.back.domain.company.service.CompanyReadService;

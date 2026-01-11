@@ -1,4 +1,4 @@
-package com.back.infra.scheduler.controller;
+package com.back.api.admin;
 
 import com.back.domain.macro.service.MacroDataService;
 import lombok.RequiredArgsConstructor;

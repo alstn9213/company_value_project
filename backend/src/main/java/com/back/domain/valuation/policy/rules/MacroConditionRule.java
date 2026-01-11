@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis.policy.rules;
+package com.back.domain.valuation.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
 import com.back.domain.macro.entity.MacroEconomicData;
@@ -7,7 +7,7 @@ import com.back.global.error.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static com.back.domain.company.service.analysis.constant.ScoringConstants.PENALTY_SCORE_MACRO;
+import static com.back.domain.valuation.constant.ScoringConstants.PENALTY_SCORE_MACRO;
 
 @Slf4j
 @Component

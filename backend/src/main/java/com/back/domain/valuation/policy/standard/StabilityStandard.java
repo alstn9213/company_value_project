@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis.policy.standard;
+package com.back.domain.valuation.policy.standard;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

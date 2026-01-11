@@ -1,9 +1,9 @@
-package com.back.domain.company.service.analysis.strategy.components;
+package com.back.domain.valuation.strategy.components;
 
-import com.back.domain.company.service.analysis.constant.ScoreCategory;
-import com.back.domain.company.service.analysis.dto.MarketMetricsDto;
-import com.back.domain.company.service.analysis.dto.ScoringDataDto;
-import com.back.domain.company.service.analysis.policy.standard.ValuationStandard;
+import com.back.domain.valuation.constant.ScoreCategory;
+import com.back.domain.valuation.model.MarketMetricsDto;
+import com.back.domain.valuation.model.ScoringDataDto;
+import com.back.domain.valuation.policy.standard.ValuationStandard;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

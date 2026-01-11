@@ -1,6 +1,6 @@
-package com.back.infra.scheduler.controller;
+package com.back.api.admin;
 
-import com.back.domain.company.service.ScoringService;
+import com.back.domain.valuation.engine.ScoringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

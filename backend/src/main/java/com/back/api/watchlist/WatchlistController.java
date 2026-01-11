@@ -1,7 +1,7 @@
-package com.back.domain.watchlist.controller;
+package com.back.api.watchlist;
 
 
-import com.back.domain.watchlist.dto.WatchlistResponse;
+import com.back.domain.watchlist.dto.response.WatchlistResponse;
 import com.back.domain.watchlist.service.WatchlistService;
 import com.back.global.annotation.CurrentMemberId;
 import lombok.RequiredArgsConstructor;

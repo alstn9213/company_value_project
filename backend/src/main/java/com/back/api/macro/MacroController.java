@@ -1,4 +1,4 @@
-package com.back.domain.macro.controller;
+package com.back.api.macro;
 
 import com.back.domain.macro.dto.MacroDataResponse;
 import com.back.domain.macro.service.MacroReadService;

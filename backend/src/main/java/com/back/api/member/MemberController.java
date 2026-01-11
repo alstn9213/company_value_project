@@ -1,6 +1,6 @@
-package com.back.domain.member.controller;
+package com.back.api.member;
 
-import com.back.domain.member.dto.SignUpRequest;
+import com.back.domain.member.dto.request.SignUpRequest;
 import com.back.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

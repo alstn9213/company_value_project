@@ -1,7 +1,7 @@
-package com.back.domain.company.service.analysis;
+package com.back.domain.valuation.calculator;
 
 import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.service.analysis.dto.MarketMetricsDto;
+import com.back.domain.valuation.model.MarketMetricsDto;
 import com.back.global.util.DecimalUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

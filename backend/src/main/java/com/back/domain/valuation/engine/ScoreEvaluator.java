@@ -1,14 +1,15 @@
-package com.back.domain.company.service.analysis;
+package com.back.domain.valuation.engine;
 
 import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.service.analysis.constant.ScoreCategory;
-import com.back.domain.company.service.analysis.dto.ScoreEvaluationResultDto;
+import com.back.domain.valuation.constant.ScoreCategory;
+import com.back.domain.valuation.model.ScoreEvaluationResultDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
+import static com.back.domain.valuation.constant.ScoringConstants.*;
+
 
 @Component
 public class ScoreEvaluator {

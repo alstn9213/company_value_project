@@ -1,4 +1,4 @@
-package com.back.domain.company.service.analysis.dto;
+package com.back.domain.valuation.model;
 
 import java.math.BigDecimal;
 

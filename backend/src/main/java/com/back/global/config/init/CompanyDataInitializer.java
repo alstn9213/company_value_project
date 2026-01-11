@@ -1,7 +1,7 @@
 package com.back.global.config.init;
 
 import com.back.domain.company.service.CompanyCommandService;
-import com.back.domain.company.service.ScoringService;
+import com.back.domain.valuation.engine.ScoringService;
 import com.back.global.config.init.dto.CompanySeedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

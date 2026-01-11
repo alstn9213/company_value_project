@@ -1,6 +1,6 @@
 package com.back.domain.member.service;
 
-import com.back.domain.member.dto.SignUpRequest;
+import com.back.domain.member.dto.request.SignUpRequest;
 import com.back.domain.member.entity.Member;
 import com.back.domain.member.entity.Role;
 import com.back.domain.member.repository.MemberRepository;

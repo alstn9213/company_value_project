@@ -1,3 +1,5 @@
+#!/bin/bash
+
 domains=(valuepick.p-e.kr) # 도메인 설정 (여러 개면 띄어쓰기로 구분)
 rsa_key_size=4096
 data_path="./data/certbot"

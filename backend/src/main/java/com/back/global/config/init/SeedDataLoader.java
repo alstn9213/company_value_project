@@ -1,11 +1,6 @@
 package com.back.global.config.init;
 
-import com.back.domain.company.entity.Company;
-import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.entity.StockPriceHistory;
 import com.back.global.config.init.dto.CompanySeedDto;
-import com.back.global.config.init.dto.FinancialSeedDto;
-import com.back.global.config.init.dto.StockSeedDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +9,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 

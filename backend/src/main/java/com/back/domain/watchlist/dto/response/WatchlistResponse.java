@@ -1,4 +1,4 @@
-package com.back.domain.watchlist.dto;
+package com.back.domain.watchlist.dto.response;
 
 import com.back.domain.company.dto.response.CompanySummaryResponse;
 import com.back.domain.watchlist.entity.Watchlist;

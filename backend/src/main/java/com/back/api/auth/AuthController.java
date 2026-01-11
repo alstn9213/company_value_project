@@ -1,4 +1,4 @@
-package com.back.domain.auth.controller;
+package com.back.api.auth;
 
 import com.back.domain.auth.dto.request.LoginRequest;
 import com.back.domain.auth.dto.response.TokenResponse;

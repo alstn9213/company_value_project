@@ -1,17 +1,18 @@
-package com.back.domain.company.service.analysis.policy.rules;
+package com.back.domain.valuation.policy.rules;
 
 import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.service.analysis.constant.ScoringConstants;
 import com.back.domain.macro.entity.MacroEconomicData;
+import com.back.domain.valuation.constant.ScoringConstants;
 import com.back.global.util.DecimalUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
-import static com.back.domain.company.service.analysis.constant.ScoringConstants.*;
+import static com.back.domain.valuation.constant.ScoringConstants.PENALTY_SCORE_CAPITAL_IMPAIRMENT;
+import static com.back.domain.valuation.constant.ScoringConstants.PENALTY_SCORE_EXCESSIVE_DEBT;
+
 
 @Slf4j
 @Component

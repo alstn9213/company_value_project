@@ -1,9 +1,7 @@
 package com.back.domain.company.entity;
 
-import com.back.domain.company.service.analysis.dto.ScoreEvaluationResultDto;
 import com.back.domain.time.BaseTime;
-import com.back.global.error.ErrorCode;
-import com.back.global.error.exception.BusinessException;
+import com.back.domain.valuation.model.ScoreEvaluationResultDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

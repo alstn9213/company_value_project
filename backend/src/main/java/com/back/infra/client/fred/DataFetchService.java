@@ -1,4 +1,4 @@
-package com.back.infra.external;
+package com.back.infra.client.fred;
 
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;

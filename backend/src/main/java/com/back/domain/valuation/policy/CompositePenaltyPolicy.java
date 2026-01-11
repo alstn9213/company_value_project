@@ -1,8 +1,8 @@
-package com.back.domain.company.service.analysis.policy;
+package com.back.domain.valuation.policy;
 
 import com.back.domain.company.entity.FinancialStatement;
-import com.back.domain.company.service.analysis.policy.rules.PenaltyRule;
 import com.back.domain.macro.entity.MacroEconomicData;
+import com.back.domain.valuation.policy.rules.PenaltyRule;
 import com.back.global.error.ErrorCode;
 import com.back.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
