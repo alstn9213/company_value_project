@@ -1,5 +1,5 @@
-import { MacroData } from "../types/macro";
-import axiosClient from "./axiosClient";
+import axiosClient from "../../../api/axiosClient";
+import { MacroData } from "../../../types/macro";
 
 export const macroApi = {
   
