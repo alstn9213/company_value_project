@@ -4,7 +4,7 @@ domains=(valuepick.p-e.kr) # 도메인 설정 (여러 개면 띄어쓰기로 구
 rsa_key_size=4096
 data_path="./data/certbot"
 email="alstn9213@naver.com"
-staging=0 # 0이면 정식 발급, 1이면 테스트 발급 (테스트 실패 방지)
+staging=1 # 0이면 정식 발급, 1이면 테스트 발급 (테스트 실패 방지)
 
 
 if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/ssl-dhparams.pem" ]; then
