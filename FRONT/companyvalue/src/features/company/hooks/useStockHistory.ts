@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { StockHistory } from "../../../types/company";
-import { companyApi } from "../../../api/companyApi";
+import { companyApi } from "../api/companyApi";
 
 export const COMPANY_KEYS = {
   all: ["company"] as const,

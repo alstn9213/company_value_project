@@ -1,5 +1,5 @@
-import { Company, CompanyDetailResponse, PageResponse, ScoreResult, StockHistory } from "../types/company";
-import axiosClient from "./axiosClient";
+import { Company, CompanyDetailResponse, PageResponse, ScoreResult, StockHistory } from "../../../types/company";
+import axiosClient from "../../../api/axiosClient";
 
 export const companyApi = {
   

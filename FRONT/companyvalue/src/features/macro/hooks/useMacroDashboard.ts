@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { macroApi } from "../../../api/macroApi";
+import { macroApi } from "../api/macroApi";
 
 export const useMacroLatest = () => {
   return useQuery({

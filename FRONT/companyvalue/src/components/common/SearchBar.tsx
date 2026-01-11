@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Company } from "../../types/company";
-import { companyApi } from "../../api/companyApi";
+import { companyApi } from "../../features/company/api/companyApi";
 import { Search, X } from "lucide-react";
 
 const SearchBar = () => {
