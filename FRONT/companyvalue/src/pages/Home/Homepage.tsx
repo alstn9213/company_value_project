@@ -1,31 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-import { macroApi } from "../../api/macroApi";
-import axiosClient from "../../api/axiosClient";
-import { ScoreResult } from "../../types/company";
 import MajorIndicators from "../../features/macro/components/MajorIndicators";
 import MacroTrendSection from "../../features/macro/components/MacroTrendSection";
 import TopRankingList from "../../features/company/components/TopRankingList";
+import { useMacroHistory, useMacroLatest } from "../../features/macro/hooks/useMacroDashboard";
+import { useTopRankingCompanies } from "../../features/company/hooks/useCompanyRanking";
 
 const HomePage = () => {
-  const { data: latest, isLoading: isLatestLoading } = useQuery({
-    queryKey: ["macroLatest"],
-    queryFn: macroApi.getLatest,
-  });
+  const { data: latest, isLoading: isLatestLoading } = useMacroLatest();
+  const { data: history, isLoading: isHistoryLoading } = useMacroHistory();
+  const { data: topCompanies, isLoading: isRankLoading } = useTopRankingCompanies();
 
-  const { data: history, isLoading: isHistoryLoading } = useQuery({
-    queryKey: ["macroHistory"],
-    queryFn: macroApi.getHistory,
-  });
+  const isTrendLoading = isHistoryLoading || isLatestLoading;
 
-  // 우량주 랭킹 데이터 조회
-  const { data: topCompanies, isLoading: isRankLoading } = useQuery({
-    queryKey: ["topRanked"],
-    queryFn: async () => {
-      const res = await axiosClient.get<ScoreResult[]>("/api/scores/top");
-      return res.data;
-    },
-  });
-  
   return (
     <div className="w-full space-y-6">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
@@ -35,7 +20,7 @@ const HomePage = () => {
         <MacroTrendSection 
           latestDate={latest?.date} 
           history={history} 
-          isLoading={isHistoryLoading || isLatestLoading} // history는 latestDate에도 의존하므로
+          isLoading={isTrendLoading} // history는 latestDate에도 의존하므로
         />
         <TopRankingList 
           companies={topCompanies || []} 

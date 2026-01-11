@@ -1,4 +1,4 @@
-import { Company, CompanyDetailResponse, PageResponse, StockHistory } from "../types/company";
+import { Company, CompanyDetailResponse, PageResponse, ScoreResult, StockHistory } from "../types/company";
 import axiosClient from "./axiosClient";
 
 export const companyApi = {
@@ -25,6 +25,11 @@ export const companyApi = {
   getStockHistory: async (ticker: string): Promise<StockHistory[]> => {
     const response = await axiosClient.get<StockHistory[]>(`/api/companies/${ticker}/chart`);
     return response.data;
+  },
+
+  getTopRanked: async (): Promise<ScoreResult[]> => {
+    const res = await axiosClient.get<ScoreResult[]>("/api/scores/top");
+    return res.data;
   },
 
 };

@@ -1,16 +1,15 @@
+import { ScoreResult } from "../../../types/company";
 import { MAX_SCORES } from "../constants/maxScores";
 import { SCORE_TERMS } from "../constants/scoreTerm";
 import ScoreRow from "./rows/ScoreRow";
 
-interface CompanyScore {
-  stabilityScore: number;
-  profitabilityScore: number;
-  valuationScore: number;
-  investmentScore: number;
-}
+type CompanyScoreProps = Pick<
+  ScoreResult, 
+  'stabilityScore' | 'profitabilityScore' | 'valuationScore' | 'investmentScore'
+>;
 
 interface Props {
-  score: CompanyScore;
+  score: CompanyScoreProps;
 }
 
 const ScoreDetailList = ({ score }: Props) => {

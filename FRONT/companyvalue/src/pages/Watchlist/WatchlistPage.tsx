@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { useWatchlist } from "../../features/watchlist/hooks/useWatchlist"; 
 import LoadingState from "../../components/common/LoadingState";
 import EmptyState from "../../components/common/EmptyState";
@@ -18,14 +17,6 @@ const WatchlistPage = () => {
           title="관심 종목이 비어있습니다."
           description="기업 목록에서 마음에 드는 기업을 추가해보세요."
         />
-        <div className="text-center mt-6">
-          <Link
-            to="/companies"
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors inline-block"
-          >
-            기업 찾으러 가기
-          </Link>
-        </div>
       </div>
     );
   }
