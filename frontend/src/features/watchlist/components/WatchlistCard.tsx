@@ -10,7 +10,7 @@ interface WatchlistCardProps {
 }
 
 const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
-  const { watchlistId, company } = item;
+  const { company } = item;
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault(); // 링크 이동 방지

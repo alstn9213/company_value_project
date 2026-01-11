@@ -1,5 +1,5 @@
-import { WatchlistItem } from "../types/watchlist";
-import axiosClient from "./axiosClient";
+import axiosClient from "../../../api/axiosClient";
+import { WatchlistItem } from "../../../types/watchlist";
 
 export const watchlistApi = {
   getMyWatchlist: async (): Promise<WatchlistItem[]> => {
