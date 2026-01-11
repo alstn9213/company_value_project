@@ -34,20 +34,20 @@ jobs:
 
       # 프론트엔드 빌드 & 통합
       - name: Build Frontend & Copy to Backend
-        working-directory: ./FRONT/companyvalue
+        working-directory: ./frontend
         run: |
           npm ci
           npm run build
           # 백엔드의 static 폴더가 없으면 생성
-          mkdir -p ../../BACK/companyvalue/src/main/resources/static
+          mkdir -p ../../backend/src/main/resources/static
           # 기존 파일 삭제 (혹시 모를 잔여물 제거)
-          rm -rf ../../BACK/companyvalue/src/main/resources/static/*
+          rm -rf ../../backend/src/main/resources/static/*
           # 빌드 결과물(dist) 내부 파일들을 백엔드 static으로 복사
-          cp -r dist/* ../../BACK/companyvalue/src/main/resources/static/
+          cp -r dist/* ../../backend/src/main/resources/static/
 
           # 복사 잘 됐는지 확인용 출력
           echo "Listing static files:"
-          ls -R ../../BACK/companyvalue/src/main/resources/static/
+          ls -R ../../backend/src/main/resources/static/
 
       # Java 17 세팅
       - name: Set up JDK 17
@@ -58,7 +58,7 @@ jobs:
 
       # 백엔드(Spring Boot) 빌드
       - name: Build Backend (Gradle)
-        working-directory: ./BACK/companyvalue
+        working-directory: ./backend
         run: |
           chmod +x gradlew
           # clean build를 해야 복사된 static 파일들이 확실하게 jar에 포함됨
@@ -76,7 +76,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./BACK/companyvalue
+          context: ./backend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/value-pick:latest
 

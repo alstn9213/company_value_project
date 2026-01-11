@@ -1,25 +1,64 @@
 # npm install 목록
 
 - 터미널 창에 명령어 입력:
-  `npm install axios @tanstack/react-query zustand react-router-dom recharts lucide-react clsx tailwind-merge dayjs`
+  `npm install react react-dom react-router-dom @tanstack/react-query zustand axios recharts lucide-react dayjs clsx tailwind-merge && npm install -D typescript vite @vitejs/plugin-react tailwindcss @tailwindcss/postcss postcss eslint eslint-plugin-react-hooks eslint-plugin-react-refresh @typescript-eslint/eslint-plugin @typescript-eslint/parser @types/react @types/react-dom`
 
 ## 각 패키지의 용도 설명
 
-- axios: 백엔드(/api/\*\*)와 HTTP 통신을 위해 사용합니다. (Interceptor로 JWT 토큰 자동 처리)
 
-- @tanstack/react-query: 서버 데이터(거시 경제 지표, 기업 정보) 캐싱 및 로딩 상태 관리를 위해 필수적입니다.
+### 1. 필수 의존성 설치 (Dependencies)
 
-- zustand: 로그인 유저 정보(Auth) 등 전역 상태를 관리하는 가벼운 라이브러리입니다.
+실제 애플리케이션 구동에 필요한 라이브러리들입니다.
 
-- react-router-dom: 페이지 이동(대시보드 ↔ 기업 상세 ↔ 로그인)을 구현합니다.
+```bash
+npm install react react-dom react-router-dom @tanstack/react-query zustand axios recharts lucide-react dayjs clsx tailwind-merge
 
-- recharts: 거시 경제 지표(LineChart)와 기업 점수(RadarChart)를 그리기 위한 차트 라이브러리입니다.
+```
 
-- lucide-react: 깔끔한 아이콘 팩입니다. (기존 index.html의 FontAwesome 대신 React 환경에서 더 가볍게 사용 추천)
+**설치 항목 설명:**
 
-- clsx, tailwind-merge: Tailwind CSS 사용 시 조건부 스타일링(동적 클래스)을 쉽게 합쳐주는 유틸리티입니다.
+* **Core & Routing:** `react`, `react-dom`, `react-router-dom` 페이지 이동(대시보드 ↔ 기업 상세 ↔ 로그인)을 구현
+* **Data Fetching & State:**
+* `@tanstack/react-query`: 서버 상태 관리
+* `zustand`: 클라이언트 전역 상태 관리
+* `axios`: HTTP 클라이언트
 
-- dayjs: 거시 경제 지표의 날짜(recordedDate) 포맷팅을 위해 moment.js보다 가벼운 라이브러리를 추천합니다.
+
+* **UI & Visualization:**
+* `recharts`: 차트 라이브러리
+* `lucide-react`: 아이콘 라이브러리
+
+
+* **Utils:**
+* `dayjs`: 날짜 포맷팅 (설정 파일에 포함됨)
+* `clsx`, `tailwind-merge`: Tailwind CSS 클래스 조건부 병합 (UI 컴포넌트 개발 시 필수)
+
+
+
+---
+
+### 2. 개발 의존성 설치 (DevDependencies)
+
+빌드, 타입 체크, 린팅, 스타일링(Tailwind v4)에 필요한 라이브러리들입니다.
+
+```bash
+npm install -D typescript vite @vitejs/plugin-react tailwindcss @tailwindcss/postcss postcss eslint eslint-plugin-react-hooks eslint-plugin-react-refresh @typescript-eslint/eslint-plugin @typescript-eslint/parser @types/react @types/react-dom
+
+```
+
+**특이 사항 (Tailwind CSS v4):**
+
+* `package.json`을 보면 **Tailwind CSS v4** (`^4.1.17`)를 사용하고 있습니다.
+* v4부터는 설정 방식이 달라져 `@tailwindcss/postcss`가 함께 설치되어야 합니다.
+
+### 3. 전체 한 번에 설치하기
+
+위 두 명령어를 합쳐서 한 번에 실행하려면 아래 명령어를 복사해서 터미널에 입력하세요.
+
+```bash
+npm install react react-dom react-router-dom @tanstack/react-query zustand axios recharts lucide-react dayjs clsx tailwind-merge && npm install -D typescript vite @vitejs/plugin-react tailwindcss @tailwindcss/postcss postcss eslint eslint-plugin-react-hooks eslint-plugin-react-refresh @typescript-eslint/eslint-plugin @typescript-eslint/parser @types/react @types/react-dom
+
+```
 
 ## 스타일링 설정 (Tailwind CSS)
 
@@ -55,5 +94,5 @@ export default {
 }
 ```
 
-# any 타입 사용 지양
-타입으로 any를 할당하면 ts를 쓰는 의미가 없으므로 any는 사용하지 않는다.
+
+

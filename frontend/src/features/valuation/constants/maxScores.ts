@@ -1,0 +1,6 @@
+export const MAX_SCORES = {
+  STABILITY: 40,
+  PROFITABILITY: 30,
+  VALUATION: 20,
+  INVESTMENT: 10,
+};

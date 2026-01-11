@@ -1,0 +1,33 @@
+import { MacroData } from "../../../../types/macro";
+import { useInversionIntervals } from "../../hooks/useInversionIntervals";
+import EconomicChartSkeleton from "./EconomicChartSkeleton";
+import EconomicLineChart from "./EconomicLineChart";
+
+interface EconomicChartProps {
+  history?: MacroData[];
+  isLoading: boolean;
+}
+
+const EconomicChart = ({ history, isLoading }: EconomicChartProps) => {
+  const inversionIntervals = useInversionIntervals(history);
+
+  if (isLoading) {
+    return <EconomicChartSkeleton />;
+  }
+
+    return (
+    <div className="min-h-[400px] flex-1 rounded-xl border border-slate-700 bg-slate-800/50 p-5 shadow-sm backdrop-blur-sm">
+      <h3 className="mb-6 text-lg font-bold text-slate-200">
+        미국의 주요 금리 및 인플레이션 추이 (최근 10년)
+      </h3>
+
+      <EconomicLineChart data={history} inversionIntervals={inversionIntervals} />
+
+      <div className="mt-2 text-right text-xs text-slate-500">
+        * 붉은색 영역: 장단기 금리차 역전 구간
+      </div>
+    </div>
+  );
+};
+
+export default EconomicChart;
