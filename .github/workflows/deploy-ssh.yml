@@ -82,14 +82,34 @@ jobs:
 
       # 설정 파일(운영용 Compose & Nginx 설정)을 서버로 전송
       - name: Copy Docker Compose & Config to Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # 서버에 필요한 디렉토리 미리 생성
+            mkdir -p /home/${{ secrets.VM_USERNAME }}/company_value_project/nginx/conf.d
+
+      - name: Copy Files via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # docker-compose.prod.yml 과 nginx 설정 폴더를 전송
-          source: "docker-compose.prod.yml,nginx/conf.d/default.conf,init-letsencrypt.sh"
-          target: "/home/${{ secrets.VM_USERNAME }}/company_value_project"
+          # 각각 명시적으로 타겟 지정
+          source: "docker-compose.prod.yml,init-letsencrypt.sh"
+          target: "/home/${{ secrets.VM_USERNAME }}/company_value_project/"
+          
+      - name: Copy Nginx Config via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "nginx/conf.d/default.conf"
+          # 타겟을 nginx/conf.d 폴더로 정확히 지정 (strip_components 옵션 고려 필요할 수 있으나, 단일 파일 복사로 처리 권장)
+          target: "/home/${{ secrets.VM_USERNAME }}/company_value_project/nginx/conf.d/"
 
       # 서버에 SSH 접속해서 배포 명령 실행
       - name: Deploy to Server via SSH
