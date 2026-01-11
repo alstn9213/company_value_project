@@ -88,7 +88,7 @@ jobs:
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           # docker-compose.prod.yml 과 nginx 설정 폴더를 전송
-          source: "docker-compose.prod.yml,nginx"
+          source: "docker-compose.prod.yml,nginx/conf.d/default.conf,init-letsencrypt.sh"
           target: "/home/${{ secrets.VM_USERNAME }}/company_value_project"
 
       # 서버에 SSH 접속해서 배포 명령 실행
