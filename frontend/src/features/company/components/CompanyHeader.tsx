@@ -14,7 +14,7 @@ const CompanyHeader = ({ info, score }: Props) => {
 
  return (
     <div className="bg-card border border-slate-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-6">
-      {/* 1. 좌측: 기업 프로필 */}
+      {/* 좌측: 기업 프로필 */}
       <CompanyProfile
         ticker={info.ticker}
         name={info.name}
@@ -22,7 +22,7 @@ const CompanyHeader = ({ info, score }: Props) => {
         sector={info.sector}
       />
 
-      {/* 2. 우측: 버튼 및 등급 */}
+      {/* 우측: 관심 목록 등록 버튼 및 등급 */}
       <div className="flex items-center gap-6">
         <WatchlistButton
           onClick={() => addWatchlist(info.ticker)}
