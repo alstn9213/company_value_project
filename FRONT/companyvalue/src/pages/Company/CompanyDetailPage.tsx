@@ -1,24 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { companyApi } from "../../api/companyApi";
 import { ArrowLeft } from "lucide-react";
 import CompanyHeader from "../../features/company/components/CompanyHeader";
 import ScoreAnalysis from "../../features/valuation/components/ScoreAnalysis";
 import StockChartSection from "../../features/company/components/StockChartSection";
 import FinancialSummary from "../../features/company/components/FinancialSummary";
+import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail";
+import LoadingState from "../../components/common/LoadingState";
+import ErrorState from "../../components/common/ErrorState";
 
 const CompanyDetailPage = () => {
   const {ticker} = useParams<{ ticker: string }>();
   const navigate = useNavigate();
 
-  const {data, isLoading, isError} = useQuery({
-    queryKey: ["company", ticker],
-    queryFn: () => companyApi.getDetail(ticker!), // ticker가 null이나 undefined가 아님을 명시적으로 알리는 역할: !
-    enabled: !!ticker,
-  });
+  const { data, isLoading, isError, refetch } = useCompanyDetail(ticker);
 
-  if (isLoading) return <div className="...">로딩 중...</div>;
-  if (isError || !data) return <div className="...">에러...</div>;
+  if (isLoading) {
+    return <LoadingState message="기업 상세 정보를 분석 중입니다..." />;
+  }
+  
+  if (isError || !data) {
+    return (
+      <ErrorState 
+        title="기업 정보를 찾을 수 없습니다"
+        message="데이터를 불러오는 데 실패했습니다. 네트워크 상태를 확인하거나 잠시 후 다시 시도해주세요."
+        onRetry={() => refetch()} 
+      />
+    );
+  }
 
   const {companySummary, score, latestFinancial} = data;
 
