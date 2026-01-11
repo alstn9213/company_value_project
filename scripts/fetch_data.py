@@ -63,7 +63,7 @@ for ticker_symbol in target_tickers:
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-output_path = os.path.join(script_dir, "../BACK/companyvalue/src/main/resources/data/seed_data.json")
+output_path = os.path.join(script_dir, "../backend/src/main/resources/data/seed_data.json")
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
 print(f"[fetch_data.py] Saving data to: {output_path}")

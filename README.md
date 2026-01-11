@@ -43,7 +43,7 @@
 ### DevOps & Infrastructure
 | 구분 | 기술 |
 | :-- | :-- |
-| **Server** | AWS EC2 (Linux) |
+| **Server** | GCP (Google Cloud Platform) EC2 (Linux) |
 | **Container** | Docker, Docker Compose |
 | **Proxy** | Nginx (Reverse Proxy, SSL/HTTPS 적용) |
 | **CI/CD** | GitHub Actions (CI & SSH Deploy) |
