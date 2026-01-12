@@ -39,15 +39,15 @@ jobs:
           npm ci
           npm run build
           # 백엔드의 static 폴더가 없으면 생성
-          mkdir -p ../../backend/src/main/resources/static
+          mkdir -p ../backend/src/main/resources/static
           # 기존 파일 삭제 (혹시 모를 잔여물 제거)
-          rm -rf ../../backend/src/main/resources/static/*
+          rm -rf ../backend/src/main/resources/static/*
           # 빌드 결과물(dist) 내부 파일들을 백엔드 static으로 복사
-          cp -r dist/* ../../backend/src/main/resources/static/
+          cp -r dist/* ../backend/src/main/resources/static/
 
           # 복사 잘 됐는지 확인용 출력
           echo "Listing static files:"
-          ls -R ../../backend/src/main/resources/static/
+          ls -R ../backend/src/main/resources/static/
 
       # Java 17 세팅
       - name: Set up JDK 17
