@@ -4,7 +4,7 @@ import { MacroData } from "../../../types/macro";
 import EconomicChart from "./charts/EconomicChart";
 import ChartGuide from "./guides/ChartGuide";
 import MarketGuide from "./guides/MarketGuide";
-import Skeleton from "../../../components/ui/Skeleton";
+import { Skeleton } from "../../../components/ui/Skeleton";
 
 interface MacroTrendSectionProps {
   latestDate?: string; 
