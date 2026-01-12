@@ -1,0 +1,12 @@
+# 모든 파일은 기본적으로 git이 알아서 처리 (text=auto)
+* text=auto
+
+# 쉘 스크립트는 무조건 LF(리눅스 줄바꿈)로 고정
+*.sh text eol=lf
+
+# 도커 설정 파일들도 LF
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# 윈도우 배치 파일은 CRLF 유지
+*.bat text eol=crlf
