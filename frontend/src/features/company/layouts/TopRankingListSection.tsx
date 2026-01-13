@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { CompanyScoreResponse } from "../../../types/company";
-import { RankingEmptyRow } from "../ui/rows/RankingEmptyRow";
-import { RankingItemRow } from "../ui/rows/RankingItemRow";
-import { RankingSkeletonRows } from "../ui/rows/RankingSkeletonRows";
-import { RankingTableHeader } from "../ui/RankingTableHeader";
+import { RankingItemRow } from "../ui/p_ranking/RankingItemRow";
+import { RankingSkeleton } from "../ui/skeletons/RankingSkeleton";
+import { RankingTableHeader } from "../ui/p_ranking/RankingTableHeader";
+import { TopRankingEmptyState } from "../ui/states/TopRankingEmptyState";
 
 
 interface TopRankingListSectionProps {
@@ -14,18 +14,19 @@ interface TopRankingListSectionProps {
 export const TopRankingListSection = ({ companies, isLoading }: TopRankingListSectionProps) => {
   const renderTableBody = () => {
     if (isLoading) {
-      return <RankingSkeletonRows />;
+      return <RankingSkeleton />;
     }
 
     if (companies.length === 0) {
-      return <RankingEmptyRow />;
+      return <TopRankingEmptyState />;
     }
 
     return companies
       .slice(0, 10)
       .map((item, index) => (
-        <RankingItemRow key={item.ticker} item={item} rank={index + 1} />
+        <RankingItemRow key={item.ticker} data={item} rank={index + 1} />
       ));
+
   };
 
     return (

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Building2 } from "lucide-react";
 import { CompanySummaryResponse } from "../../../types/company";
 import { getGradeColor, getScoreColor } from "../../../utils/formatters";
 
@@ -54,7 +53,6 @@ export const CompanyCard = ({ company, className = "" }: CompanyCardProps) => {
         {/* 섹터 정보 (데이터가 있을 때만 표시) */}
         {hasDetails && (
           <p className="text-xs text-slate-500 flex items-center gap-1.5">
-            <Building2 size={12} />
             {(company as CompanySummaryResponse).sector}
           </p>
         )}

@@ -1,12 +1,12 @@
-import { FinancialStatementResponse } from "../../../../types/company";
-import { FINANCIAL_TERMS } from "../../constants/financialTerms";
-import { FinancialRow } from "../rows/FinancialRow";
+import { FinancialStatementResponse } from "../../../../../types/company";
+import { FINANCIAL_TERMS } from "../constants/financialTerms";
+import { FinancialRow } from "./FinancialRow";
 
-interface Props {
+interface IncomeStatementProps {
   data: FinancialStatementResponse;
 }
 
-export const IncomeStatement = ({ data }: Props) => {
+export const IncomeStatement = ({ data }:IncomeStatementProps) => {
   return (
     <div className="space-y-4">
       <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
@@ -16,13 +16,11 @@ export const IncomeStatement = ({ data }: Props) => {
         label="매출액"
         value={data.revenue}
         term={FINANCIAL_TERMS.revenue}
-        isMain
       />
       <FinancialRow
         label="영업이익"
         value={data.operatingProfit}
         term={FINANCIAL_TERMS.operatingProfit}
-        highlight
       />
       <FinancialRow
         label="당기순이익"

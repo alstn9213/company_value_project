@@ -1,5 +1,5 @@
 import { Sparkles } from "lucide-react";
-import { getGradeColor } from "../../../utils/formatters";
+import { getGradeColor } from "../../../../utils/formatters";
 
 interface Props {
   grade: string;

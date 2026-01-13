@@ -1,6 +1,6 @@
 import { CompanySummaryResponse } from "../../../types/company";
-import { CompanyCardSkeleton } from "../ui/CompanyCardSkeleton";
-import { CompanyCard } from "../layouts/CompanyCard";
+import { CompanyCardSkeleton } from "../ui/skeletons/CompanyCardSkeleton";
+import { CompanyCard } from "./CompanyCard";
 import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface CompanyGridSectionProps {
@@ -9,7 +9,7 @@ interface CompanyGridSectionProps {
 }
 
 export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) => {
-  // 로딩
+
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
@@ -20,7 +20,6 @@ export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionP
     );
   }
   
-  // 데이터 없음
   if (!companies || companies.length === 0) {
     return (
       <EmptyState

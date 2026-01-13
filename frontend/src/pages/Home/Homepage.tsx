@@ -2,7 +2,7 @@ import { useMacroHistory, useMacroLatest } from "../../features/macro/hooks/useM
 import { useTopRankingCompanies } from "../../features/company/hooks/useCompanyRanking";
 import { MajorIndicator } from "../../features/macro/components/MajorIndicator";
 import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
-import { TopRankingListSection } from "../../features/company/components/TopRankingListSection";
+import { TopRankingListSection } from "../../features/company/layouts/TopRankingListSection";
 
 const HomePage = () => {
   const { data: latest, isLoading: isLatestLoading } = useMacroLatest();
