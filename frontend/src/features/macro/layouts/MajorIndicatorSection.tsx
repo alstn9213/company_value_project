@@ -9,7 +9,7 @@ interface MajorIndicatorsProps {
   isLoading: boolean;
 }
 
-export const MajorIndicator = ({ latest, isLoading }: MajorIndicatorsProps) => {
+export const MajorIndicatorSection = ({ latest, isLoading }: MajorIndicatorsProps) => {
   return (
     <section className="space-y-4 xl:col-span-2">
       {/* 공통 헤더 영역 */}

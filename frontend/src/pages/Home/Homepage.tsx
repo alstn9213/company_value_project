@@ -1,6 +1,6 @@
 import { useMacroHistory, useMacroLatest } from "../../features/macro/hooks/useMacroDashboard";
 import { useTopRankingCompanies } from "../../features/company/hooks/useCompanyRanking";
-import { MajorIndicator } from "../../features/macro/components/MajorIndicator";
+import { MajorIndicatorSection } from "../../features/macro/layouts/MajorIndicatorSection";
 import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
 import { TopRankingListSection } from "../../features/company/layouts/TopRankingListSection";
 
@@ -14,7 +14,7 @@ const HomePage = () => {
   return (
     <div className="w-full space-y-6">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <MajorIndicator 
+        <MajorIndicatorSection 
           latest={latest} 
           isLoading={isLatestLoading}/>
         <EconomicChartSection 

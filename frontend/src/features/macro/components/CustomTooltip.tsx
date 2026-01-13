@@ -1,6 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import { MacroDataResponse } from "../../../types/macro";
 
+
 interface CustomTooltipProps {
   active?: boolean;
   payload?: {
@@ -34,7 +35,9 @@ export const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) =>
                 className="h-2 w-2 rounded-full"
                 style={{ backgroundColor: entry.color }}
               />
-              <span className="text-slate-400">{entry.name}:</span>
+              <span className="text-slate-400">
+                {entry.name}:
+              </span>
               <span className="font-mono font-medium text-slate-200">
                 {entry.value}
                 {entry.name?.toString().includes("CPI") ? "%" : "%"}

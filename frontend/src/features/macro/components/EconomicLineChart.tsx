@@ -1,6 +1,6 @@
 import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { MacroDataResponse } from "../../../types/macro";
-import { CustomTooltip } from "../components/CustomTooltip";
+import { CustomTooltip } from "./CustomTooltip";
 
 interface Interval {
   start: string;
@@ -40,7 +40,11 @@ export const EconomicLineChart = ({ data, inversionIntervals }: EconomicLineChar
               domain={["auto", "auto"]}
             />
 
-            <Tooltip content={<CustomTooltip />} cursor={{ stroke: "#64748b", strokeWidth: 1 }} />
+            <Tooltip 
+              content={<CustomTooltip />} 
+              cursor={{ stroke: "#64748b", strokeWidth: 1 }} 
+            />
+            
             <Legend wrapperStyle={{ paddingTop: "10px" }} />
 
             {/* 역전 구간 표시 */}
