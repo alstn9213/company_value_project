@@ -4,7 +4,7 @@ import { Company } from "../../types/company";
 import { companyApi } from "../../features/company/api/companyApi";
 import { Search, X } from "lucide-react";
 
-const SearchBar = () => {
+export const SearchBar = () => {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
   const [suggestions, setSuggestions] = useState<Company[]>([]);
@@ -133,5 +133,3 @@ const SearchBar = () => {
         </div>
     );
     };
-
-export default SearchBar;

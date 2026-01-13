@@ -1,15 +1,15 @@
-import StockPriceChart from "../../valuation/components/charts/StockPriceChart";
-import LoadingState from "../../../components/common/LoadingState";
-import EmptyState from "../../../components/common/EmptyState";
 import { BarChart2 } from "lucide-react";
-import ErrorState from "../../../components/common/ErrorState";
 import { useStockHistory } from "../hooks/useStockHistory";
+import { StockPriceChart } from "../../valuation/components/charts/StockPriceChart";
+import { ErrorState } from "../../../components/common/ErrorState";
+import { EmptyState } from "../../../components/common/EmptyState";
+import { LoadingState } from "../../../components/common/LoadingState";
 
 interface StockChartSectionProps {
   ticker: string;
 }
 
-const StockChartSection = ({ticker}: StockChartSectionProps) => {
+export const StockChartSection = ({ticker}: StockChartSectionProps) => {
   const { 
     data: stockHistory, 
     isPending, 
@@ -57,5 +57,3 @@ const StockChartSection = ({ticker}: StockChartSectionProps) => {
     </div>
   );
 };
-
-export default StockChartSection;

@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from "../../stores/authStore"
 
-const ProtectedRoute = () => {
+export const ProtectedRoute = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   if(!isAuthenticated) {
@@ -12,5 +12,3 @@ const ProtectedRoute = () => {
   // 로그인 상태면 하위 라우트(Outlet) 렌더링
   return <Outlet />;
 };
-
-export default ProtectedRoute;

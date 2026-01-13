@@ -4,7 +4,7 @@ interface Props {
   totalScore: number;
 }
 
-const TotalScoreDisplay = ({ totalScore }: Props) => {
+export const TotalScoreDisplay = ({ totalScore }: Props) => {
   return (
     <div className="text-center mb-8 relative">
       <span className="text-slate-400 text-sm uppercase tracking-wider">
@@ -20,5 +20,3 @@ const TotalScoreDisplay = ({ totalScore }: Props) => {
     </div>
   );
 };
-
-export default TotalScoreDisplay;

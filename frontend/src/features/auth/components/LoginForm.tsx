@@ -1,6 +1,6 @@
 import { useLoginForm } from "../hooks/useLoginForm";
 
-const LoginForm = () => {
+export const LoginForm = () => {
   const { values, error, isLoading, handleChange, handleSubmit } = useLoginForm();
 
   return (
@@ -46,5 +46,3 @@ const LoginForm = () => {
     </form>
   );
 };
-
-export default LoginForm;

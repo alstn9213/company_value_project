@@ -1,6 +1,6 @@
 import { Info } from "lucide-react";
 
-const MarketGuide = () => {
+export const MarketGuide = () => {
     return(
       <div className="rounded-xl border border-slate-700 bg-white/5 p-6">
         <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-200">
@@ -27,5 +27,3 @@ const MarketGuide = () => {
       </div>
     );
 }
-
-export default MarketGuide;

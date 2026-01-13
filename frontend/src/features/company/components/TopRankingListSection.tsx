@@ -6,12 +6,12 @@ import { RankingSkeletonRows } from "./rows/RankingSkeletonRows";
 import { RankingTableHeader } from "../layouts/RankingTableHeader";
 
 
-interface TopRankingListProps {
+interface TopRankingListSectionProps {
   companies: ScoreResult[];
   isLoading: boolean;
 }
 
-const TopRankingList = ({ companies, isLoading }: TopRankingListProps) => {
+export const TopRankingListSection = ({ companies, isLoading }: TopRankingListSectionProps) => {
   const renderTableBody = () => {
     if (isLoading) {
       return <RankingSkeletonRows />;
@@ -53,5 +53,3 @@ const TopRankingList = ({ companies, isLoading }: TopRankingListProps) => {
     </section>
   );
 };
-
-export default TopRankingList;

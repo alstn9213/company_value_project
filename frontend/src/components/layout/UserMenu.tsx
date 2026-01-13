@@ -1,9 +1,9 @@
 import { useAuthStore } from "../../stores/authStore";
 import { useUserMenu } from "../../hooks/useUserMenu";
-import UserMenuTrigger from "./user/UserMenuTrigger";
-import UserMenuDropdown from "./user/UserMenuDropdown";
+import { UserMenuTrigger } from "./user/UserMenuTrigger";
+import { UserMenuDropdown } from "./user/UserMenuDropdown";
 
-const UserMenu: React.FC = () => {
+export const UserMenu: React.FC = () => {
   const { user } = useAuthStore();
   const { isOpen, menuRef, toggleMenu, handleLogout } = useUserMenu();
 
@@ -30,5 +30,3 @@ const UserMenu: React.FC = () => {
 };
 
 
-
-export default UserMenu;

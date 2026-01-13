@@ -11,7 +11,7 @@ interface IndicatorItemProps {
   isAlert?: boolean;
 }
 
-const IndicatorItem = ({
+export const IndicatorItem = ({
   label,
   value,
   icon,
@@ -36,5 +36,3 @@ const IndicatorItem = ({
     </div>
   );
 };
-
-export default IndicatorItem;

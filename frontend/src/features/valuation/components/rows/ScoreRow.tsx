@@ -1,4 +1,4 @@
-import TermWithTooltip from "../../../../components/common/TermWithTooltip";
+import { TermWithTooltip } from "../../../../components/common/TermWithTooltip";
 import { TermDefinition } from "../../../../types/term";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   term?: TermDefinition;
 }
 
-const ScoreRow = ({
+export const ScoreRow = ({
   label,
   value,
   max,
@@ -38,5 +38,3 @@ const ScoreRow = ({
     </div>
   );
 };
-
-export default ScoreRow;

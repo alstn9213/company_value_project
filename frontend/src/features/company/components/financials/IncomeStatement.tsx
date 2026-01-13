@@ -1,12 +1,12 @@
 import { FinancialData } from "../../../../types/company";
 import { FINANCIAL_TERMS } from "../../constants/financialTerms";
-import FinancialRow from "../rows/FinancialRow";
+import { FinancialRow } from "../rows/FinancialRow";
 
 interface Props {
   data: FinancialData;
 }
 
-const IncomeStatement = ({ data }: Props) => {
+export const IncomeStatement = ({ data }: Props) => {
   return (
     <div className="space-y-4">
       <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
@@ -37,5 +37,3 @@ const IncomeStatement = ({ data }: Props) => {
     </div>
   );
 };
-
-export default IncomeStatement;

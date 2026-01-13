@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import Header from "./Header";
+import { Header } from "./Header";
 
-const MainLayout = () => {
+export const MainLayout = () => {
   return (
     <div className="min-h-screen bg-[#0f172a] text-slate-200 font-sans flex flex-col">
       <Header />
@@ -14,5 +14,3 @@ const MainLayout = () => {
     </div>
   );
 };
-
-export default MainLayout;

@@ -1,15 +1,15 @@
 import { Activity, AlertCircle, DollarSign, Percent, TrendingDown } from "lucide-react";
 import { MacroData } from "../../../types/macro";
-import IndicatorItem from "./items/IndicatorItem";
-import EmptyState from "../../../components/common/EmptyState";
 import { Skeleton } from "../../../components/ui/Skeleton";
+import { IndicatorItem } from "./items/IndicatorItem";
+import { EmptyState } from "../../../components/common/EmptyState";
 
 interface MajorIndicatorsProps {
   latest?: MacroData;
   isLoading: boolean;
 }
 
-const MajorIndicators = ({ latest, isLoading }: MajorIndicatorsProps) => {
+export const MajorIndicatorSection = ({ latest, isLoading }: MajorIndicatorsProps) => {
   return (
     <section className="space-y-4 xl:col-span-2">
       {/* 공통 헤더 영역 */}
@@ -79,5 +79,3 @@ const MajorIndicators = ({ latest, isLoading }: MajorIndicatorsProps) => {
     </section>
   );
 };
-
-export default MajorIndicators;

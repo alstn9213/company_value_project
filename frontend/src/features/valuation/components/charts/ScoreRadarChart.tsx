@@ -56,7 +56,7 @@ const CustomTooltip = ({active, payload}: CustomTooltipProps) => {
   return null;
 };
 
-const ScoreRadarChart: React.FC<ScoreRadarChartProps> = ({ data }) => {
+export const ScoreRadarChart: React.FC<ScoreRadarChartProps> = ({ data }) => {
 
   // 1. 데이터 변환: 모든 점수를 100점 만점 기준으로 환산
   const normalizedData = data.map((item) => ({
@@ -103,4 +103,3 @@ const ScoreRadarChart: React.FC<ScoreRadarChartProps> = ({ data }) => {
   );
 };
 
-export default ScoreRadarChart;

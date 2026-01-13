@@ -1,6 +1,6 @@
 import { formatCurrency } from "../../../../utils/formatters";
-import TermWithTooltip from "../../../../components/common/TermWithTooltip";
 import { TermDefinition } from "../../../../types/term";
+import { TermWithTooltip } from "../../../../components/common/TermWithTooltip";
 
 interface Props {
   label: string;
@@ -11,7 +11,7 @@ interface Props {
   color?: string;
 }
 
-const FinancialRow = ({
+export const FinancialRow = ({
   label,
   value,
   term,
@@ -41,5 +41,3 @@ const FinancialRow = ({
     </div>
   );
 };
-
-export default FinancialRow;

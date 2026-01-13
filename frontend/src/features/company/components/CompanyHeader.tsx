@@ -9,7 +9,7 @@ interface Props {
   score: ScoreResult;
 }
 
-const CompanyHeader = ({ info, score }: Props) => {
+export const CompanyHeader = ({ info, score }: Props) => {
   const { addWatchlist, isPending } = useAddWatchlist();
 
  return (
@@ -36,5 +36,3 @@ const CompanyHeader = ({ info, score }: Props) => {
     </div>
   );
 };
-
-export default CompanyHeader;

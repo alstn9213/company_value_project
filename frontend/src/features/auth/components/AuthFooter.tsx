@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const AuthFooter = () => {
+export const AuthFooter = () => {
   return (
     <div className="mt-6 text-center text-sm text-slate-500">
       계정이 없으신가요?{" "}
@@ -13,5 +13,3 @@ const AuthFooter = () => {
     </div>
   );
 };
-
-export default AuthFooter;

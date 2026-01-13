@@ -1,18 +1,18 @@
 import { ScoreResult } from "../../../types/company";
 import { MAX_SCORES } from "../constants/maxScores";
 import { SCORE_TERMS } from "../constants/scoreTerm";
-import ScoreRow from "./rows/ScoreRow";
+import { ScoreRow } from "./rows/ScoreRow";
 
-type CompanyScoreProps = Pick<
+type DetailScoreSectionProps = Pick<
   ScoreResult, 
   'stabilityScore' | 'profitabilityScore' | 'valuationScore' | 'investmentScore'
 >;
 
 interface Props {
-  score: CompanyScoreProps;
+  score: DetailScoreSectionProps;
 }
 
-const ScoreDetailList = ({ score }: Props) => {
+export const DetailScoreSection = ({ score }: Props) => {
   // 렌더링을 위한 설정 배열 (매핑을 사용하여 중복 코드 제거)
   const scoreItems = [
     {
@@ -60,5 +60,3 @@ const ScoreDetailList = ({ score }: Props) => {
     </div>
   );
 };
-
-export default ScoreDetailList;

@@ -1,6 +1,6 @@
 import { Skeleton } from "../../../components/ui/Skeleton";
 
-const CompanyCardSkeleton = () => {
+export const CompanyCardSkeleton = () => {
   return (
     <div className="bg-card border border-slate-700/50 rounded-xl p-5">
       <div className="flex justify-between items-start mb-3">
@@ -27,5 +27,3 @@ const CompanyCardSkeleton = () => {
     </div>
   );
 };
-
-export default CompanyCardSkeleton;

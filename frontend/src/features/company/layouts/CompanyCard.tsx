@@ -8,7 +8,7 @@ interface CompanyCardProps {
   className?: string; // 스타일 오버라이딩용
 }
 
-const CompanyCard = ({ company, className = "" }: CompanyCardProps) => {
+export const CompanyCard = ({ company, className = "" }: CompanyCardProps) => {
   const hasDetails = 'sector' in company && 'exchange' in company;
 
   return (
@@ -62,5 +62,3 @@ const CompanyCard = ({ company, className = "" }: CompanyCardProps) => {
     </Link>
   );
 };
-
-export default CompanyCard;

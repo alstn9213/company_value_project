@@ -4,7 +4,7 @@ interface UserMenuTriggerProps {
   onClick: () => void;
 }
 
-const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username, isOpen, onClick }) => {
+export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username, isOpen, onClick }) => {
   return (
     <button
       onClick={onClick}
@@ -36,5 +36,3 @@ const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username, isOpen, onC
     </button>
   );
 };
-
-export default UserMenuTrigger;

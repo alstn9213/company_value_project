@@ -8,7 +8,7 @@ interface Props {
   iconClassName?: string; // 아이콘 스타일 커스텀
 }
 
-const TermWithTooltip = ({ 
+export const TermWithTooltip = ({ 
   label, 
   term, 
   className = "text-slate-400", 
@@ -45,5 +45,3 @@ const TermWithTooltip = ({
     </div>
   );
 };
-
-export default TermWithTooltip;

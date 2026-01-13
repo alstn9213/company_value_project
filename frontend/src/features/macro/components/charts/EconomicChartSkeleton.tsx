@@ -1,6 +1,6 @@
 import { Skeleton } from "../../../../components/ui/Skeleton";
 
-const EconomicChartSkeleton = () => {
+export const EconomicChartSkeleton = () => {
   return (
     <div className="flex-1 rounded-xl border border-slate-700 bg-slate-800/50 p-5 shadow-sm backdrop-blur-sm min-h-[400px]">
       {/* 제목 스켈레톤 */}
@@ -20,5 +20,3 @@ const EconomicChartSkeleton = () => {
     </div>
   );
 };
-
-export default EconomicChartSkeleton;

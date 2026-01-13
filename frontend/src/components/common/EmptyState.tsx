@@ -5,7 +5,7 @@ interface EmptyStateProps {
   className?: string;       // 추가 스타일링
 }
 
-const EmptyState = ({ 
+export const EmptyState = ({ 
   icon, title = "데이터가 없습니다.",
   description, className
  }: EmptyStateProps) => {
@@ -17,4 +17,3 @@ const EmptyState = ({
     </div>
   );
 };
-export default EmptyState;

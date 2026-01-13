@@ -1,14 +1,14 @@
 import { Company } from "../../../types/company";
-import EmptyState from "../../../components/common/EmptyState";
-import CompanyCardSkeleton from "../ui/CompanyCardSkeleton";
-import CompanyCard from "../layouts/CompanyCard";
+import { CompanyCardSkeleton } from "../ui/CompanyCardSkeleton";
+import { CompanyCard } from "../layouts/CompanyCard";
+import { EmptyState } from "../../../components/common/EmptyState";
 
 interface CompanyGridSectionProps {
   isLoading: boolean;
   companies?: Company[];
 }
 
-const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) => {
+export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) => {
   // 로딩
   if (isLoading) {
     return (
@@ -39,5 +39,3 @@ const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) =
 
   );
 };
-
-export default CompanyGridSection;

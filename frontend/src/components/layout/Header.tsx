@@ -1,9 +1,9 @@
-import Logo from "../common/Logo";
-import HeaderNav from "./HeaderNav";
-import SearchBar from "../common/SearchBar";
-import UserMenu from "./UserMenu";
+import { Logo } from "../common/Logo";
+import { SearchBar } from "../common/SearchBar";
+import { HeaderNav } from "./HeaderNav";
+import { UserMenu } from "./UserMenu";
 
-const Header = () => {
+export const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-[#0f172a]/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full items-center justify-between px-6 lg:px-10">
@@ -28,5 +28,3 @@ const Header = () => {
     </header>
   );
 };
-
-export default Header;

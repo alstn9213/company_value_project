@@ -1,9 +1,9 @@
 import { TrendingUp } from "lucide-react";
-import ScoreRadarChart, { ChartDataPoint } from "./charts/ScoreRadarChart";
-import RiskPenaltyAlert from "./RiskPenaltyAlert";
-import TotalScoreDisplay from "../layouts/TotalScoreDisplay";
-import ScoreDetailList from "./ScoreDetailList";
 import { MAX_SCORES } from "../constants/maxScores";
+import { DetailScoreSection } from "./DetailScoreSection";
+import { ChartDataPoint, ScoreRadarChart } from "./charts/ScoreRadarChart";
+import { RiskPenaltyAlert } from "../layouts/RiskPenaltyAlert";
+import { TotalScoreDisplay } from "../layouts/TotalScoreDisplay";
 
 interface CompanyScore {
   ticker: string;
@@ -21,7 +21,7 @@ interface Props {
   score: CompanyScore;
 }
 
-const ScoreAnalysis = ({ score }: Props) => {
+export const ScoreAnalysisSection = ({ score }: Props) => {
   const baseScore = score.stabilityScore + score.profitabilityScore + score.valuationScore + score.investmentScore;
   const penaltyPoints = Math.max(0, baseScore - score.totalScore);
 
@@ -34,10 +34,10 @@ const ScoreAnalysis = ({ score }: Props) => {
   
   return (
     <div className="h-full flex flex-col gap-4">
-      {/* 1. 페널티/위험 경고 메시지 */}
+      {/* 페널티/위험 경고 메시지 */}
       <RiskPenaltyAlert penaltyPoints={penaltyPoints} />
 
-      {/* 2. 메인 분석 카드 */}
+      {/* 메인 분석 카드 */}
       <div className="bg-card border border-slate-700/50 rounded-xl p-6 flex-1 flex flex-col shadow-lg backdrop-blur-sm">
         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
           <TrendingUp size={20} className="text-emerald-400" />
@@ -53,10 +53,9 @@ const ScoreAnalysis = ({ score }: Props) => {
         </div>
 
         {/* 세부 점수 리스트 */}
-        <ScoreDetailList score={score} />
+        <DetailScoreSection score={score} />
       </div>
     </div>
   );
 };
 
-export default ScoreAnalysis;

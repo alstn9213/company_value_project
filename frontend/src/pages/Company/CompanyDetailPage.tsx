@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import CompanyHeader from "../../features/company/components/CompanyHeader";
-import ScoreAnalysis from "../../features/valuation/components/ScoreAnalysis";
-import StockChartSection from "../../features/company/components/StockChartSection";
-import FinancialSummary from "../../features/company/components/FinancialSummary";
 import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail";
-import LoadingState from "../../components/common/LoadingState";
-import ErrorState from "../../components/common/ErrorState";
+import { ScoreAnalysisSection } from "../../features/valuation/components/ScoreAnalysisSection";
+import { CompanyHeader } from "../../features/company/components/CompanyHeader";
+import { StockChartSection } from "../../features/company/components/StockChartSection";
+import { FinancialSummary } from "../../features/company/components/FinancialSummary";
+import { ErrorState } from "../../components/common/ErrorState";
+import { LoadingState } from "../../components/common/LoadingState";
 
 const CompanyDetailPage = () => {
   const {ticker} = useParams<{ ticker: string }>();
@@ -45,7 +45,7 @@ const CompanyDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 좌측: 분석 점수 */}
         <div className="lg:col-span-1 space-y-6">
-          <ScoreAnalysis score={score} />
+          <ScoreAnalysisSection score={score} />
         </div>
         {/* 우측: 차트 및 재무제표 */}
         <div className="lg:col-span-2 space-y-12">

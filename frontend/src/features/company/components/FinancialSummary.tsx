@@ -1,15 +1,15 @@
 import { FileBarChart2, TrendingUp } from "lucide-react";
-import EmptyState from "../../../components/common/EmptyState";
 import { FinancialData } from "../../../types/company";
-import IncomeStatement from "./financials/IncomeStatement";
-import BalanceSheet from "./financials/BalanceSheet";
-import CashFlowStatement from "./financials/CashFlowStatement";
+import { IncomeStatement } from "./financials/IncomeStatement";
+import { BalanceSheet } from "./financials/BalanceSheet";
+import { CashFlowStatement } from "./financials/CashFlowStatement";
+import { EmptyState } from "../../../components/common/EmptyState";
 
 interface Props {
   financial: FinancialData;
 }
 
-const FinancialSummary = ({ financial }: Props) => {
+export const FinancialSummary = ({ financial }: Props) => {
   if (!financial) {
     return (
       <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full flex items-center justify-center">
@@ -40,4 +40,3 @@ const FinancialSummary = ({ financial }: Props) => {
   );
 };
 
-export default FinancialSummary;

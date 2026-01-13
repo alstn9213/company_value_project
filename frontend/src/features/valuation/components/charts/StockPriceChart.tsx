@@ -15,7 +15,7 @@ interface Props {
   data: StockHistory[];
 }
 
-const StockPriceChart = ({ data }: Props) => {
+export const StockPriceChart = ({ data }: Props) => {
   // 데이터가 없을 경우 예외 처리
   if (!data || data.length === 0) {
     return (
@@ -112,4 +112,3 @@ const StockPriceChart = ({ data }: Props) => {
   );
 };
 
-export default StockPriceChart;

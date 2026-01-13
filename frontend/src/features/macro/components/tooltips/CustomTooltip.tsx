@@ -13,7 +13,7 @@ interface CustomTooltipProps {
   label?: string;
 }
 
-const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+export const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     // payload[0].payload 로 원본 데이터 접근 가능
     const data = payload[0].payload as MacroData;
@@ -65,5 +65,3 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
   return null;
 };
-
-export default CustomTooltip;

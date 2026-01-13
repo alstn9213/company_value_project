@@ -1,6 +1,6 @@
 import { HelpCircle } from "lucide-react";
 
-const ChartGuide = () => {
+export const ChartGuide = () => {
   return (
     <div className="rounded-xl border border-slate-700 bg-white/5 p-6">
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold text-slate-200">
@@ -35,4 +35,3 @@ const ChartGuide = () => {
   );
 };
 
-export default ChartGuide;

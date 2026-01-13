@@ -9,7 +9,7 @@ interface WatchlistCardProps {
   onDelete: (id: number) => void;
 }
 
-const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
+export const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
   const { company } = item;
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -63,5 +63,3 @@ const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
     </Link>
   );
 };
-
-export default WatchlistCard;

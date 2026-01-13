@@ -3,7 +3,7 @@ interface UserMenuDropdownProps {
   onLogout: () => void;
 }
 
-const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ email, onLogout }) => {
+export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ email, onLogout }) => {
   return (
     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50 transform origin-top-right transition-all duration-200 ease-out">
       {/* User Info Section */}
@@ -24,5 +24,3 @@ const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ email, onLogout }) 
     </div>
   );
 };
-
-export default UserMenuDropdown;

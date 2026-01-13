@@ -1,6 +1,6 @@
 import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { MacroData } from "../../../../types/macro";
-import CustomTooltip from "../tooltips/CustomTooltip";
+import { CustomTooltip } from "../tooltips/CustomTooltip";
 
 interface Interval {
   start: string;
@@ -12,7 +12,7 @@ interface EconomicLineChartProps {
   inversionIntervals: Interval[];
 }
 
-const EconomicLineChart = ({ data, inversionIntervals }: EconomicLineChartProps) => {
+export const EconomicLineChart = ({ data, inversionIntervals }: EconomicLineChartProps) => {
   return (
     <div className="relative h-[500px] w-full">
       <div className="absolute inset-0">
@@ -91,5 +91,3 @@ const EconomicLineChart = ({ data, inversionIntervals }: EconomicLineChartProps)
     </div>
   );
 };
-
-export default EconomicLineChart;

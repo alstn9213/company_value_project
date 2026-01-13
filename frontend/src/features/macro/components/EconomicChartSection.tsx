@@ -1,8 +1,8 @@
 import { MacroData } from "../../../types/macro";
-import EconomicChart from "./charts/EconomicChart";
-import ChartGuide from "./guides/ChartGuide";
-import MarketGuide from "./guides/MarketGuide";
 import { Skeleton } from "../../../components/ui/Skeleton";
+import { EconomicChart } from "./charts/EconomicChart";
+import { MarketGuide } from "./guides/MarketGuide";
+import { ChartGuide } from "./guides/ChartGuide";
 
 interface MacroTrendSectionProps {
   latestDate?: string; 
@@ -10,7 +10,7 @@ interface MacroTrendSectionProps {
   isLoading: boolean;
 }
 
-const MacroTrendSection = ({ latestDate, history, isLoading }: MacroTrendSectionProps) => {
+export const EconomicChartSection = ({ latestDate, history, isLoading }: MacroTrendSectionProps) => {
 
   return (
     <section className="flex flex-col gap-6 xl:col-span-7">
@@ -36,5 +36,3 @@ const MacroTrendSection = ({ latestDate, history, isLoading }: MacroTrendSection
     </section>
     );
 };
-
-export default MacroTrendSection;

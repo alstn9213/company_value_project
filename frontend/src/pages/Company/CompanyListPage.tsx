@@ -1,7 +1,7 @@
-import CompanyFilterHeader from "../../features/company/layouts/CompanyFilterHeader";
-import CompanyGridSection from "../../features/company/components/CompanyGridSection";
-import Pagination from "../../components/common/Pagination";
+import { Pagination } from "../../components/common/Pagination";
+import { CompanyGridSection } from "../../features/company/components/CompanyGridSection";
 import { useCompanyList } from "../../features/company/hooks/useCompanyList";
+import { CompanyFilterHeader } from "../../features/company/layouts/CompanyFilterHeader";
 
 const CompanyListPage = () => {
   const {

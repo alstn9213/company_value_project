@@ -5,7 +5,7 @@ interface CompanyFilterHeaderProps {
   onSortChange: (value: string) => void;
 }
 
-const CompanyFilterHeader = ({
+export const CompanyFilterHeader = ({
   sortOption,
   onSortChange,
 }: CompanyFilterHeaderProps) => {
@@ -38,5 +38,3 @@ const CompanyFilterHeader = ({
     </div>
   );
 };
-
-export default CompanyFilterHeader;

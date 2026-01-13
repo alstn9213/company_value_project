@@ -8,7 +8,7 @@ interface PaginationProps {
   isLastPage?: boolean;
 }
 
-const Pagination = ({
+export const Pagination = ({
   currentPage,
   totalPages,
   onPageChange,
@@ -40,5 +40,3 @@ const Pagination = ({
     </div>
   );
 };
-
-export default Pagination;

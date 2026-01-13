@@ -1,9 +1,9 @@
-import EmptyState from "../../../../components/common/EmptyState";
-import ErrorState from "../../../../components/common/ErrorState";
+import { EmptyState } from "../../../../components/common/EmptyState";
+import { ErrorState } from "../../../../components/common/ErrorState";
 import { MacroData } from "../../../../types/macro";
 import { useInversionIntervals } from "../../hooks/useInversionIntervals";
-import EconomicChartSkeleton from "./EconomicChartSkeleton";
-import EconomicLineChart from "./EconomicLineChart";
+import { EconomicChartSkeleton } from "./EconomicChartSkeleton";
+import { EconomicLineChart } from "./EconomicLineChart";
 
 interface EconomicChartProps {
   history?: MacroData[];
@@ -11,7 +11,7 @@ interface EconomicChartProps {
   isLoading: boolean;
 }
 
-const EconomicChart = ({ history, error, isLoading }: EconomicChartProps) => {
+export const EconomicChart = ({ history, error, isLoading }: EconomicChartProps) => {
   const inversionIntervals = useInversionIntervals(history);
 
   if (isLoading) {
@@ -52,5 +52,3 @@ const EconomicChart = ({ history, error, isLoading }: EconomicChartProps) => {
   </div>
 );
 };
-
-export default EconomicChart;

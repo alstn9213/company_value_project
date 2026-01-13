@@ -4,7 +4,7 @@ interface Props {
   penaltyPoints: number;
 }
 
-const RiskPenaltyAlert = ({ penaltyPoints }: Props) => {
+export const RiskPenaltyAlert = ({ penaltyPoints }: Props) => {
   if (penaltyPoints <= 0) return null;
 
   return (
@@ -20,5 +20,3 @@ const RiskPenaltyAlert = ({ penaltyPoints }: Props) => {
     </div>
   );
 };
-
-export default RiskPenaltyAlert;

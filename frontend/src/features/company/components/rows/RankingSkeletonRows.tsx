@@ -1,8 +1,4 @@
-import Skeleton from "../../../../components/ui/Skeleton";
-
-/**
- * 로딩 상태일 때 보여줄 스켈레톤 행 컴포넌트
- */
+import { Skeleton } from "../../../../components/ui/Skeleton";
 
 export const RankingSkeletonRows = () => {
   return (
