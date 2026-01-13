@@ -1,8 +1,8 @@
 import { Company, ScoreResult } from "../../../types/company";
-import { WatchlistButton } from "../../watchlist/components/WatchlistButton";
+import { WatchlistButton } from "../../watchlist/ui/WatchlistButton";
 import { useAddWatchlist } from "../../watchlist/hooks/useAddWatchlist";
-import { CompanyProfile } from "../layouts/CompanyProfile";
-import { InvestmentGradeBadge } from "../layouts/InvestmentGradeBadge";
+import { CompanyProfile } from "../ui/CompanyProfile";
+import { InvestmentGradeBadge } from "../ui/InvestmentGradeBadge";
 
 interface Props {
   info: Company;

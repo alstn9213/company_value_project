@@ -1,16 +1,16 @@
 import { MacroData } from "../../../types/macro";
 import { Skeleton } from "../../../components/ui/Skeleton";
-import { EconomicChart } from "./charts/EconomicChart";
-import { MarketGuide } from "./guides/MarketGuide";
-import { ChartGuide } from "./guides/ChartGuide";
+import { EconomicChart } from "./EconomicChart";
+import { MarketGuide } from "../ui/guides/MarketGuide";
+import { ChartGuide } from "../ui/guides/ChartGuide";
 
-interface MacroTrendSectionProps {
+interface EconomicChartSectionProps {
   latestDate?: string; 
   history?: MacroData[]; 
   isLoading: boolean;
 }
 
-export const EconomicChartSection = ({ latestDate, history, isLoading }: MacroTrendSectionProps) => {
+export const EconomicChartSection = ({ latestDate, history, isLoading }: EconomicChartSectionProps) => {
 
   return (
     <section className="flex flex-col gap-6 xl:col-span-7">

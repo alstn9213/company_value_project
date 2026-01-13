@@ -46,7 +46,6 @@ export interface FinancialData {
   capitalExpenditure: number;
 }
 
-// 백엔드 CompanyDetailResponse DTO 대응
 export interface CompanyDetailResponse {
   companySummary: Company;
   score: ScoreResult;

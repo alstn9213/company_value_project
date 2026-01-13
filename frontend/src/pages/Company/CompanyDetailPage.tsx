@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail";
-import { ScoreAnalysisSection } from "../../features/valuation/components/ScoreAnalysisSection";
+import { ScoreAnalysisSection } from "../../features/valuation/layouts/ScoreAnalysisSection";
 import { CompanyHeader } from "../../features/company/components/CompanyHeader";
 import { StockChartSection } from "../../features/company/components/StockChartSection";
 import { FinancialSummary } from "../../features/company/components/FinancialSummary";

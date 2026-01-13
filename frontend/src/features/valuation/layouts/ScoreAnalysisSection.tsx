@@ -1,9 +1,9 @@
 import { TrendingUp } from "lucide-react";
 import { MAX_SCORES } from "../constants/maxScores";
-import { DetailScoreSection } from "./DetailScoreSection";
+import { DetailScoreSection } from "../ui/DetailScoreSection";
 import { ChartDataPoint, ScoreRadarChart } from "./charts/ScoreRadarChart";
-import { RiskPenaltyAlert } from "../layouts/RiskPenaltyAlert";
-import { TotalScoreDisplay } from "../layouts/TotalScoreDisplay";
+import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
+import { TotalScoreDisplay } from "../ui/TotalScoreDisplay";
 
 interface CompanyScore {
   ticker: string;

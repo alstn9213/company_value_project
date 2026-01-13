@@ -1,8 +1,8 @@
-import { EmptyState } from "../../../../components/common/EmptyState";
-import { ErrorState } from "../../../../components/common/ErrorState";
-import { MacroData } from "../../../../types/macro";
-import { useInversionIntervals } from "../../hooks/useInversionIntervals";
-import { EconomicChartSkeleton } from "./EconomicChartSkeleton";
+import { EmptyState } from "../../../components/common/EmptyState";
+import { ErrorState } from "../../../components/common/ErrorState";
+import { MacroData } from "../../../types/macro";
+import { useInversionIntervals } from "../hooks/useInversionIntervals";
+import { EconomicChartSkeleton } from "../ui/EconomicChartSkeleton";
 import { EconomicLineChart } from "./EconomicLineChart";
 
 interface EconomicChartProps {

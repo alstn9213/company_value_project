@@ -1,6 +1,6 @@
 import { BarChart2 } from "lucide-react";
 import { useStockHistory } from "../hooks/useStockHistory";
-import { StockPriceChart } from "../../valuation/components/charts/StockPriceChart";
+import { StockPriceChart } from "../../valuation/layouts/charts/StockPriceChart";
 import { ErrorState } from "../../../components/common/ErrorState";
 import { EmptyState } from "../../../components/common/EmptyState";
 import { LoadingState } from "../../../components/common/LoadingState";

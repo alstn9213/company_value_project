@@ -1,7 +1,7 @@
 import { Pagination } from "../../components/common/Pagination";
 import { CompanyGridSection } from "../../features/company/components/CompanyGridSection";
 import { useCompanyList } from "../../features/company/hooks/useCompanyList";
-import { CompanyFilterHeader } from "../../features/company/layouts/CompanyFilterHeader";
+import { CompanyFilterHeader } from "../../features/company/ui/CompanyFilterHeader";
 
 const CompanyListPage = () => {
   const {

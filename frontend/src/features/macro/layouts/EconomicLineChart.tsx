@@ -1,6 +1,6 @@
 import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { MacroData } from "../../../../types/macro";
-import { CustomTooltip } from "../tooltips/CustomTooltip";
+import { MacroData } from "../../../types/macro";
+import { CustomTooltip } from "../components/CustomTooltip";
 
 interface Interval {
   start: string;

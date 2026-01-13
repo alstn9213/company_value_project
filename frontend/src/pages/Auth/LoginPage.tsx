@@ -1,6 +1,6 @@
-import LoginHeader from "../../features/auth/components/LoginHeader";
-import LoginForm from "../../features/auth/components/LoginForm";
-import AuthFooter from "../../features/auth/components/AuthFooter";
+import LoginHeader from "../../features/auth/ui/LoginHeader";
+import LoginForm from "../../features/auth/ui/LoginForm";
+import AuthFooter from "../../features/auth/ui/AuthFooter";
 
 const LoginPage = () => {
   return (

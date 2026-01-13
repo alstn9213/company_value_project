@@ -1,5 +1,5 @@
 import { useWatchlist } from "../../features/watchlist/hooks/useWatchlist"; 
-import { WatchlistCard } from "../../features/watchlist/components/WatchlistCard";
+import { WatchlistCard } from "../../features/watchlist/layouts/WatchlistCard";
 import { EmptyState } from "../../components/common/EmptyState";
 import { LoadingState } from "../../components/common/LoadingState";
 

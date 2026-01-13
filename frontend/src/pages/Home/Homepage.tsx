@@ -1,5 +1,5 @@
-import { MajorIndicatorSection } from "../../features/macro/components/MajorIndicatorSection";
-import { EconomicChartSection } from "../../features/macro/components/EconomicChartSection";
+import { MajorIndicatorSection } from "../../features/macro/components/MajorIndicator";
+import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
 import { useMacroHistory, useMacroLatest } from "../../features/macro/hooks/useMacroDashboard";
 import { useTopRankingCompanies } from "../../features/company/hooks/useCompanyRanking";
 import { TopRankingListSection } from "../../features/company/components/TopRankingListSection";

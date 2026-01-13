@@ -1,5 +1,5 @@
-import { TermWithTooltip } from "../../../../components/common/TermWithTooltip";
-import { TermDefinition } from "../../../../types/term";
+import { TermWithTooltip } from "../../../components/common/TermWithTooltip";
+import { TermDefinition } from "../../../types/term";
 
 interface Props {
   label: string;
