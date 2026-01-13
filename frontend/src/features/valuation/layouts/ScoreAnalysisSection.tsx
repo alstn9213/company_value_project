@@ -1,24 +1,14 @@
 import { TrendingUp } from "lucide-react";
 import { MAX_SCORES } from "../constants/maxScores";
 import { DetailScoreSection } from "../ui/DetailScoreSection";
-import { ChartDataPoint, ScoreRadarChart } from "./charts/ScoreRadarChart";
+import { ScoreRadarChart } from "./ScoreRadarChart";
 import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
 import { TotalScoreDisplay } from "../ui/TotalScoreDisplay";
-
-interface CompanyScore {
-  ticker: string;
-  name: string;
-  grade: string;
-  totalScore: number;
-  stabilityScore: number;
-  profitabilityScore: number;
-  valuationScore: number;
-  investmentScore: number;
-  isOpportunity: boolean;
-}
+import { ChartDataPoint } from "../types/chartDataPoint";
+import { CompanyScoreResponse } from "../../../types/company";
 
 interface Props {
-  score: CompanyScore;
+  score: CompanyScoreResponse;
 }
 
 export const ScoreAnalysisSection = ({ score }: Props) => {

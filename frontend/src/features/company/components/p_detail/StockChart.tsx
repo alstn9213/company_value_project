@@ -1,5 +1,5 @@
 import { BarChart2 } from "lucide-react";
-import { StockPriceChart } from "../../../valuation/layouts/charts/StockPriceChart";
+import { StockPriceChart } from "./StockPriceChart";
 import { ErrorState } from "../../../../components/common/ErrorState";
 import { EmptyState } from "../../../../components/ui/EmptyState";
 import { LoadingState } from "../../../../components/ui/LoadingState";
