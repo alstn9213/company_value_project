@@ -1,8 +1,8 @@
 import { MacroDataResponse } from "../../../types/macro";
-import { Skeleton } from "../../../components/ui/Skeleton";
 import { EconomicChart } from "../components/EconomicChart";
 import { MarketGuide } from "../ui/guides/MarketGuide";
 import { ChartGuide } from "../ui/guides/ChartGuide";
+import { EconomicChartHeader } from "../components/EconomicChartHeader";
 
 interface EconomicChartSectionProps {
   latestDate?: string; 
@@ -15,15 +15,10 @@ export const EconomicChartSection = ({ latestDate, history, isLoading }: Economi
   return (
     <section className="flex flex-col gap-6 xl:col-span-7">
       {/* 헤더 영역 */}
-      <div className="flex items-end justify-between">
-        <h2 className="text-2xl font-bold text-slate-100">미국의 경제 상황</h2>
-        {/* 날짜 */}
-        {isLoading ? (
-          <Skeleton className="w-32 h-5 rounded bg-slate-800" />
-        ) : (
-          <span className="text-sm text-slate-400">기준일 {latestDate}</span>
-        )}
-      </div>
+      <EconomicChartHeader 
+        latestDate={latestDate} 
+        isLoading={isLoading} 
+      />
 
       {/* 메인 차트 영역 */}
       <EconomicChart history={history} isLoading={isLoading} />
