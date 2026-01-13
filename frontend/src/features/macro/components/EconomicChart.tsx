@@ -2,7 +2,7 @@ import { EmptyState } from "../../../components/ui/EmptyState";
 import { ErrorState } from "../../../components/common/ErrorState";
 import { MacroDataResponse } from "../../../types/macro";
 import { useInversionIntervals } from "../hooks/useInversionIntervals";
-import { EconomicChartSkeleton } from "../ui/EconomicChartSkeleton";
+import { EconomicChartSkeleton } from "../ui/skeleton/EconomicChartSkeleton";
 import { EconomicLineChart } from "./EconomicLineChart";
 
 interface EconomicChartProps {

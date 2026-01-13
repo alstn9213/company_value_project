@@ -27,10 +27,12 @@ export const IndicatorItem = ({
           : "border-slate-700 bg-slate-800 hover:border-slate-600"
       }`}
     >
+      
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-slate-400">{label}</span>
         <div className={`opacity-70 ${color}`}>{icon}</div>
       </div>
+
       <div className={`text-2xl font-bold ${color}`}>{value}</div>
       {subText && <div className="text-xs text-slate-500">{subText}</div>}
     </div>
