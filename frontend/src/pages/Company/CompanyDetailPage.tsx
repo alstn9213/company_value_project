@@ -6,7 +6,7 @@ import { CompanyHeader } from "../../features/company/components/CompanyHeader";
 import { StockChartSection } from "../../features/company/components/StockChartSection";
 import { FinancialSummary } from "../../features/company/components/FinancialSummary";
 import { ErrorState } from "../../components/common/ErrorState";
-import { LoadingState } from "../../components/common/LoadingState";
+import { LoadingState } from "../../components/ui/LoadingState";
 
 const CompanyDetailPage = () => {
   const {ticker} = useParams<{ ticker: string }>();

@@ -8,11 +8,11 @@ import {
   YAxis,
 } from "recharts";
 import dayjs from "dayjs";
-import { StockHistory } from "../../../../types/company";
+import { StockHistoryResponse } from "../../../../types/company";
 import { formatCurrency } from "../../../../utils/formatters";
 
 interface Props {
-  data: StockHistory[];
+  data: StockHistoryResponse[];
 }
 
 export const StockPriceChart = ({ data }: Props) => {

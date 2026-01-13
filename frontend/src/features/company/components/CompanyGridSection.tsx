@@ -1,11 +1,11 @@
-import { Company } from "../../../types/company";
+import { CompanySummaryResponse } from "../../../types/company";
 import { CompanyCardSkeleton } from "../ui/CompanyCardSkeleton";
 import { CompanyCard } from "../layouts/CompanyCard";
-import { EmptyState } from "../../../components/common/EmptyState";
+import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface CompanyGridSectionProps {
   isLoading: boolean;
-  companies?: Company[];
+  companies?: CompanySummaryResponse[];
 }
 
 export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) => {

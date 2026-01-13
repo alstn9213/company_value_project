@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { ScoreResult } from "../../../../types/company";
+import { CompanyScoreResponse } from "../../../../types/company";
 import { getGradeColor } from "../../../../utils/formatters";
 
 /**
  * 개별 회사 정보 행 컴포넌트
  */
 interface RankingItemRowProps {
-  item: ScoreResult;
+  item: CompanyScoreResponse;
   rank: number;
 }
 

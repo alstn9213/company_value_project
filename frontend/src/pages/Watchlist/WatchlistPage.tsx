@@ -1,7 +1,7 @@
 import { useWatchlist } from "../../features/watchlist/hooks/useWatchlist"; 
 import { WatchlistCard } from "../../features/watchlist/layouts/WatchlistCard";
-import { EmptyState } from "../../components/common/EmptyState";
-import { LoadingState } from "../../components/common/LoadingState";
+import { EmptyState } from "../../components/ui/EmptyState";
+import { LoadingState } from "../../components/ui/LoadingState";
 
 const WatchlistPage = () => {
   const { watchlist, isLoading, handleDelete } = useWatchlist();

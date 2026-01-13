@@ -1,12 +1,12 @@
 import { FileBarChart2, TrendingUp } from "lucide-react";
-import { FinancialData } from "../../../types/company";
+import { FinancialStatementResponse } from "../../../types/company";
 import { IncomeStatement } from "../ui/financials/IncomeStatement";
 import { BalanceSheet } from "../ui/financials/BalanceSheet";
 import { CashFlowStatement } from "../ui/financials/CashFlowStatement";
-import { EmptyState } from "../../../components/common/EmptyState";
+import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface Props {
-  financial: FinancialData;
+  financial: FinancialStatementResponse;
 }
 
 export const FinancialSummary = ({ financial }: Props) => {

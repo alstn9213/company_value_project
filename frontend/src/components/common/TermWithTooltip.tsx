@@ -1,7 +1,7 @@
 import { HelpCircle } from "lucide-react";
 import { TermDefinition } from "../../types/term";
 
-interface Props {
+interface TermWithTooltipProps {
   label: string;
   term?: TermDefinition;
   className?: string; // 라벨 텍스트 스타일 커스텀을 위해
@@ -13,7 +13,7 @@ export const TermWithTooltip = ({
   term, 
   className = "text-slate-400", 
   iconClassName = "text-slate-600 group-hover:text-slate-400" 
-}: Props) => {
+}: TermWithTooltipProps) => {
   return (
     <div className="flex items-center gap-1.5 group relative cursor-help w-fit">
       {/* 라벨 텍스트 */}

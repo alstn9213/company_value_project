@@ -1,11 +1,11 @@
 import { Activity, AlertCircle, DollarSign, Percent, TrendingDown } from "lucide-react";
-import { MacroData } from "../../../types/macro";
+import { MacroDataResponse } from "../../../types/macro";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { IndicatorItem } from "../ui/IndicatorItem";
-import { EmptyState } from "../../../components/common/EmptyState";
+import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface MajorIndicatorsProps {
-  latest?: MacroData;
+  latest?: MacroDataResponse;
   isLoading: boolean;
 }
 

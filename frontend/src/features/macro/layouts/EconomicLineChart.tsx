@@ -1,5 +1,5 @@
 import { CartesianGrid, Legend, Line, LineChart, ReferenceArea, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { MacroData } from "../../../types/macro";
+import { MacroDataResponse } from "../../../types/macro";
 import { CustomTooltip } from "../components/CustomTooltip";
 
 interface Interval {
@@ -8,7 +8,7 @@ interface Interval {
 }
 
 interface EconomicLineChartProps {
-  data?: MacroData[];
+  data?: MacroDataResponse[];
   inversionIntervals: Interval[];
 }
 

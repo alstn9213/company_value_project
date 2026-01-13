@@ -1,4 +1,4 @@
-export interface MacroData {
+export interface MacroDataResponse {
   date: string;
   fedFundsRate: number; // 기준금리
   us10y: number; // 10년물 국채

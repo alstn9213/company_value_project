@@ -1,12 +1,12 @@
-import { EmptyState } from "../../../components/common/EmptyState";
+import { EmptyState } from "../../../components/ui/EmptyState";
 import { ErrorState } from "../../../components/common/ErrorState";
-import { MacroData } from "../../../types/macro";
+import { MacroDataResponse } from "../../../types/macro";
 import { useInversionIntervals } from "../hooks/useInversionIntervals";
 import { EconomicChartSkeleton } from "../ui/EconomicChartSkeleton";
 import { EconomicLineChart } from "./EconomicLineChart";
 
 interface EconomicChartProps {
-  history?: MacroData[];
+  history?: MacroDataResponse[];
   error?: boolean;
   isLoading: boolean;
 }

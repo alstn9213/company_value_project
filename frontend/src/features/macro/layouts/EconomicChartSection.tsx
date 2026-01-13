@@ -1,4 +1,4 @@
-import { MacroData } from "../../../types/macro";
+import { MacroDataResponse } from "../../../types/macro";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { EconomicChart } from "./EconomicChart";
 import { MarketGuide } from "../ui/guides/MarketGuide";
@@ -6,7 +6,7 @@ import { ChartGuide } from "../ui/guides/ChartGuide";
 
 interface EconomicChartSectionProps {
   latestDate?: string; 
-  history?: MacroData[]; 
+  history?: MacroDataResponse[]; 
   isLoading: boolean;
 }
 

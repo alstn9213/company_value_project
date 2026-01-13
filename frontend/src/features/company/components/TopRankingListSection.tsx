@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ScoreResult } from "../../../types/company";
+import { CompanyScoreResponse } from "../../../types/company";
 import { RankingEmptyRow } from "../ui/rows/RankingEmptyRow";
 import { RankingItemRow } from "../ui/rows/RankingItemRow";
 import { RankingSkeletonRows } from "../ui/rows/RankingSkeletonRows";
@@ -7,7 +7,7 @@ import { RankingTableHeader } from "../ui/RankingTableHeader";
 
 
 interface TopRankingListSectionProps {
-  companies: ScoreResult[];
+  companies: CompanyScoreResponse[];
   isLoading: boolean;
 }
 

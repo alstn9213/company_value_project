@@ -1,12 +1,12 @@
-import { Company, ScoreResult } from "../../../types/company";
+import { CompanySummaryResponse, CompanyScoreResponse } from "../../../types/company";
 import { WatchlistButton } from "../../watchlist/ui/WatchlistButton";
 import { useAddWatchlist } from "../../watchlist/hooks/useAddWatchlist";
 import { CompanyProfile } from "../ui/CompanyProfile";
 import { InvestmentGradeBadge } from "../ui/InvestmentGradeBadge";
 
 interface Props {
-  info: Company;
-  score: ScoreResult;
+  info: CompanySummaryResponse;
+  score: CompanyScoreResponse;
 }
 
 export const CompanyHeader = ({ info, score }: Props) => {

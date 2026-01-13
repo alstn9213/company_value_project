@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { MacroData } from "../../../types/macro";
+import { MacroDataResponse } from "../../../types/macro";
 
 interface Interval {
   start: string;
@@ -12,7 +12,7 @@ interface Interval {
  * @returns 역전 구간(start, end date) 배열
  */
 
-export const useInversionIntervals = (history?: MacroData[]): Interval[] => {
+export const useInversionIntervals = (history?: MacroDataResponse[]): Interval[] => {
   return useMemo(() => {
     if (!history || history.length === 0) return [];
 

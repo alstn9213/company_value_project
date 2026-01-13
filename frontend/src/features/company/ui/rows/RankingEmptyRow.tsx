@@ -1,5 +1,5 @@
 import { ClipboardList } from "lucide-react";
-import { EmptyState } from "../../../../components/common/EmptyState";
+import { EmptyState } from "../../../../components/ui/EmptyState";
 
 /**
  * 데이터가 없을 때 보여줄 컴포넌트

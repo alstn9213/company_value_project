@@ -1,9 +1,9 @@
 import { BarChart2 } from "lucide-react";
-import { useStockHistory } from "../hooks/useStockHistory";
 import { StockPriceChart } from "../../valuation/layouts/charts/StockPriceChart";
 import { ErrorState } from "../../../components/common/ErrorState";
-import { EmptyState } from "../../../components/common/EmptyState";
-import { LoadingState } from "../../../components/common/LoadingState";
+import { EmptyState } from "../../../components/ui/EmptyState";
+import { LoadingState } from "../../../components/ui/LoadingState";
+import { useStockHistory } from "../hooks/useStockHistory";
 
 interface StockChartSectionProps {
   ticker: string;
@@ -11,7 +11,7 @@ interface StockChartSectionProps {
 
 export const StockChartSection = ({ticker}: StockChartSectionProps) => {
   const { 
-    data: stockHistory, 
+    data: StockHistoryResponse, 
     isPending, 
     isError, 
     refetch 
@@ -39,7 +39,7 @@ export const StockChartSection = ({ticker}: StockChartSectionProps) => {
     );
   }
 
-  if (!stockHistory || stockHistory.length === 0) {
+  if (!StockHistoryResponse || StockHistoryResponse.length === 0) {
     return (
       <div className={containerClass}>
         <EmptyState 
@@ -53,7 +53,7 @@ export const StockChartSection = ({ticker}: StockChartSectionProps) => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 mb-4">
-      <StockPriceChart data={stockHistory} />
+      <StockPriceChart data={StockHistoryResponse} />
     </div>
   );
 };

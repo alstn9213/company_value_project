@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Company } from "../../types/company";
+import { CompanySummaryResponse } from "../../types/company";
 import { companyApi } from "../../features/company/api/companyApi";
 import { Search, X } from "lucide-react";
 
 export const SearchBar = () => {
   const navigate = useNavigate();
   const [keyword, setKeyword] = useState("");
-  const [suggestions, setSuggestions] = useState<Company[]>([]);
+  const [suggestions, setSuggestions] = useState<CompanySummaryResponse[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);   
 

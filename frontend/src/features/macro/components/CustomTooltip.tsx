@@ -1,5 +1,5 @@
 import { AlertTriangle } from "lucide-react";
-import { MacroData } from "../../../types/macro";
+import { MacroDataResponse } from "../../../types/macro";
 
 interface CustomTooltipProps {
   active?: boolean;
@@ -7,7 +7,7 @@ interface CustomTooltipProps {
     name?: string;
     value?: number | string;
     color?: string;
-    payload: MacroData; // 원본 데이터 타입 명시
+    payload: MacroDataResponse; // 원본 데이터 타입 명시
     dataKey?: string;
   }[];
   label?: string;
@@ -16,7 +16,7 @@ interface CustomTooltipProps {
 export const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     // payload[0].payload 로 원본 데이터 접근 가능
-    const data = payload[0].payload as MacroData;
+    const data = payload[0].payload as MacroDataResponse;
     const isInverted = data.us10y < data.us2y;
 
     return (

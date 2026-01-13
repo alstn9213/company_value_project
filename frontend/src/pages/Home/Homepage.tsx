@@ -1,7 +1,7 @@
-import { MajorIndicatorSection } from "../../features/macro/components/MajorIndicator";
-import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
 import { useMacroHistory, useMacroLatest } from "../../features/macro/hooks/useMacroDashboard";
 import { useTopRankingCompanies } from "../../features/company/hooks/useCompanyRanking";
+import { MajorIndicator } from "../../features/macro/components/MajorIndicator";
+import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
 import { TopRankingListSection } from "../../features/company/components/TopRankingListSection";
 
 const HomePage = () => {
@@ -14,10 +14,10 @@ const HomePage = () => {
   return (
     <div className="w-full space-y-6">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <MajorIndicatorSection 
+        <MajorIndicator 
           latest={latest} 
           isLoading={isLatestLoading}/>
-        <EconomicChartSection
+        <EconomicChartSection 
           latestDate={latest?.date} 
           history={history} 
           isLoading={isTrendLoading} // history는 latestDate에도 의존하므로

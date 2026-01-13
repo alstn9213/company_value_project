@@ -1,9 +1,9 @@
-import { FinancialData } from "../../../../types/company";
+import { FinancialStatementResponse } from "../../../../types/company";
 import { FINANCIAL_TERMS } from "../../constants/financialTerms";
 import { FinancialRow } from "../rows/FinancialRow";
 
 interface Props {
-  data: FinancialData;
+  data: FinancialStatementResponse;
 }
 
 export const CashFlowStatement = ({ data }: Props) => {

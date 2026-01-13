@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 import { Building2 } from "lucide-react";
-import { Company } from "../../../types/company";
+import { CompanySummaryResponse } from "../../../types/company";
 import { getGradeColor, getScoreColor } from "../../../utils/formatters";
 
 interface CompanyCardProps {
-  company: Company;
+  company: CompanySummaryResponse;
   className?: string; // 스타일 오버라이딩용
 }
 
@@ -31,7 +31,7 @@ export const CompanyCard = ({ company, className = "" }: CompanyCardProps) => {
             {/* 거래소 정보 (데이터가 있을 때만 표시) */}
             {hasDetails && (
               <span className="text-[10px] text-slate-500 bg-slate-800 px-1.5 py-0.5 rounded">
-                {(company as Company).exchange}
+                {(company as CompanySummaryResponse).exchange}
               </span>
             )}
           </div>
@@ -55,7 +55,7 @@ export const CompanyCard = ({ company, className = "" }: CompanyCardProps) => {
         {hasDetails && (
           <p className="text-xs text-slate-500 flex items-center gap-1.5">
             <Building2 size={12} />
-            {(company as Company).sector}
+            {(company as CompanySummaryResponse).sector}
           </p>
         )}
       </div>
