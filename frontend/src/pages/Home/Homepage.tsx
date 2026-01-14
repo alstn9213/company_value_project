@@ -20,7 +20,7 @@ const HomePage = () => {
         <EconomicChartSection 
           latestDate={latest?.date} 
           history={history} 
-          isLoading={isTrendLoading} // history는 latestDate에도 의존하므로
+          isLoading={isTrendLoading}
         />
         <TopRankingListSection 
           companies={topCompanies || []} 

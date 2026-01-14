@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail";
 import { ScoreAnalysisSection } from "../../features/valuation/layouts/ScoreAnalysisSection";
 import { CompanyHeader } from "../../features/company/components/p_detail/CompanyHeader";
-import { StockChart } from "../../features/company/components/p_detail/StockChart";
+import { StockChartSection } from "../../features/company/layouts/StockChartSection";
 import { FinancialSummary } from "../../features/company/components/p_detail/FinancialSummary";
 import { ErrorState } from "../../components/common/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
@@ -14,6 +14,10 @@ const CompanyDetailPage = () => {
 
   const { data, isLoading, isError, refetch } = useCompanyDetail(ticker);
 
+  if (!ticker) {
+    return null;
+  }
+  
   if (isLoading) {
     return <LoadingState message="기업 상세 정보를 분석 중입니다..." />;
   }
@@ -49,7 +53,7 @@ const CompanyDetailPage = () => {
         </div>
         {/* 우측: 차트 및 재무제표 */}
         <div className="lg:col-span-2 space-y-12">
-          <StockChart ticker={ticker!} />
+          <StockChartSection ticker={ticker} />
           <FinancialSummary financial={latestFinancial} />
         </div>
       </div>

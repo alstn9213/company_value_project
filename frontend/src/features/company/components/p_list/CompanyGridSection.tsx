@@ -1,7 +1,7 @@
-import { CompanySummaryResponse } from "../../../types/company";
-import { CompanyCardSkeleton } from "../ui/skeletons/CompanyCardSkeleton";
+import { CompanySummaryResponse } from "../../../../types/company";
+import { CompanyCardSkeleton } from "../../ui/skeletons/CompanyCardSkeleton";
 import { CompanyCard } from "./CompanyCard";
-import { EmptyState } from "../../../components/ui/EmptyState";
+import { EmptyState } from "../../../../components/ui/EmptyState";
 
 interface CompanyGridSectionProps {
   isLoading: boolean;

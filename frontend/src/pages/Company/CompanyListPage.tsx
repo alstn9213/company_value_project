@@ -1,5 +1,5 @@
 import { Pagination } from "../../components/common/Pagination";
-import { CompanyGridSection } from "../../features/company/components/CompanyGridSection";
+import { CompanyGridSection } from "../../features/company/components/p_list/CompanyGridSection";
 import { useCompanyList } from "../../features/company/hooks/useCompanyList";
 import { CompanyFilterHeader } from "../../features/company/ui/p_list/CompanyFilterHeader";
 

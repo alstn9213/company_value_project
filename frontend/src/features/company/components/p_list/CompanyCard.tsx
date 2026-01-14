@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { CompanySummaryResponse } from "../../../types/company";
-import { getGradeColor, getScoreColor } from "../../../utils/formatters";
+import { CompanySummaryResponse } from "../../../../types/company";
+import { getGradeColor, getScoreColor } from "../../../../utils/formatters";
 
 interface CompanyCardProps {
   company: CompanySummaryResponse;
