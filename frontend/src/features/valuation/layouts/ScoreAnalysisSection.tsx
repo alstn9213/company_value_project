@@ -1,7 +1,7 @@
 import { TrendingUp } from "lucide-react";
 import { MAX_SCORES } from "../constants/maxScores";
 import { DetailScoreSection } from "../ui/DetailScoreSection";
-import { ScoreRadarChart } from "./ScoreRadarChart";
+import { ScoreRadarChart } from "../components/ScoreRadarChart";
 import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
 import { TotalScoreDisplay } from "../ui/TotalScoreDisplay";
 import { ChartDataPoint } from "../types/chartDataPoint";

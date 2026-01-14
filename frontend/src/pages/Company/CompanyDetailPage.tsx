@@ -4,7 +4,7 @@ import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail"
 import { ScoreAnalysisSection } from "../../features/valuation/layouts/ScoreAnalysisSection";
 import { CompanyHeader } from "../../features/company/components/p_detail/CompanyHeader";
 import { StockChartSection } from "../../features/company/layouts/StockChartSection";
-import { FinancialSummary } from "../../features/company/components/p_detail/FinancialSummary";
+import { FinancialSummary } from "../../features/company/layouts/FinancialSummary";
 import { ErrorState } from "../../components/common/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
 
@@ -17,7 +17,7 @@ const CompanyDetailPage = () => {
   if (!ticker) {
     return null;
   }
-  
+
   if (isLoading) {
     return <LoadingState message="기업 상세 정보를 분석 중입니다..." />;
   }

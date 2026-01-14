@@ -1,11 +1,11 @@
-import { CompanySummaryResponse } from "../../../../types/company";
-import { CompanyCardSkeleton } from "../../ui/skeletons/CompanyCardSkeleton";
-import { CompanyCard } from "./CompanyCard";
-import { EmptyState } from "../../../../components/ui/EmptyState";
+import { CompanySummaryResponse } from "../../../types/company";
+import { CompanyCardSkeleton } from "../ui/skeletons/CompanyCardSkeleton";
+import { CompanyCard } from "../components/p_list/CompanyCard";
+import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface CompanyGridSectionProps {
-  isLoading: boolean;
   companies?: CompanySummaryResponse[];
+  isLoading: boolean;
 }
 
 export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) => {
@@ -30,11 +30,10 @@ export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionP
   }
 
   return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {companies.map((company) => (
-        <CompanyCard key={company.ticker} company={company} />
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      {companies.map((company) => (
+      <CompanyCard key={company.ticker} company={company} />
       ))}
-      </div>
-
+    </div>
   );
 };

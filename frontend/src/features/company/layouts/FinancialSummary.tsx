@@ -1,9 +1,9 @@
 import { FileBarChart2, TrendingUp } from "lucide-react";
-import { FinancialStatementResponse } from "../../../../types/company";
-import { IncomeStatement } from "../../ui/p_detail/financial/IncomeStatement";
-import { BalanceSheet } from "../../ui/p_detail/financial/BalanceSheet";
-import { CashFlowStatement } from "../../ui/p_detail/financial/CashFlowStatement";
-import { EmptyState } from "../../../../components/ui/EmptyState";
+import { FinancialStatementResponse } from "../../../types/company";
+import { IncomeStatement } from "../ui/p_detail/financial/IncomeStatement";
+import { BalanceSheet } from "../ui/p_detail/financial/BalanceSheet";
+import { CashFlowStatement } from "../ui/p_detail/financial/CashFlowStatement";
+import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface Props {
   financial: FinancialStatementResponse;

@@ -9,7 +9,7 @@ interface Props {
 export const InvestmentGradeBadge = ({ grade, isOpportunity }: Props) => {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-slate-400 text-sm mb-1">투자 적합 등급</span>
+      <span className="text-slate-400 text-sm mb-1">투자 등급</span>
       <div className={`w-20 h-20 rounded-full border-4 flex items-center justify-center text-4xl font-bold shadow-[0_0_20px_rgba(0,0,0,0.3)] ${getGradeColor(grade)}`}>
         {grade}
       </div>

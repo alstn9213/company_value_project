@@ -3,10 +3,9 @@ import { StockPriceChart } from "../components/p_detail/StockPriceChart";
 import { ErrorState } from "../../../components/common/ErrorState";
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { LoadingState } from "../../../components/ui/LoadingState";
-import { useStockHistory } from "../hooks/useStockHistory";
 import { StockChartHeader } from "../components/p_detail/StockChartHeader";
-import { useMemo } from "react";
 import { ChartCard } from "../../../components/ui/ChartCard";
+import { useStockChartData } from "../hooks/useStockChartData";
 
 
 interface StockChartSectionProps {
@@ -15,18 +14,13 @@ interface StockChartSectionProps {
 
 export const StockChartSection = ({ ticker }: StockChartSectionProps) => {
   const { 
-    data: stockHistory, 
+    stockHistory, 
+    latestPrice, 
+    isEmpty,
     isPending, 
     isError, 
     refetch 
-  } = useStockHistory(ticker);
-
-  const sortedData = useMemo(() => {
-    if (!stockHistory) return [];
-    return [...stockHistory].sort((a, b) => (a.date > b.date ? 1 : -1));
-  }, [stockHistory]);
-
-  const latestPrice = sortedData.length > 0 ? sortedData[sortedData.length - 1].close : 0; 
+  } = useStockChartData(ticker);
 
   if (isPending) {
     return (
@@ -44,7 +38,7 @@ export const StockChartSection = ({ ticker }: StockChartSectionProps) => {
     );
   }
 
-  if (!stockHistory || stockHistory.length === 0) {
+  if (isEmpty) {
     return (
       <ChartCard centerContent>
         <EmptyState 
@@ -60,7 +54,7 @@ export const StockChartSection = ({ ticker }: StockChartSectionProps) => {
     <ChartCard>
       <StockChartHeader latestPrice={latestPrice} />
       <div className="flex-1 w-full min-h-0 mt-4">
-        <StockPriceChart data={sortedData} />
+        <StockPriceChart data={stockHistory} />
       </div>
     </ChartCard>
   );

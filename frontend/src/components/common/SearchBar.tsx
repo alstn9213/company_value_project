@@ -58,6 +58,7 @@ export const SearchBar = () => {
     setShowDropdown(false);
     navigate(`/company/${ticker}`);
     };
+    
     return (
         <div className="relative w-full max-w-md hidden sm:block" ref={dropdownRef}>
         <form

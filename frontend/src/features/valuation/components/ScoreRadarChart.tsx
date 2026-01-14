@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import { ChartDataPoint } from "../types/chartDataPoint";
-import { CustomTooltip } from "../components/CustomTooltip";
+import { CustomTooltip } from "./CustomTooltip";
 
 
 interface ScoreRadarChartProps {
