@@ -1,15 +1,23 @@
 import { FileBarChart2, TrendingUp } from "lucide-react";
+import { EmptyState } from "../../../components/ui/EmptyState";
 import { FinancialStatementResponse } from "../../../types/company";
 import { IncomeStatement } from "../ui/p_detail/financial/IncomeStatement";
 import { BalanceSheet } from "../ui/p_detail/financial/BalanceSheet";
 import { CashFlowStatement } from "../ui/p_detail/financial/CashFlowStatement";
-import { EmptyState } from "../../../components/ui/EmptyState";
+import { Skeleton } from "../../../components/ui/Skeleton";
 
 interface Props {
   financial: FinancialStatementResponse;
+  isLoading: boolean;
 }
 
-export const FinancialSummary = ({ financial }: Props) => {
+export const FinancialSummary = ({ financial, isLoading }: Props) => {
+
+  if (isLoading) {
+    return (
+      <Skeleton/>
+    );
+  }
   
   if (!financial) {
     return (

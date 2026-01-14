@@ -3,14 +3,22 @@ import { WatchlistButton } from "../../../watchlist/ui/WatchlistButton";
 import { useAddWatchlist } from "../../../watchlist/hooks/useAddWatchlist";
 import { CompanyProfile } from "../../ui/p_detail/CompanyProfile";
 import { InvestmentGradeBadge } from "../../ui/p_detail/InvestmentGradeBadge";
+import { Skeleton } from "../../../../components/ui/Skeleton";
 
 interface Props {
   info: CompanySummaryResponse;
   score: CompanyScoreResponse;
+  isLoading: boolean;
 }
 
-export const CompanyHeader = ({ info, score }: Props) => {
+export const CompanyHeader = ({ info, score, isLoading }: Props) => {
   const { addWatchlist, isPending } = useAddWatchlist();
+
+  if (isLoading) {
+    return (
+      <Skeleton/>
+    )
+  }
 
  return (
     <div className="bg-card border border-slate-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-6">

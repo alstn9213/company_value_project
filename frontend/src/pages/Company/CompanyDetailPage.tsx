@@ -1,28 +1,25 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail";
 import { ScoreAnalysisSection } from "../../features/valuation/layouts/ScoreAnalysisSection";
 import { CompanyHeader } from "../../features/company/components/p_detail/CompanyHeader";
+import { ErrorState } from "../../components/common/ErrorState";
 import { StockChartSection } from "../../features/company/layouts/StockChartSection";
 import { FinancialSummary } from "../../features/company/layouts/FinancialSummary";
-import { ErrorState } from "../../components/common/ErrorState";
-import { LoadingState } from "../../components/ui/LoadingState";
 
 const CompanyDetailPage = () => {
-  const {ticker} = useParams<{ ticker: string }>();
-  const navigate = useNavigate();
+  const { ticker } = useParams<{ ticker: string }>();
 
   const { data, isLoading, isError, refetch } = useCompanyDetail(ticker);
 
   if (!ticker) {
+      return null;
+  }
+
+  if (!data) {
     return null;
   }
 
-  if (isLoading) {
-    return <LoadingState message="기업 상세 정보를 분석 중입니다..." />;
-  }
-  
-  if (isError || !data) {
+  if (isError) {
     return (
       <ErrorState 
         title="기업 정보를 찾을 수 없습니다"
@@ -36,25 +33,29 @@ const CompanyDetailPage = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-10">
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2"
-      >
-        <ArrowLeft size={18} /> 목록으로 돌아가기
-      </button>
+      {/* 헤더 */}
+      <CompanyHeader 
+        info={companySummary} 
+        score={score}
+        isLoading={isLoading}
+        />
 
-      <CompanyHeader info={companySummary} score={score}/>
-
-      {/* 대시보드 그리드 */}
+      {/* 기업 정보 대시 보드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 좌측: 분석 점수 */}
         <div className="lg:col-span-1 space-y-6">
-          <ScoreAnalysisSection score={score} />
+          <ScoreAnalysisSection 
+            score={score} 
+            isLoading={isLoading}
+            />
         </div>
         {/* 우측: 차트 및 재무제표 */}
         <div className="lg:col-span-2 space-y-12">
           <StockChartSection ticker={ticker} />
-          <FinancialSummary financial={latestFinancial} />
+          <FinancialSummary 
+            financial={latestFinancial} 
+            isLoading={isLoading}
+            />
         </div>
       </div>
     </div>

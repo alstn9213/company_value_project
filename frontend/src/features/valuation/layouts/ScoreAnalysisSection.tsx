@@ -6,12 +6,14 @@ import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
 import { TotalScoreDisplay } from "../ui/TotalScoreDisplay";
 import { ChartDataPoint } from "../types/chartDataPoint";
 import { CompanyScoreResponse } from "../../../types/company";
+import { Skeleton } from "../../../components/ui/Skeleton";
 
-interface Props {
+interface ScoreAnalysisSectionProps {
   score: CompanyScoreResponse;
+  isLoading: boolean;
 }
 
-export const ScoreAnalysisSection = ({ score }: Props) => {
+export const ScoreAnalysisSection = ({ score, isLoading }: ScoreAnalysisSectionProps) => {
   const baseScore = score.stabilityScore + score.profitabilityScore + score.valuationScore + score.investmentScore;
   const penaltyPoints = Math.max(0, baseScore - score.totalScore);
 
@@ -21,6 +23,12 @@ export const ScoreAnalysisSection = ({ score }: Props) => {
     { subject: "내재가치", score: score.valuationScore, fullMark: MAX_SCORES.VALUATION },
     { subject: "미래투자", score: score.investmentScore, fullMark: MAX_SCORES.INVESTMENT },
   ];
+
+  if (isLoading) {
+    return (
+      <Skeleton/>
+    );
+  }
   
   return (
     <div className="h-full flex flex-col gap-4">
