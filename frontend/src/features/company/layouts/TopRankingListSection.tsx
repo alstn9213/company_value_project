@@ -21,11 +21,9 @@ export const TopRankingListSection = ({ companies, isLoading }: TopRankingListSe
       return <TopRankingEmptyState />;
     }
 
-    return companies
-      .slice(0, 10)
-      .map((item, index) => (
-        <RankingItemRow key={item.ticker} data={item} rank={index + 1} />
-      ));
+    return companies.slice(0, 10).map((item, index) => (
+      <RankingItemRow key={item.ticker} data={item} rank={index + 1} />
+    ));
 
   };
 

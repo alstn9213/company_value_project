@@ -16,7 +16,7 @@ interface StockPriceChartProps {
 
 export const StockPriceChart = ({ data }: StockPriceChartProps) => {
   return (
-    <div className="flex-1 w-full min-h-0">
+    <div className="w-full h-full min-h-0">
       <ResponsiveContainer 
         width="100%" 
         height="100%" 

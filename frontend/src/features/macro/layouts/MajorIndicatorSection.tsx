@@ -10,7 +10,7 @@ interface MajorIndicatorsProps {
 
 export const MajorIndicatorSection = ({ latest, isLoading }: MajorIndicatorsProps) => {
   if (isLoading) {
-      <MajorIndicatorSkeleton/>
+    <MajorIndicatorSkeleton/>
   }
   
   if (!latest) {
