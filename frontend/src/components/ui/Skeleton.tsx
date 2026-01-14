@@ -1,10 +1,19 @@
-interface SkeletonProps {
-  className?: string;
+import React from 'react';
+import { cn } from "../../utils/cn";
+
+interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+  // 필요한 경우 커스텀 props 추가 가능
 }
 
-const Skeleton = ({ className }: SkeletonProps) => {
-  // Tailwind의 animate-pulse를 기본으로 깔고, 외부에서 크기(w, h)와 모양(rounded)을 제어하게 합니다.
-  return <div className={`bg-slate-800 animate-pulse ${className}`} />;
+export const Skeleton: React.FC<SkeletonProps> = ({ className, ...props }) => {
+  return (
+    <div
+      className={cn(
+        "animate-pulse rounded-md bg-gray-200/80",
+        className
+      )}
+      {...props}
+    />
+  );
 };
 
-export default Skeleton;

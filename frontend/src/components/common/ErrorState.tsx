@@ -7,7 +7,7 @@ interface ErrorStateProps {
   className?: string;
 }
 
-const ErrorState = ({ 
+export const ErrorState = ({ 
   title = "오류가 발생했습니다", 
   message = "데이터를 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.", 
   onRetry,
@@ -35,5 +35,3 @@ const ErrorState = ({
     </div>
   );
 };
-
-export default ErrorState;

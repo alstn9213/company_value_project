@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CompanyDetailResponse } from "../../../types/company";
 import { companyApi } from "../api/companyApi";
 
-export const COMPANY_DETAIL_KEYS = {
+const COMPANY_DETAIL_KEYS = {
   all: ["company"] as const,
   detail: (ticker: string) => [...COMPANY_DETAIL_KEYS.all, "detail", ticker] as const,
 };

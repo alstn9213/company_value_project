@@ -1,0 +1,30 @@
+import { Logo } from "../common/Logo";
+import { SearchBar } from "../common/SearchBar";
+import { HeaderNav } from "./HeaderNav";
+import { UserMenu } from "./UserMenu";
+
+export const Header = () => {
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-[#0f172a]/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full items-center justify-between px-6 lg:px-10">
+        
+        {/* [Left] 로고 및 네비게이션 */}
+        <div className="flex flex-1 items-center justify-start gap-8">
+          <Logo />
+          <HeaderNav />
+        </div>
+
+        {/* [Center] 검색바 */}
+        <div className="flex flex-1 items-center justify-center z-50">
+          <SearchBar />
+        </div>
+
+        {/* [Right] 유저 메뉴 */}
+        <div className="flex flex-1 items-center justify-end gap-4">
+          <UserMenu />
+        </div>
+        
+      </div>
+    </header>
+  );
+};

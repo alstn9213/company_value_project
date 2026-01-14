@@ -1,4 +1,4 @@
-export interface Company {
+export interface CompanySummaryResponse {
   ticker: string;
   name: string;
   sector: string;
@@ -17,9 +17,8 @@ export interface PageResponse<T> {
     totalPages: number;
   };
 }
-// --- 상세 페이지용 추가 타입 ---
 
-export interface ScoreResult {
+export interface CompanyScoreResponse {
   ticker: string;
   name: string;
   totalScore: number;
@@ -32,7 +31,7 @@ export interface ScoreResult {
 }
 
 
-export interface FinancialData {
+export interface FinancialStatementResponse {
   year: number;
   quarter: number;
   revenue: number;
@@ -46,15 +45,14 @@ export interface FinancialData {
   capitalExpenditure: number;
 }
 
-// 백엔드 CompanyDetailResponse DTO 대응
 export interface CompanyDetailResponse {
-  companySummary: Company;
-  score: ScoreResult;
-  latestFinancial: FinancialData;
-  financialHistory: FinancialData[];
+  companySummary: CompanySummaryResponse;
+  score: CompanyScoreResponse;
+  latestFinancial: FinancialStatementResponse;
+  financialHistory: FinancialStatementResponse[];
 }
 
-export interface StockHistory {
+export interface StockHistoryResponse {
   date: string; // "2024-01-01"
   close: number; // 150.50
 }

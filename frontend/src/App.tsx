@@ -1,12 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import ProtectedRoute from "./components/layout/ProtectedRoute";
 import HomePage from "./pages/Home/Homepage";
-import MainLayout from "./components/layout/MainLayout";
 import CompanyListPage from "./pages/Company/CompanyListPage";
 import WatchlistPage from "./pages/Watchlist/WatchlistPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import SignupPage from "./pages/Auth/SignupPage";
 import CompanyDetailPage from "./pages/Company/CompanyDetailPage";
+import { MainLayout } from "./components/layouts/MainLayout";
+import { ProtectedRoute } from "./components/layouts/ProtectedRoute";
 
 function App() {
 

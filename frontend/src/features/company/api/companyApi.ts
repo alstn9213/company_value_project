@@ -1,17 +1,17 @@
-import { Company, CompanyDetailResponse, PageResponse, ScoreResult, StockHistory } from "../../../types/company";
+import { CompanySummaryResponse, CompanyDetailResponse, PageResponse, CompanyScoreResponse, StockHistoryResponse } from "../../../types/company";
 import axiosClient from "../../../api/axiosClient";
 
 export const companyApi = {
   
-  getAll: async (page: number, size: number = 12, sortOption: string = 'name'): Promise<PageResponse<Company>> => {
-    const response = await axiosClient.get<PageResponse<Company>>('/api/companies', {
+  getAll: async (page: number, size: number = 12, sortOption: string = 'name'): Promise<PageResponse<CompanySummaryResponse>> => {
+    const response = await axiosClient.get<PageResponse<CompanySummaryResponse>>('/api/companies', {
       params: { page, size, sort: sortOption }
     });
     return response.data;
   },
 
-  search: async (keyword: string): Promise<Company[]> => {
-    const response = await axiosClient.get<Company[]>('/api/companies/search', {
+  search: async (keyword: string): Promise<CompanySummaryResponse[]> => {
+    const response = await axiosClient.get<CompanySummaryResponse[]>('/api/companies/search', {
       params: { keyword }
     });
     return response.data;
@@ -22,13 +22,13 @@ export const companyApi = {
     return response.data;
   },
 
-  getStockHistory: async (ticker: string): Promise<StockHistory[]> => {
-    const response = await axiosClient.get<StockHistory[]>(`/api/companies/${ticker}/chart`);
+  getStockHistoryResponse: async (ticker: string): Promise<StockHistoryResponse[]> => {
+    const response = await axiosClient.get<StockHistoryResponse[]>(`/api/companies/${ticker}/chart`);
     return response.data;
   },
 
-  getTopRanked: async (): Promise<ScoreResult[]> => {
-    const res = await axiosClient.get<ScoreResult[]>("/api/scores/top");
+  getTopRanked: async (): Promise<CompanyScoreResponse[]> => {
+    const res = await axiosClient.get<CompanyScoreResponse[]>("/api/scores/top");
     return res.data;
   },
 

@@ -1,6 +1,6 @@
-import { Company } from "./company";
+import { CompanySummaryResponse } from "./company";
 
 export interface WatchlistItem {
   watchlistId: number;
-  company: Company;
+  company: CompanySummaryResponse;
 }
