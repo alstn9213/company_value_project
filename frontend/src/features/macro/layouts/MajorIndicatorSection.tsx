@@ -1,20 +1,16 @@
 import { Activity, DollarSign, Percent, TrendingDown } from "lucide-react";
-import { MacroDataResponse } from "../../../types/macro";
 import { IndicatorItem } from "../ui/IndicatorItem";
 import { MajorIndicatorSkeleton } from "../ui/skeleton/MajorIndicatorSkeleton";
+import { useMacroLatest } from "../hooks/useMacroLatest";
 
-interface MajorIndicatorsProps {
-  latest?: MacroDataResponse;
-  isLoading: boolean;
-}
-
-export const MajorIndicatorSection = ({ latest, isLoading }: MajorIndicatorsProps) => {
+export const MajorIndicatorSection = () => {
+  const { data: latest, isLoading } = useMacroLatest();
   if (isLoading) {
-    <MajorIndicatorSkeleton/>
+    return <MajorIndicatorSkeleton/>
   }
   
   if (!latest) {
-    return null; // 데이터가 없으면 아무것도 렌더링하지 않거나, 별도의 EmptyState를 리턴
+    return null;
   }
 
   return (

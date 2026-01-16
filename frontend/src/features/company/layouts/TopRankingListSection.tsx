@@ -1,15 +1,12 @@
-import { CompanyScoreResponse } from "../../../types/company";
 import { RankingTableHeader } from "../ui/p_ranking/RankingTableHeader";
 import { TopRankingHeader } from "../ui/p_ranking/RankingHeader";
 import { RankingTableBody } from "../ui/p_ranking/RankingTableBody";
+import { useTopRankingCompanies } from "../hooks/useCompanyRanking";
 
 
-interface TopRankingListSectionProps {
-  companies: CompanyScoreResponse[];
-  isLoading: boolean;
-}
+export const TopRankingListSection = () => {
+  const { data: companies, isLoading } = useTopRankingCompanies();
 
-export const TopRankingListSection = ({ companies, isLoading }: TopRankingListSectionProps) => {
   return (
     <section className="space-y-4 xl:col-span-3">
       {/* 헤더 */}
@@ -20,7 +17,7 @@ export const TopRankingListSection = ({ companies, isLoading }: TopRankingListSe
           <RankingTableHeader />
           <tbody className="divide-y divide-slate-700/50">
             <RankingTableBody 
-              companies={companies} 
+              companies={companies || []} 
               isLoading={isLoading} 
             />
           </tbody>

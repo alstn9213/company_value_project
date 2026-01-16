@@ -1,5 +1,4 @@
-// frontend/src/components/common/SearchSuggestions.tsx
-import { CompanySummaryResponse } from "../../types/company";
+import { CompanySummaryResponse } from "../types/company";
 
 interface SearchSuggestionsProps {
   suggestions: CompanySummaryResponse[];

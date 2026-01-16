@@ -35,7 +35,7 @@ public class AuthService {
     Member member = memberRepository.findByEmail(request.email())
             .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-    String accessToken = jwtTokenProvider.createToken(authentication, member.getNickname());
+    String accessToken = jwtTokenProvider.createToken(authentication, member.getNickname(), member.getId());
 
     long expiresIn = jwtTokenProvider.getTokenValidityInMilliseconds();
 

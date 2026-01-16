@@ -1,14 +1,17 @@
-import { Pagination } from "../../components/common/Pagination";
 import { CompanyGridSection } from "../../features/company/layouts/CompanyGridSection";
 import { useCompanyList } from "../../features/company/hooks/useCompanyList";
 import { CompanyFilterHeader } from "../../features/company/ui/p_list/CompanyFilterHeader";
+import { ErrorState } from "../../components/ui/ErrorState";
+import { Pagination } from "../../common/Pagination";
 
 const CompanyListPage = () => {
   const {
     companies,
     currentPage,
     totalPages,
-    isPageLoading,
+    isLoading,
+    isError,
+    errorMessage,
     isPlaceholderData,
     showPagination,
     isLastPage,
@@ -16,11 +19,18 @@ const CompanyListPage = () => {
     setPage,
     setSortOption,
   } = useCompanyList(12);
-  
-  return (
-    <div className="max-w-7xl mx-auto space-y-10 pb-10">      
-      <div className="space-y-6">
 
+  if (isError) {
+    return (
+      <div className="max-w-7xl mx-auto py-10">
+        <ErrorState message={errorMessage} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-10 pb-10">
+      <div className="space-y-6">
         {/* 필터 및 검색 헤더 */}
         <CompanyFilterHeader
           sortOption={sortOption}
@@ -28,10 +38,7 @@ const CompanyListPage = () => {
         />
 
         {/* 기업 목록 그리드 */}
-        <CompanyGridSection
-          isLoading={isPageLoading}
-          companies={companies}
-        />
+        <CompanyGridSection isLoading={isLoading} companies={companies} />
 
         {/* 페이지네이션 */}
         {showPagination && (
@@ -40,7 +47,7 @@ const CompanyListPage = () => {
             totalPages={totalPages}
             onPageChange={setPage}
             isPlaceholderData={isPlaceholderData}
-            isLastPage={isLastPage} 
+            isLastPage={isLastPage}
           />
         )}
       </div>

@@ -40,8 +40,8 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
             try {
                 return Long.parseLong(user.getUsername());
             } catch (NumberFormatException e) {
-                // 혹시 모를 파싱 에러 방어 (일어나면 안 되는 상황)
-                throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR, e);
+                // Principal에 담긴 ID가 숫자 형식이 아님 -> 토큰이 비정상적임을 의미
+                throw new BusinessException(ErrorCode.INVALID_TOKEN, e);
             }
         }
 

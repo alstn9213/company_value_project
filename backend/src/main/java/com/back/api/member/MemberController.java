@@ -2,6 +2,7 @@ package com.back.api.member;
 
 import com.back.domain.member.dto.request.SignUpRequest;
 import com.back.domain.member.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody SignUpRequest request) {
+    public ResponseEntity<String> signup(@Valid @RequestBody SignUpRequest request) {
         memberService.registerMember(request);
         return ResponseEntity.ok("회원가입 성공");
     }

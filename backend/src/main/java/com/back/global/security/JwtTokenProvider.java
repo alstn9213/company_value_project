@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
   private static final String AUTHORITIES_KEY = "auth";
 
+  private static final String MEMBER_ID_KEY = "id";
+
   @Value("${jwt.secret}")
   private String secretKey;
 
@@ -46,7 +48,7 @@ public class JwtTokenProvider {
   }
 
   // 토큰 생성
-  public String createToken(Authentication authentication, String nickname) {
+  public String createToken(Authentication authentication, String nickname, Long memberId) {
     String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
@@ -56,6 +58,7 @@ public class JwtTokenProvider {
 
     return Jwts.builder()
             .setSubject(authentication.getName()) // email
+            .claim(MEMBER_ID_KEY, memberId)
             .claim(AUTHORITIES_KEY, authorities)
             .claim("nickname", nickname) // 닉네임
             .setIssuedAt(new Date())
@@ -77,7 +80,7 @@ public class JwtTokenProvider {
                     .map(SimpleGrantedAuthority::new)
                     .toList();
 
-    UserDetails principal = new User(claims.getSubject(), "", authorities);
+    UserDetails principal = new User(claims.get(MEMBER_ID_KEY).toString(), "", authorities);
     return new UsernamePasswordAuthenticationToken(principal, "", authorities);
   }
 

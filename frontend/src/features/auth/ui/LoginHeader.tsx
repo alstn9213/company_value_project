@@ -5,7 +5,7 @@ export const LoginHeader = () => {
         Company Value
       </h2>
       <p className="text-slate-400">
-        로그인하여 투자를 시작하세요
+        로그인
       </p>
     </div>
   );

@@ -1,17 +1,12 @@
 import { EmptyState } from "../../../components/ui/EmptyState";
-import { ErrorState } from "../../../components/common/ErrorState";
-import { MacroDataResponse } from "../../../types/macro";
+import { ErrorState } from "../../../components/ui/ErrorState";
 import { useInversionIntervals } from "../hooks/useInversionIntervals";
 import { EconomicChartSkeleton } from "../ui/skeleton/EconomicChartSkeleton";
 import { EconomicLineChart } from "./EconomicLineChart";
+import { useMacroHistory } from "../hooks/useMacroHistory";
 
-interface EconomicChartProps {
-  history?: MacroDataResponse[];
-  error?: boolean;
-  isLoading: boolean;
-}
-
-export const EconomicChart = ({ history, error, isLoading }: EconomicChartProps) => {
+export const EconomicChart = () => {
+  const { data: history, error, isLoading } = useMacroHistory();
   const inversionIntervals = useInversionIntervals(history);
 
   if (isLoading) {
@@ -28,7 +23,6 @@ export const EconomicChart = ({ history, error, isLoading }: EconomicChartProps)
     );
   }
 
-  // 데이터가 없거나 지표 목록이 비어있는 경우 처리
   if (!history || history.length === 0) {
     return (
       <EmptyState

@@ -1,4 +1,4 @@
-import { TermDefinition } from "../../types/term";
+import { TermDefinition } from "../types/term";
 
 interface TermWithTooltipProps {
   label: string;
