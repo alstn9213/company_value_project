@@ -5,21 +5,29 @@ import { CompanyProfile } from "../../ui/p_detail/CompanyProfile";
 import { InvestmentGradeBadge } from "../../ui/p_detail/InvestmentGradeBadge";
 import { Skeleton } from "../../../../components/ui/Skeleton";
 
-interface Props {
-  info: CompanySummaryResponse;
-  score: CompanyScoreResponse;
+interface CompanyHeaderProps {
+  info: CompanySummaryResponse | undefined;
+  score: CompanyScoreResponse | undefined;
   isLoading: boolean;
 }
 
-export const CompanyHeader = ({ info, score, isLoading }: Props) => {
+export const CompanyHeader = ({ info, score, isLoading }: CompanyHeaderProps) => {
   const { addWatchlist, isPending } = useAddWatchlist();
 
-  if (isLoading) {
-    return (
-      <Skeleton/>
-    )
+   if (isLoading) {
+    return <Skeleton/>;
   }
 
+  if (!info) {
+    return null;
+  }
+
+  if (!score) {
+    return null;
+  }
+
+
+ 
  return (
     <div className="bg-card border border-slate-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-6">
       {/* 좌측: 기업 프로필 */}

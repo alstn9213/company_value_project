@@ -6,19 +6,19 @@ import { BalanceSheet } from "../ui/p_detail/financial/BalanceSheet";
 import { CashFlowStatement } from "../ui/p_detail/financial/CashFlowStatement";
 import { Skeleton } from "../../../components/ui/Skeleton";
 
-interface Props {
-  financial: FinancialStatementResponse;
+interface FinancialSummaryProps {
+  financial: FinancialStatementResponse | undefined;
   isLoading: boolean;
 }
 
-export const FinancialSummary = ({ financial, isLoading }: Props) => {
+export const FinancialSummary = ({ financial, isLoading }: FinancialSummaryProps) => {
 
   if (isLoading) {
     return (
       <Skeleton/>
     );
   }
-  
+ 
   if (!financial) {
     return (
       <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full flex items-center justify-center">

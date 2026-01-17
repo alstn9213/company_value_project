@@ -8,33 +8,26 @@ import { FinancialSummary } from "../../features/company/layouts/FinancialSummar
 
 const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();
-  const { data, isLoading, isError, refetch } = useCompanyDetail(ticker);
+  const { summary, score, financial, isLoading, isError, refetch } = useCompanyDetail(ticker);
 
   if (!ticker) {
       return null;
-  }
-
-  if (!data) {
-    return null;
   }
 
   if (isError) {
     return (
       <ErrorState 
         title="기업 정보를 찾을 수 없습니다"
-        message="데이터를 불러오는 데 실패했습니다. 네트워크 상태를 확인하거나 잠시 후 다시 시도해주세요."
-        onRetry={() => refetch()} 
+        onRetry={refetch}
       />
     );
   }
-
-  const {companySummary, score, latestFinancial} = data;
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-10">
       {/* 헤더 */}
       <CompanyHeader 
-        info={companySummary} 
+        info={summary} 
         score={score}
         isLoading={isLoading}
         />
@@ -48,11 +41,12 @@ const CompanyDetailPage = () => {
             isLoading={isLoading}
             />
         </div>
+        
         {/* 우측: 차트 및 재무제표 */}
         <div className="lg:col-span-2 space-y-12">
           <StockChartSection ticker={ticker} />
           <FinancialSummary 
-            financial={latestFinancial} 
+            financial={financial} 
             isLoading={isLoading}
             />
         </div>

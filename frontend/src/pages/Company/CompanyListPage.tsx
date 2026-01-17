@@ -31,14 +31,17 @@ const CompanyListPage = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-10 pb-10">
       <div className="space-y-6">
-        {/* 필터 및 검색 헤더 */}
+        {/* 필터 헤더 */}
         <CompanyFilterHeader
           sortOption={sortOption}
           onSortChange={setSortOption}
         />
 
         {/* 기업 목록 그리드 */}
-        <CompanyGridSection isLoading={isLoading} companies={companies} />
+        <CompanyGridSection 
+          isLoading={isLoading} 
+          companies={companies} 
+        />
 
         {/* 페이지네이션 */}
         {showPagination && (

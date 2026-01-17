@@ -5,7 +5,7 @@ import { EmptyState } from "../../../components/ui/EmptyState";
 import { LoadingState } from "../../../components/ui/LoadingState";
 import { StockChartHeader } from "../components/p_detail/StockChartHeader";
 import { ChartCard } from "../../../components/ui/ChartCard";
-import { useStockChartData } from "../hooks/useStockChartData";
+import { useStockHistory } from "../hooks/useStockHistory";
 
 
 interface StockChartSectionProps {
@@ -17,12 +17,11 @@ export const StockChartSection = ({ ticker }: StockChartSectionProps) => {
     stockHistory, 
     latestPrice, 
     isEmpty,
-    isPending, 
+    isLoading, 
     isError, 
-    refetch 
-  } = useStockChartData(ticker);
+  } = useStockHistory(ticker);
 
-  if (isPending) {
+  if (isLoading) {
     return (
       <ChartCard centerContent>
         <LoadingState message="주가 데이터를 분석하고 있습니다..." />
@@ -33,7 +32,7 @@ export const StockChartSection = ({ ticker }: StockChartSectionProps) => {
   if (isError) {
     return (
       <ChartCard centerContent>
-        <ErrorState title="차트 로딩 실패" onRetry={refetch} />
+        <ErrorState title="차트 로딩 실패"/>
       </ChartCard>
     );
   }

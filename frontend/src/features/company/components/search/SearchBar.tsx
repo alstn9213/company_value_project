@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Loader2, Search, X } from "lucide-react";
 import { useCompanySearch } from "../../hooks/useCompanySearch";
 import { SearchSuggestions } from "./SearchSuggestions";
 
@@ -8,11 +8,13 @@ export const SearchBar = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [showDropdown, setShowDropdown] = useState(false);  
-  const { keyword, setKeyword, suggestions, clearSearch } = useCompanySearch();
+  const { keyword, setKeyword, suggestions, isLoading, clearSearch } = useCompanySearch();
 
-  // 드롭다운 노출 제어 (검색 결과가 있으면 자동 노출)
+  // 드롭다운 노출 제어 (검색 결과가 있으면 노출)
   useEffect(() => {
-    if (suggestions.length > 0) setShowDropdown(true);
+    if (suggestions.length > 0) { 
+      setShowDropdown(true);
+    }
   }, [suggestions]);
 
   // 외부 클릭 시 드롭다운 닫기
@@ -61,15 +63,20 @@ export const SearchBar = () => {
           }}
         />
 
-        {keyword && (
-          <button
-            type="button"
-            onClick={clearSearch}
-            className="p-2 text-slate-500 hover:text-white"
-          >
-            <X size={14} />
-          </button>
-        )}
+        {/* 로딩, 삭제 버튼 */}
+        <div className="flex items-center pr-2 space-x-1">
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
+          
+          {keyword && !isLoading && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="p-1 text-slate-500 hover:text-white"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
 
         <button
           type="submit"
