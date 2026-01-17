@@ -1,4 +1,4 @@
-import { useMacroLatest } from "../hooks/useMacroLatest";
+import { useMacroLatest } from "../hooks/useMacroQueries";
 import { Skeleton } from "../../../components/ui/Skeleton";
 
 export const EconomicChartHeader = () => {

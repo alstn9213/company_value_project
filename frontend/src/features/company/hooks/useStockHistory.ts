@@ -5,11 +5,7 @@ import { getErrorMessage } from "../../../utils/errorHandler";
 import { useMemo } from "react";
 import { ApiErrorData } from "../../../types/auth";
 import { AxiosError } from "axios";
-
-export const STOCK_KEYS = {
-  all: ["stock"] as const,
-  history: (ticker: string) => [...STOCK_KEYS.all, "history", ticker] as const,
-};
+import { companyKeys } from "../api/queryKeys";
 
 export interface StockHistoryHookResult {
   stockHistory: StockHistoryResponse[];
@@ -27,7 +23,7 @@ export const useStockHistory = (ticker: string): StockHistoryHookResult => {
     isError, 
     error 
   } = useQuery<StockHistoryResponse[], AxiosError<ApiErrorData>, StockHistoryResponse[]>({
-    queryKey: STOCK_KEYS.history(ticker),
+    queryKey: companyKeys.stock(ticker),
     queryFn: () => companyApi.getStockHistoryResponse(ticker),
     enabled: !!ticker,
     staleTime: 1000 * 60 * 60, // 1시간 캐싱

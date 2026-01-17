@@ -1,48 +1,55 @@
 import { useMemo } from "react";
 import { MacroDataResponse } from "../../../types/macro";
 
-interface Interval {
+export interface InversionInterval {
   start: string;
   end: string;
 }
 
-/**
- * 거시경제 데이터 기록에서 장단기 금리차 역전 구간을 계산하는 훅
- * @param history MacroData 배열
- * @returns 역전 구간(start, end date) 배열
- */
 
-export const useInversionIntervals = (history?: MacroDataResponse[]): Interval[] => {
-  return useMemo(() => {
-    if (!history || history.length === 0) return [];
+//  금리 역전 구간 계산 로직
+const calculateInversionIntervals = (data: MacroDataResponse[]): InversionInterval[] => {
+  const INVERSION_THRESHOLD = 0;
 
-    const intervals: Interval[] = [];
-    let startTime: string | null = null;
+  if (!data || data.length === 0) {
+    return [];
+  }
 
-    history.forEach((d, index) => {
-      // spread(장단기 금리차)가 0보다 작으면 역전 상태
-      const isInverted = d.spread < 0;
+  const intervals: InversionInterval[] = [];
+  let currentStart: string | null = null;
 
-      if (isInverted && !startTime) {
-        // 역전 시작
-        startTime = d.date;
-      } else if (!isInverted && startTime) {
-        // 역전 종료 (이전 데이터까지가 역전 구간)
-        intervals.push({
-          start: startTime,
-          end: history[index - 1].date,
-        });
-        startTime = null;
-      }
-    });
+  for (let i = 0; i < data.length; i++) {
+    const { spread, date } = data[i];
+    const isInverted = spread < INVERSION_THRESHOLD;
 
-    // 마지막 데이터까지 역전 상태가 지속된 경우 처리
-    if (startTime) {
-      intervals.push({
-        start: startTime,
-        end: history[history.length - 1].date,
-      });
+    // 역전 시작 감지
+    if (isInverted && !currentStart) {
+      currentStart = date;
     }
-    return intervals;
+    
+    // 역전 종료 감지 (이전 데이터가 역전의 끝)
+    else if (!isInverted && currentStart) {
+      intervals.push({
+        start: currentStart,
+        end: data[i - 1].date, // 직전 데이터의 날짜가 구간의 끝
+      });
+      currentStart = null;
+    }
+  }
+
+  // 마지막 데이터까지 역전 상태가 지속된 경우 처리
+  if (currentStart) {
+    intervals.push({
+      start: currentStart,
+      end: data[data.length - 1].date,
+    });
+  }
+
+  return intervals;
+};
+
+export const useInversionIntervals = (history: MacroDataResponse[] | undefined): InversionInterval[] => {
+  return useMemo(() => {
+    return calculateInversionIntervals(history || []);
   }, [history]);
 };

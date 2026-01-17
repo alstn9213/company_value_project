@@ -1,7 +1,7 @@
 import { RankingTableHeader } from "../ui/p_ranking/RankingTableHeader";
 import { TopRankingHeader } from "../ui/p_ranking/RankingHeader";
 import { RankingTableBody } from "../ui/p_ranking/RankingTableBody";
-import { useTopRankingCompanies } from "../hooks/useCompanyRanking";
+import { useTopRankingCompanies } from "../hooks/useTopRankingCompanies";
 import { ErrorState } from "../../../components/ui/ErrorState";
 
 

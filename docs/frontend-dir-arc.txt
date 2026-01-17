@@ -77,7 +77,6 @@ C:.
 │  │  │      useCompanyList.ts
 │  │  │      useCompanyRanking.ts
 │  │  │      useCompanySearch.ts
-│  │  │      useStockChartData.ts
 │  │  │      useStockHistory.ts
 │  │  │
 │  │  ├─layouts
@@ -188,6 +187,7 @@ C:.
 │              WatchlistButton.tsx
 │
 ├─hooks
+│      useDebounce.ts
 │      useRequireAuth.ts
 │      useUserMenu.ts
 │
@@ -218,4 +218,5 @@ C:.
 │
 └─utils
         cn.ts
+        errorHandler.ts
         formatters.ts

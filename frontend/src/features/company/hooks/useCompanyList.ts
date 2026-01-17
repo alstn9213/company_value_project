@@ -5,6 +5,7 @@ import { AxiosError } from "axios";
 import { ApiErrorData } from "../../../types/auth";
 import { PageResponse, CompanySummaryResponse } from "../../../types/company";
 import { getErrorMessage } from "../../../utils/errorHandler";
+import { companyKeys } from "../api/queryKeys";
 
 export interface CompanyListHookResult {
   companies: CompanySummaryResponse[];
@@ -32,7 +33,7 @@ export const useCompanyList = (pageSize: number = 12): CompanyListHookResult => 
     isError,
     error,
   } = useQuery<PageResponse<CompanySummaryResponse>, AxiosError<ApiErrorData>>({
-    queryKey: ["companies", page, sortOption],
+    queryKey: companyKeys.list(page, pageSize, sortOption),
     queryFn: () => companyApi.getAll(page, pageSize, sortOption),
     placeholderData: keepPreviousData,
   });

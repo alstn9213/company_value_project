@@ -1,12 +1,12 @@
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { ErrorState } from "../../../components/ui/ErrorState";
 import { useInversionIntervals } from "../hooks/useInversionIntervals";
+import { useMacroHistory } from "../hooks/useMacroQueries";
 import { EconomicChartSkeleton } from "../ui/skeleton/EconomicChartSkeleton";
 import { EconomicLineChart } from "./EconomicLineChart";
-import { useMacroHistory } from "../hooks/useMacroHistory";
 
 export const EconomicChart = () => {
-  const { data: history, error, isLoading } = useMacroHistory();
+  const { history, error, isLoading } = useMacroHistory();
   const inversionIntervals = useInversionIntervals(history);
 
   if (isLoading) {

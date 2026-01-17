@@ -2,11 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CompanyDetailResponse, CompanyScoreResponse, CompanySummaryResponse, FinancialStatementResponse } from "../../../types/company";
 import { companyApi } from "../api/companyApi";
 import { AxiosError } from "axios";
-
-const COMPANY_DETAIL_KEYS = {
-  all: ["company"] as const,
-  detail: (ticker: string) => [...COMPANY_DETAIL_KEYS.all, "detail", ticker] as const,
-};
+import { companyKeys } from "../api/queryKeys";
 
 export interface CompanyDetailHookResult {
   summary: CompanySummaryResponse | undefined;
@@ -20,7 +16,7 @@ export interface CompanyDetailHookResult {
 
 export const useCompanyDetail = (ticker: string | undefined): CompanyDetailHookResult => {
   const { data, isLoading, isError, error, refetch } = useQuery<CompanyDetailResponse, AxiosError>({
-    queryKey: ticker ? COMPANY_DETAIL_KEYS.detail(ticker) : [],
+    queryKey: ticker ? companyKeys.detail(ticker) : [],
     queryFn: () => companyApi.getDetail(ticker!),
     enabled: !!ticker, // ticker가 존재할 때만 실행
     staleTime: 1000 * 60 * 5, // 5분간 데이터를 신선한 상태로 유지
