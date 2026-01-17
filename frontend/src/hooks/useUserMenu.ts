@@ -40,6 +40,7 @@ export const useUserMenu = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    
   }, [isOpen, closeMenu]);
 
   return {

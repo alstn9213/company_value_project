@@ -1,13 +1,15 @@
+import { useUserMenu } from "../hooks/useUserMenu";
+
 interface UserMenuTriggerProps {
   username: string;
-  isOpen: boolean;
-  onClick: () => void;
 }
 
-export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username, isOpen, onClick }) => {
+export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username }) => {
+  const { isOpen, toggleMenu } = useUserMenu();
+  
   return (
     <button
-      onClick={onClick}
+      onClick={toggleMenu}
       className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       aria-expanded={isOpen}
       aria-haspopup="true"
@@ -17,7 +19,7 @@ export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username, isOp
         {username.charAt(0).toUpperCase()}
       </div>
 
-      {/* Username Text */}
+      {/* Username 섹션 */}
       <span className="text-sm font-medium text-gray-700 hidden md:block">
         {username}
       </span>
