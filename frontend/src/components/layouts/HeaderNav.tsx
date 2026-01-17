@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
-import { NavItem } from "./NavItem";
+import { NavItem } from "../NavItem";
 
 export const HeaderNav = () => {
   const location = useLocation();

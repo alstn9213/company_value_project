@@ -1,15 +1,19 @@
-import { useUserMenu } from "../hooks/useUserMenu";
 
 interface UserMenuTriggerProps {
   username: string;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username }) => {
-  const { isOpen, toggleMenu } = useUserMenu();
+export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ 
+  username,
+  isOpen,
+  onToggle,
+ }) => {
   
   return (
     <button
-      onClick={toggleMenu}
+      onClick={onToggle}
       className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       aria-expanded={isOpen}
       aria-haspopup="true"

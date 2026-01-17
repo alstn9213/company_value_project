@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
-import { useUserMenu } from "../hooks/useUserMenu";
 import { Star } from "lucide-react";
 
 interface UserMenuDropdownProps {
   email: string;
+  onLogout: () => void;
 }
 
-export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ email }) => {
-  const { handleLogout } = useUserMenu();
+export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ 
+  email,
+  onLogout,
+}) => {
   
   return (
     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 z-50 transform origin-top-right transition-all duration-200 ease-out">
@@ -33,7 +35,7 @@ export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({ email }) => 
 
       {/* 로그아웃 버튼 */}
       <button
-        onClick={handleLogout}
+        onClick={onLogout}
         className="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
       >
         로그아웃

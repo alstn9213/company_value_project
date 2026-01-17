@@ -5,7 +5,7 @@ import { UserMenuDropdown } from "../UserMenuDropdown";
 
 export const UserMenu: React.FC = () => {
   const { user } = useAuthStore();
-  const { isOpen, menuRef } = useUserMenu();
+  const { isOpen, menuRef, toggleMenu, handleLogout } = useUserMenu();
 
   if (!user) return null;
 
@@ -15,11 +15,15 @@ export const UserMenu: React.FC = () => {
       
       <UserMenuTrigger 
         username={user.nickname} 
+        isOpen={isOpen}
+        onToggle={toggleMenu}
       />
 
       {isOpen && (
+        // 로그아웃 핸들러를 Props로 전달
         <UserMenuDropdown 
           email={user.email} 
+          onLogout={handleLogout}
         />
       )}
     </div>
