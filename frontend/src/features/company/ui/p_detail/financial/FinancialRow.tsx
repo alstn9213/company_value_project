@@ -1,6 +1,6 @@
 import { formatCurrency } from "../../../../../utils/formatters";
 import { TermDefinition } from "../../../../../types/term";
-import { TermWithTooltip } from "../../../../../common/TermWithTooltip";
+import { TermWithTooltip } from "../../../../../components/common/TermWithTooltip";
 
 interface FinancialRowProps {
   label: string;

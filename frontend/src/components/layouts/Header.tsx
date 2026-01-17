@@ -1,9 +1,9 @@
-import { SearchBar } from "../../common/SearchBar";
+import { SearchBar } from "../../features/company/components/search/SearchBar";
 import { useAuthStore } from "../../stores/authStore";
-import { Logo } from "../ui/Logo";
-import { AuthActions } from "./AuthActions";
+import { Logo } from "../common/Logo";
+import { AuthActions } from "../../features/auth/components/AuthActions";
 import { HeaderNav } from "./HeaderNav";
-import { UserMenu } from "./UserMenu";
+import { UserMenu } from "../../features/auth/components/UserMenu";
 
 export const Header = () => {
   const { isAuthenticated } = useAuthStore();

@@ -1,0 +1,227 @@
+C:.
+├─main
+│  ├─java
+│  │  └─com
+│  │      └─back
+│  │          │  ValuePick.java
+│  │          │
+│  │          ├─api
+│  │          │  ├─admin
+│  │          │  │      CompanyTestController.java
+│  │          │  │      MacroTestController.java
+│  │          │  │
+│  │          │  ├─auth
+│  │          │  │      AuthController.java
+│  │          │  │
+│  │          │  ├─company
+│  │          │  │      CompanyController.java
+│  │          │  │
+│  │          │  ├─macro
+│  │          │  │      MacroController.java
+│  │          │  │
+│  │          │  ├─member
+│  │          │  │      MemberController.java
+│  │          │  │
+│  │          │  ├─valuation
+│  │          │  │      ScoreController.java
+│  │          │  │
+│  │          │  └─watchlist
+│  │          │          WatchlistController.java
+│  │          │
+│  │          ├─domain
+│  │          │  ├─auth
+│  │          │  │  ├─dto
+│  │          │  │  │  ├─request
+│  │          │  │  │  │      LoginRequest.java
+│  │          │  │  │  │
+│  │          │  │  │  └─response
+│  │          │  │  │          TokenResponse.java
+│  │          │  │  │
+│  │          │  │  └─service
+│  │          │  │          AuthService.java
+│  │          │  │
+│  │          │  ├─company
+│  │          │  │  ├─dto
+│  │          │  │  │  └─response
+│  │          │  │  │          CompanyDetailResponse.java
+│  │          │  │  │          CompanyScoreResponse.java
+│  │          │  │  │          CompanySummaryResponse.java
+│  │          │  │  │          FinancialStatementResponse.java
+│  │          │  │  │          StockHistoryResponse.java
+│  │          │  │  │
+│  │          │  │  ├─entity
+│  │          │  │  │      Company.java
+│  │          │  │  │      CompanyScore.java
+│  │          │  │  │      FinancialStatement.java
+│  │          │  │  │      StockPriceHistory.java
+│  │          │  │  │
+│  │          │  │  ├─repository
+│  │          │  │  │      CompanyRepository.java
+│  │          │  │  │      CompanyScoreRepository.java
+│  │          │  │  │      FinancialStatementRepository.java
+│  │          │  │  │      StockPriceHistoryRepository.java
+│  │          │  │  │
+│  │          │  │  └─service
+│  │          │  │          CompanyCommandService.java
+│  │          │  │          CompanyReadService.java
+│  │          │  │          StockService.java
+│  │          │  │
+│  │          │  ├─macro
+│  │          │  │  ├─dto
+│  │          │  │  │      FredApiResponse.java
+│  │          │  │  │      MacroDataResponse.java
+│  │          │  │  │
+│  │          │  │  ├─entity
+│  │          │  │  │      MacroEconomicData.java
+│  │          │  │  │      MacroIndicator.java
+│  │          │  │  │
+│  │          │  │  ├─repository
+│  │          │  │  │      MacroRepository.java
+│  │          │  │  │
+│  │          │  │  └─service
+│  │          │  │          MacroDataProvider.java
+│  │          │  │          MacroDataService.java
+│  │          │  │          MacroReadService.java
+│  │          │  │
+│  │          │  ├─member
+│  │          │  │  ├─dto
+│  │          │  │  │  └─request
+│  │          │  │  │          SignUpRequest.java
+│  │          │  │  │
+│  │          │  │  ├─entity
+│  │          │  │  │      Member.java
+│  │          │  │  │      Role.java
+│  │          │  │  │
+│  │          │  │  ├─repository
+│  │          │  │  │      MemberRepository.java
+│  │          │  │  │
+│  │          │  │  └─service
+│  │          │  │          MemberService.java
+│  │          │  │
+│  │          │  ├─time
+│  │          │  │      BaseTime.java
+│  │          │  │
+│  │          │  ├─valuation
+│  │          │  │  ├─calculator
+│  │          │  │  │      MarketMetricCalculator.java
+│  │          │  │  │      
+│  │          │  │  ├─constant
+│  │          │  │  │      ScoreCategory.java
+│  │          │  │  │      ScoringConstants.java
+│  │          │  │  │
+│  │          │  │  ├─engine
+│  │          │  │  │      ScoreEvaluator.java
+│  │          │  │  │      ScoringService.java
+│  │          │  │  │
+│  │          │  │  ├─model
+│  │          │  │  │      MarketMetricsDto.java
+│  │          │  │  │      ScoreEvaluationResultDto.java
+│  │          │  │  │      ScoringDataDto.java
+│  │          │  │  │
+│  │          │  │  ├─policy
+│  │          │  │  │  │  CompositePenaltyPolicy.java
+│  │          │  │  │  │  PenaltyPolicy.java
+│  │          │  │  │  │
+│  │          │  │  │  ├─rules
+│  │          │  │  │  │      FinancialStructureRule.java
+│  │          │  │  │  │      MacroConditionRule.java
+│  │          │  │  │  │      PenaltyRule.java
+│  │          │  │  │  │      RiskyInvestmentRule.java
+│  │          │  │  │  │
+│  │          │  │  │  └─standard
+│  │          │  │  │          InvestmentStandard.java
+│  │          │  │  │          ProfitabilityStandard.java
+│  │          │  │  │          StabilityStandard.java
+│  │          │  │  │          ValuationStandard.java
+│  │          │  │  │
+│  │          │  │  └─strategy
+│  │          │  │      │  ScoringAggregator.java
+│  │          │  │      │
+│  │          │  │      └─components
+│  │          │  │              InvestmentStrategy.java
+│  │          │  │              ProfitabilityStrategy.java
+│  │          │  │              ScoringStrategy.java
+│  │          │  │              StabilityStrategy.java
+│  │          │  │              ValuationStrategy.java
+│  │          │  │
+│  │          │  └─watchlist
+│  │          │      ├─dto
+│  │          │      │  └─response
+│  │          │      │          WatchlistResponse.java
+│  │          │      │
+│  │          │      ├─entity
+│  │          │      │      Watchlist.java
+│  │          │      │
+│  │          │      ├─repository
+│  │          │      │      WatchlistRepository.java
+│  │          │      │
+│  │          │      └─service
+│  │          │              WatchlistService.java
+│  │          │
+│  │          ├─global
+│  │          │  ├─annotation
+│  │          │  │      CurrentMemberId.java
+│  │          │  │
+│  │          │  ├─aspect
+│  │          │  │      LogAspect.java
+│  │          │  │
+│  │          │  ├─config
+│  │          │  │  │  InitDataConfig.java
+│  │          │  │  │  RedisConfig.java
+│  │          │  │  │  SwaggerConfig.java
+│  │          │  │  │  WebClientConfig.java
+│  │          │  │  │  WebMvcConfig.java
+│  │          │  │  │
+│  │          │  │  ├─init
+│  │          │  │  │  │  CompanyDataInitializer.java
+│  │          │  │  │  │  SeedDataLoader.java
+│  │          │  │  │  │
+│  │          │  │  │  └─dto
+│  │          │  │  │          CompanySeedDto.java
+│  │          │  │  │          FinancialSeedDto.java
+│  │          │  │  │          StockSeedDto.java
+│  │          │  │  │
+│  │          │  │  └─resolver
+│  │          │  │          MemberIdArgumentResolver.java
+│  │          │  │
+│  │          │  ├─controller
+│  │          │  │      CustomErrorController.java
+│  │          │  │      WebController.java
+│  │          │  │
+│  │          │  ├─error
+│  │          │  │  │  ErrorCode.java
+│  │          │  │  │  ErrorResponse.java
+│  │          │  │  │  GlobalExceptionHandler.java
+│  │          │  │  │
+│  │          │  │  └─exception
+│  │          │  │          BusinessException.java
+│  │          │  │
+│  │          │  ├─security
+│  │          │  │      CustomUserDetailService.java
+│  │          │  │      JwtAuthenticationEntryPoint.java
+│  │          │  │      JwtAuthenticationFilter.java
+│  │          │  │      JwtTokenProvider.java
+│  │          │  │      SecurityConfig.java
+│  │          │  │
+│  │          │  └─util
+│  │          │          DecimalUtil.java
+│  │          │
+│  │          └─infra
+│  │              ├─client
+│  │              │  └─fred
+│  │              │          DataFetchService.java
+│  │              │
+│  │              └─scheduler
+│  │                      MacroScheduler.java
+│  │
+│  └─resources
+│      │  application.properties
+│      │
+│      └─data
+│              seed_data.json
+│
+└─test
+    └─java
+        └─com
+            └─back
+                    ValuePickTests.java

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
+import { useCompanySearch } from "../../hooks/useCompanySearch";
 import { SearchSuggestions } from "./SearchSuggestions";
-import { useCompanySearch } from "../features/company/hooks/useCompanySearch";
 
 export const SearchBar = () => {
   const navigate = useNavigate();

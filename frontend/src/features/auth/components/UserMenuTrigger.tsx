@@ -1,4 +1,3 @@
-
 interface UserMenuTriggerProps {
   username: string;
   isOpen: boolean;

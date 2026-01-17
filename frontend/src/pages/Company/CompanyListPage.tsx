@@ -2,7 +2,7 @@ import { CompanyGridSection } from "../../features/company/layouts/CompanyGridSe
 import { useCompanyList } from "../../features/company/hooks/useCompanyList";
 import { CompanyFilterHeader } from "../../features/company/ui/p_list/CompanyFilterHeader";
 import { ErrorState } from "../../components/ui/ErrorState";
-import { Pagination } from "../../common/Pagination";
+import { Pagination } from "../../components/ui/Pagination";
 
 const CompanyListPage = () => {
   const {
