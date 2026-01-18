@@ -1,6 +1,7 @@
 package com.back.global.security;
 
 import com.back.global.error.ErrorCode;
+import com.back.global.error.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+  // Spring이 관리하는 ObjectMapper 주입 (LocalDateTime 직렬화 설정 등 공유)
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
@@ -30,17 +32,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
   private void setResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setCharacterEncoding("UTF-8");
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-    // ErrorResponse 객체 생성 (기존에 정의된 클래스 활용)
-    // 여기서는 간단히 Map이나 문자열로 예시를 들지만, 실제로는 ErrorResponse DTO를 쓰세요.
-    String jsonResponse = objectMapper.writeValueAsString(
-            java.util.Map.of(
-                    "status", errorCode.getStatus().value(),
-                    "code", errorCode.getCode(),
-                    "message", errorCode.getMessage()
-            )
-    );
+    // HTTP Status Code 설정 (JSON 바디에는 포함하지 않고 헤더에만 설정)
+    response.setStatus(errorCode.getStatus().value());
+
+    ErrorResponse errorResponse = ErrorResponse.of(errorCode);
+
+    // 주입받은 ObjectMapper로 직렬화
+    String jsonResponse = objectMapper.writeValueAsString(errorResponse);
 
     response.getWriter().write(jsonResponse);
   }

@@ -7,7 +7,9 @@ export const UserMenu: React.FC = () => {
   const { user } = useAuthStore();
   const { isOpen, menuRef, toggleMenu, handleLogout } = useUserMenu();
 
-  if (!user) return null;
+  if (!user) {
+    return null;
+  }
 
  return (
     // ref는 외부 클릭 감지를 위해 최상위 컨테이너에 부착
@@ -20,7 +22,6 @@ export const UserMenu: React.FC = () => {
       />
 
       {isOpen && (
-        // 로그아웃 핸들러를 Props로 전달
         <UserMenuDropdown 
           email={user.email} 
           onLogout={handleLogout}

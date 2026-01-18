@@ -1,11 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Trash2, TrendingUp } from "lucide-react";
-import { WatchlistItem } from "../../../types/watchlist";
+import { WatchlistResponse } from "../../../types/watchlist";
 import { getGradeColor, getScoreColor } from "../../../utils/formatters";
 
 interface WatchlistCardProps {
-  item: WatchlistItem;
+  item: WatchlistResponse;
   onDelete: (id: number) => void;
 }
 

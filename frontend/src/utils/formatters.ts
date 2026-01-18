@@ -1,6 +1,8 @@
 // 숫자 포맷터 (예: 150000000 -> $150M)
 export const formatCurrency = (value: number | undefined): string => {
-  if(value === undefined || value === null) return "-";
+  if(value === undefined || value === null) {
+    return "-";
+  }
 
   const absValue = Math.abs(value);
 

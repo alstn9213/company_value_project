@@ -1,18 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { watchlistApi } from "../api/watchlistApi";
+import { watchlistKeys } from "../api/queryKeys";
 
 export const useWatchlist = () => {
   const queryClient = useQueryClient();
 
   const { data: watchlist, isLoading } = useQuery({
-    queryKey: ["watchlist"],
+    queryKey: watchlistKeys.lists(),
     queryFn: watchlistApi.getMyWatchlist,
   });
 
   const deleteMutation = useMutation({
     mutationFn: watchlistApi.remove,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["watchlist"] });
+      queryClient.invalidateQueries({ queryKey: watchlistKeys.lists() });
     },
     onError: (error) => {
       console.error("삭제 실패:", error);

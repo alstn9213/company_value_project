@@ -1,6 +1,6 @@
 import { CompanySummaryResponse } from "./company";
 
-export interface WatchlistItem {
+export interface WatchlistResponse {
   watchlistId: number;
   company: CompanySummaryResponse;
 }

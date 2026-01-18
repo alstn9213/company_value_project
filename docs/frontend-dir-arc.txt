@@ -58,6 +58,7 @@ C:.
 │  │  │
 │  │  ├─api
 │  │  │      companyApi.ts
+│  │  │      queryKeys.ts
 │  │  │
 │  │  ├─components
 │  │  │  ├─p_detail
@@ -75,9 +76,9 @@ C:.
 │  │  ├─hooks
 │  │  │      useCompanyDetail.ts
 │  │  │      useCompanyList.ts
-│  │  │      useCompanyRanking.ts
 │  │  │      useCompanySearch.ts
 │  │  │      useStockHistory.ts
+│  │  │      useTopRankingCompanies.ts
 │  │  │
 │  │  ├─layouts
 │  │  │      CompanyGridSection.tsx
@@ -129,8 +130,7 @@ C:.
 │  │  │
 │  │  ├─hooks
 │  │  │      useInversionIntervals.ts
-│  │  │      useMacroHistory.ts
-│  │  │      useMacroLatest.ts
+│  │  │      useMacroQueries.ts
 │  │  │
 │  │  ├─layouts
 │  │  │      EconomicChartSection.tsx
@@ -159,6 +159,9 @@ C:.
 │  │  │      maxScores.ts
 │  │  │      scoreTerm.ts
 │  │  │
+│  │  ├─hooks
+│  │  │      useScoreAnalytics.ts
+│  │  │
 │  │  ├─layouts
 │  │  │      ScoreAnalysisSection.tsx
 │  │  │
@@ -174,6 +177,7 @@ C:.
 │      │  index.ts
 │      │
 │      ├─api
+│      │      queryKeys.ts
 │      │      watchlistApi.ts
 │      │
 │      ├─hooks

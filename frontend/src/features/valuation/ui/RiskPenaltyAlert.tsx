@@ -5,6 +5,10 @@ interface RiskPenaltyAlertProps {
 }
 
 export const RiskPenaltyAlert = ({ penaltyPoints }: RiskPenaltyAlertProps) => {
+  if (!penaltyPoints) {
+    return null;
+  }
+  
   if (penaltyPoints <= 0) {
     return null;
   }

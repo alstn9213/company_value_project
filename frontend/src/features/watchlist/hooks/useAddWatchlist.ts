@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRequireAuth } from "../../../hooks/useRequireAuth";
 import { watchlistApi } from "../api/watchlistApi";
+import { watchlistKeys } from "../api/queryKeys";
 
 export const useAddWatchlist = () => {
   const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export const useAddWatchlist = () => {
     mutationFn: (ticker: string) => watchlistApi.add(ticker),
     onSuccess: () => {
       alert("관심 종목에 추가되었습니다.");
-      queryClient.invalidateQueries({ queryKey: ["watchlist"] });
+      queryClient.invalidateQueries({ queryKey: watchlistKeys.lists() });
     },
     onError: (error: AxiosError) => {
       if (error.response?.status === 400) {
@@ -23,8 +24,8 @@ export const useAddWatchlist = () => {
   });
 
   const addWatchlist = (ticker: string) => {
-    withAuth(() => {
     // 로그인이 돼 있을 때만 실행
+    withAuth(() => {
       mutation.mutate(ticker);
     });
   };

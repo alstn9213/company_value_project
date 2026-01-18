@@ -4,12 +4,7 @@ interface UserMenuTriggerProps {
   onToggle: () => void;
 }
 
-export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ 
-  username,
-  isOpen,
-  onToggle,
- }) => {
-  
+export const UserMenuTrigger: React.FC<UserMenuTriggerProps> = ({ username, isOpen, onToggle }) => {
   return (
     <button
       onClick={onToggle}

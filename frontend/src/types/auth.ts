@@ -21,8 +21,12 @@ export interface TokenResponse {
   nickname: string;
 }
 
-/**
- * API 에러 응답을 위한 공통 타입.
- * 에러 데이터는 message 속성을 가진 객체이거나, 단순 문자열일 수 있다.
- */
-export type ApiErrorData = { message: string } | string;
+
+export interface ApiErrorResponse {
+  code: string;    // 에러 식별 코드
+  message: string; // 사용자에게 보여줄 에러 메시지
+  status?: number; // JwtAuthenticationEntryPoint에서는 status를 포함하므로 optional 처리
+  timestamp?: string; // ErrorResponse 객체에서는 timestamp를 포함하므로 optional 처리
+}
+
+export type ApiErrorData = ApiErrorResponse;

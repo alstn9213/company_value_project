@@ -17,7 +17,11 @@ interface ScoreRadarChartProps {
 
 export const ScoreRadarChart: React.FC<ScoreRadarChartProps> = ({ data }) => {
 
-  // 1. 데이터 변환: 모든 점수를 100점 만점 기준으로 환산
+  if (!data) {
+    return null;
+  }
+
+  // 모든 점수를 100점 만점 기준으로 환산
   const normalizedData = data.map((item) => ({
     ...item,
     // 그래프용 환산 점수: (내점수 / 만점) * 100
