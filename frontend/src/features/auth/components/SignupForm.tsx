@@ -1,5 +1,5 @@
 import { useSignupForm } from "../hooks/useSignupForm";
-import { AuthInput } from "../ui/AuthInput";
+import { AuthInput } from "./AuthInput";
 
 export const SignupForm = () => {
   const { formData, error, isLoading, handleChange, handleSubmit } = useSignupForm();

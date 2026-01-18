@@ -5,6 +5,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mt-8">
+      
       <div>
         <label className="block text-sm font-medium text-slate-300">
           Email
@@ -19,6 +20,7 @@ export const LoginForm = () => {
           disabled={isLoading}
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium text-slate-300">
           Password
@@ -43,6 +45,7 @@ export const LoginForm = () => {
       >
         {isLoading ? "로그인 중..." : "로그인"}
       </button>
+
     </form>
   );
 };

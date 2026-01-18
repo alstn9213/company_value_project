@@ -17,7 +17,6 @@ export const AuthInput = ({ label, error, className = "", ...props }: AuthInputP
           } ${className}`}
         {...props}
       />
-      {/* 개별 필드 에러 메시지가 있다면 여기서 표시 가능 */}
     </div>
   );
 };

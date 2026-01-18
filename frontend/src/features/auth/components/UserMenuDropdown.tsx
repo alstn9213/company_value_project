@@ -22,7 +22,7 @@ export const UserMenuDropdown: React.FC<UserMenuDropdownProps> = ({
         </p>
       </div>
 
-      {/* Navigation Section - 관심 종목 추가 */}
+      {/*  관심 종목 이동 링크 */}
       <div className="py-1 border-b border-gray-100">
         <Link
           to="/watchlist"

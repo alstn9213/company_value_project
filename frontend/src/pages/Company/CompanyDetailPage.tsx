@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
-import { ScoreAnalysisContainer } from "../../features/valuation/components/ScoreAnalysisContainer";
-import { CompanyHeader } from "../../features/company/components/detail/CompanyHeader";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { 
   useCompanyDetail, 
   FinancialSummary, 
-  StockChartContainer
+  StockChartContainer,
+  CompanyHeader
 } from '../../features/company';
+import { ScoreAnalysisContainer } from "../../features/valuation";
 
 const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();
@@ -33,7 +33,6 @@ const CompanyDetailPage = () => {
         score={score}
         isLoading={isLoading}
         />
-
       {/* 기업 정보 대시 보드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 좌측: 분석 점수 */}
@@ -43,7 +42,6 @@ const CompanyDetailPage = () => {
             isLoading={isLoading}
             />
         </div>
-        
         {/* 우측: 차트 및 재무제표 */}
         <div className="lg:col-span-2 space-y-12">
           <StockChartContainer 

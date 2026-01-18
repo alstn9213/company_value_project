@@ -43,7 +43,7 @@ export const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700/50">
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-700/50">    
         <div className="flex items-center gap-2">
           <TrendingUp size={16} className="text-slate-500" />
           <span className={`font-bold ${getScoreColor(company.totalScore)}`}>
@@ -60,6 +60,7 @@ export const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
           <Trash2 size={18} />
         </button>
       </div>
+
     </Link>
   );
 };

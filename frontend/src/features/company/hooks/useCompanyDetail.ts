@@ -3,6 +3,7 @@ import { CompanyDetailResponse, CompanyScoreResponse, CompanySummaryResponse, Fi
 import { companyApi } from "../api/companyApi";
 import { AxiosError } from "axios";
 import { companyKeys } from "../api/queryKeys";
+import { ApiErrorData } from "../../../types/api";
 
 interface CompanyDetailHookResult {
   summary: CompanySummaryResponse | undefined;
@@ -15,7 +16,7 @@ interface CompanyDetailHookResult {
 }
 
 export const useCompanyDetail = (ticker: string | undefined): CompanyDetailHookResult => {
-  const { data, isLoading, isError, error, refetch } = useQuery<CompanyDetailResponse, AxiosError>({
+  const { data, isLoading, isError, error, refetch } = useQuery<CompanyDetailResponse, AxiosError<ApiErrorData>>({
     queryKey: ticker ? companyKeys.detail(ticker) : [],
     queryFn: () => companyApi.getDetail(ticker!),
     enabled: !!ticker, // ticker가 존재할 때만 실행
