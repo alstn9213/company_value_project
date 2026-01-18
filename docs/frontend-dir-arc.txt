@@ -11,7 +11,7 @@ C:.
 │  ├─common
 │  │      Logo.tsx
 │  │      TermWithTooltip.tsx
-│  │      
+│  │
 │  ├─layouts
 │  │      Header.tsx
 │  │      HeaderNav.tsx
@@ -36,22 +36,16 @@ C:.
 │  │  │
 │  │  ├─components
 │  │  │      AuthActions.tsx
+│  │  │      AuthInput.tsx
+│  │  │      LoginForm.tsx
+│  │  │      SignupForm.tsx
 │  │  │      UserMenu.tsx
 │  │  │      UserMenuDropdown.tsx
 │  │  │      UserMenuTrigger.tsx
 │  │  │
-│  │  ├─hooks
-│  │  │      useLoginForm.ts
-│  │  │      useSignupForm.ts
-│  │  │
-│  │  ├─layouts
-│  │  │      SignupForm.tsx
-│  │  │
-│  │  └─ui
-│  │          AuthFooter.tsx
-│  │          AuthInput.tsx
-│  │          LoginForm.tsx
-│  │          LoginHeader.tsx
+│  │  └─hooks
+│  │          useLoginForm.ts
+│  │          useSignupForm.ts
 │  │
 │  ├─company
 │  │  │  index.ts
@@ -120,13 +114,13 @@ C:.
 │  │  │
 │  │  ├─api
 │  │  │      macroApi.ts
-│  │  │
+│  │  │      queryKeys.ts
+│  │  │      
 │  │  ├─components
 │  │  │      CustomTooltip.tsx
 │  │  │      EconomicChart.tsx
+│  │  │      EconomicChartContainer.tsx
 │  │  │      EconomicChartHeader.tsx
-│  │  │      EconomicChartSection.tsx
-│  │  │      EconomicLineChart.tsx
 │  │  │      MajorIndicatorContainer.tsx
 │  │  │
 │  │  ├─hooks
@@ -149,9 +143,12 @@ C:.
 │  │  │
 │  │  ├─components
 │  │  │      CustomTooltip.tsx
+│  │  │      DetailScoreSection.tsx
+│  │  │      RiskPenaltyAlert.tsx
 │  │  │      ScoreAnalysisContainer.tsx
 │  │  │      ScoreRadarChart.tsx
 │  │  │      ScoreRow.tsx
+│  │  │      TotalScoreDisplay.tsx
 │  │  │
 │  │  ├─constants
 │  │  │      maxScores.ts
@@ -160,13 +157,8 @@ C:.
 │  │  ├─hooks
 │  │  │      useScoreAnalytics.ts
 │  │  │
-│  │  ├─types
-│  │  │      chartDataPoint.ts
-│  │  │
-│  │  └─ui
-│  │          DetailScoreSection.tsx
-│  │          RiskPenaltyAlert.tsx
-│  │          TotalScoreDisplay.tsx
+│  │  └─types
+│  │          chartDataPoint.ts
 │  │
 │  └─watchlist
 │      │  index.ts
@@ -175,22 +167,23 @@ C:.
 │      │      queryKeys.ts
 │      │      watchlistApi.ts
 │      │
-│      ├─hooks
-│      │      useAddWatchlist.ts
-│      │      useWatchlist.ts
+│      ├─components
+│      │      CompanyGridCard.tsx
+│      │      WatchlistButton.tsx
+│      │      WatchlistDeleteButton.tsx
 │      │
-│      ├─layouts
-│      │      WatchlistCard.tsx
-│      │
-│      └─ui
-│              WatchlistButton.tsx
+│      └─hooks
+│              useAddWatchlist.ts
+│              useWatchlist.ts
 │
 ├─hooks
 │      useDebounce.ts
 │      useRequireAuth.ts
 │      useUserMenu.ts
-│      
+│
 ├─pages
+│  │  index.ts
+│  │
 │  ├─Auth
 │  │      LoginPage.tsx
 │  │      SignupPage.tsx
@@ -198,7 +191,7 @@ C:.
 │  ├─Company
 │  │      CompanyDetailPage.tsx
 │  │      CompanyListPage.tsx
-│  │      
+│  │
 │  ├─Home
 │  │      Homepage.tsx
 │  │

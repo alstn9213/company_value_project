@@ -1,11 +1,11 @@
 import { TrendingUp } from "lucide-react";
-import { DetailScoreSection } from "../ui/DetailScoreSection";
 import { ScoreRadarChart } from "./ScoreRadarChart";
-import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
-import { TotalScoreDisplay } from "../ui/TotalScoreDisplay";
+import { RiskPenaltyAlert } from "./RiskPenaltyAlert";
+import { TotalScoreDisplay } from "./TotalScoreDisplay";
 import { CompanyScoreResponse } from "../../../types/company";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { useScoreAnalytics } from "../hooks/useScoreAnalytics";
+import { DetailScoreSection } from "./DetailScoreSection";
 
 interface ScoreAnalysisContainerProps {
   score: CompanyScoreResponse | undefined;
@@ -32,6 +32,7 @@ export const ScoreAnalysisContainer = ({ score, isLoading }: ScoreAnalysisContai
 
       {/* 메인 분석 카드 */}
       <div className="bg-card border border-slate-700/50 rounded-xl p-6 flex-1 flex flex-col shadow-lg backdrop-blur-sm">
+      
         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
           <TrendingUp size={20} className="text-emerald-400" />
           분석 리포트

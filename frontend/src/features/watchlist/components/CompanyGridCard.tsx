@@ -1,22 +1,16 @@
-import React from "react";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { Trash2, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { WatchlistResponse } from "../../../types/watchlist";
 import { getGradeColor, getScoreColor } from "../../../utils/formatters";
 
-interface WatchlistCardProps {
+interface CompanyGridCardProps {
   item: WatchlistResponse;
-  onDelete: (id: number) => void;
+  action?: ReactNode; // 버튼을 외부에서 주입받음 (Optional)
 }
 
-export const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
+export const CompanyGridCard = ({ item, action }: CompanyGridCardProps) => {
   const { company } = item;
-
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // 링크 이동 방지
-    e.stopPropagation();
-    onDelete(item.watchlistId);
-  };
 
   return (
     <Link
@@ -52,13 +46,10 @@ export const WatchlistCard = ({ item, onDelete }: WatchlistCardProps) => {
         </div>
 
         {/* 삭제 버튼 */}
-        <button
-          onClick={handleDeleteClick}
-          className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-400/10 rounded-full transition-colors z-20"
-          title="목록에서 삭제"
-        >
-          <Trash2 size={18} />
-        </button>
+        <div className="z-20 relative">
+            {action}
+        </div>
+        
       </div>
 
     </Link>

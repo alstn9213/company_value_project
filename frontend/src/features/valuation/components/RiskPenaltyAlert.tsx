@@ -5,14 +5,10 @@ interface RiskPenaltyAlertProps {
 }
 
 export const RiskPenaltyAlert = ({ penaltyPoints }: RiskPenaltyAlertProps) => {
-  if (!penaltyPoints) {
+  if (!penaltyPoints || penaltyPoints <= 0) {
     return null;
   }
   
-  if (penaltyPoints <= 0) {
-    return null;
-  }
-
   return (
     <div className="p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl text-sm text-orange-200 animate-in fade-in slide-in-from-top-2 duration-300">
       <p className="font-bold flex items-center gap-2 mb-1">

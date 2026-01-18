@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { SignupForm } from "../../features/auth";
 
-const SignupPage = () => {
+export const SignupPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark text-white p-4">
       <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-xl shadow-lg border border-slate-700 backdrop-blur-sm">
@@ -32,5 +32,3 @@ const SignupPage = () => {
     </div>
   );
 };
-
-export default SignupPage;

@@ -8,7 +8,7 @@ import {
 } from '../../features/company';
 import { ScoreAnalysisContainer } from "../../features/valuation";
 
-const CompanyDetailPage = () => {
+export const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();
   const { summary, score, financial, isLoading, isError, refetch } = useCompanyDetail(ticker);
 
@@ -57,4 +57,3 @@ const CompanyDetailPage = () => {
   );
 };
 
-export default CompanyDetailPage;

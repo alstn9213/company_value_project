@@ -3,7 +3,7 @@ import { ErrorState } from "../../components/ui/ErrorState";
 import { Pagination } from "../../components/ui/Pagination";
 import {  CompanyGrid, useCompanyList } from "../../features/company";
 
-const CompanyListPage = () => {
+export const CompanyListPage = () => {
   const {
     companies,
     currentPage,
@@ -57,4 +57,3 @@ const CompanyListPage = () => {
   );
 };
 
-export default CompanyListPage;

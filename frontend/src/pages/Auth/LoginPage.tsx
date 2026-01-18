@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { LoginForm } from "../../features/auth";
 
-const LoginPage = () => {
+export const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark text-white">
       {/* 카드 레이아웃 컨테이너 */}
@@ -33,4 +33,3 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;

@@ -1,5 +1,5 @@
 import { CompanySummaryResponse, CompanyScoreResponse } from "../../../../types/company";
-import { WatchlistButton } from "../../../watchlist/ui/WatchlistButton";
+import { WatchlistButton } from "../../../watchlist/components/WatchlistButton";
 import { useAddWatchlist } from "../../../watchlist/hooks/useAddWatchlist";
 import { CompanyProfile } from "../../ui/p_detail/CompanyProfile";
 import { InvestmentGradeBadge } from "../../ui/p_detail/InvestmentGradeBadge";

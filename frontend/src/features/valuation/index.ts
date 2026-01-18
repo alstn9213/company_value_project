@@ -1,13 +1,8 @@
 // Hooks
 export * from './hooks/useScoreAnalytics';
 
-// Layouts (메인 조립용)
 export * from './components/ScoreAnalysisContainer';
-
-// UI (개별 요소 필요 시)
-export * from './ui/TotalScoreDisplay';
-export * from './ui/DetailScoreSection';
-export * from './ui/RiskPenaltyAlert';
-
-// Components
+export * from './components/TotalScoreDisplay';
+export * from './components/DetailScoreSection';
+export * from './components/RiskPenaltyAlert';
 export * from './components/ScoreRadarChart';

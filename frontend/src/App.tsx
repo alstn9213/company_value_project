@@ -1,15 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/Home/Homepage";
-import CompanyListPage from "./pages/Company/CompanyListPage";
-import WatchlistPage from "./pages/Watchlist/WatchlistPage";
-import LoginPage from "./pages/Auth/LoginPage";
-import SignupPage from "./pages/Auth/SignupPage";
-import CompanyDetailPage from "./pages/Company/CompanyDetailPage";
 import { MainLayout } from "./components/layouts/MainLayout";
 import { ProtectedRoute } from "./components/layouts/ProtectedRoute";
+import { CompanyDetailPage, CompanyListPage, HomePage, LoginPage, SignupPage, WatchlistPage } from "./pages";
+
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
