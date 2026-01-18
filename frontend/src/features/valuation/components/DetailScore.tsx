@@ -1,7 +1,7 @@
 import { CompanyScoreResponse } from "../../../types/company";
 import { MAX_SCORES } from "../constants/maxScores";
 import { SCORE_TERMS } from "../constants/scoreTerm";
-import { ScoreRow } from "../components/ScoreRow";
+import { ScoreRow } from "./ScoreRow";
 
 type DetailScoreSectionProps = Pick<
   CompanyScoreResponse, 
@@ -12,7 +12,7 @@ interface Props {
   score: DetailScoreSectionProps;
 }
 
-export const DetailScoreSection = ({ score }: Props) => {
+export const DetailScore = ({ score }: Props) => {
   // 렌더링을 위한 설정 배열 (매핑을 사용하여 중복 코드 제거)
   const scoreItems = [
     {

@@ -5,7 +5,7 @@ import { TotalScoreDisplay } from "./TotalScoreDisplay";
 import { CompanyScoreResponse } from "../../../types/company";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { useScoreAnalytics } from "../hooks/useScoreAnalytics";
-import { DetailScoreSection } from "./DetailScoreSection";
+import { DetailScore } from "./DetailScore";
 
 interface ScoreAnalysisContainerProps {
   score: CompanyScoreResponse | undefined;
@@ -32,7 +32,7 @@ export const ScoreAnalysisContainer = ({ score, isLoading }: ScoreAnalysisContai
 
       {/* 메인 분석 카드 */}
       <div className="bg-card border border-slate-700/50 rounded-xl p-6 flex-1 flex flex-col shadow-lg backdrop-blur-sm">
-      
+
         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
           <TrendingUp size={20} className="text-emerald-400" />
           분석 리포트
@@ -47,7 +47,7 @@ export const ScoreAnalysisContainer = ({ score, isLoading }: ScoreAnalysisContai
         </div>
 
         {/* 세부 점수 리스트 */}
-        <DetailScoreSection score={score} />
+        <DetailScore score={score} />
       </div>
     </div>
   );

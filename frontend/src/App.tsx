@@ -1,6 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { MainLayout } from "./components/layouts/MainLayout";
-import { ProtectedRoute } from "./components/layouts/ProtectedRoute";
+import { MainLayout } from "./components/common/MainLayout";
+import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import { CompanyDetailPage, CompanyListPage, HomePage, LoginPage, SignupPage, WatchlistPage } from "./pages";
 
 

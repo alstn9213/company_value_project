@@ -1,7 +1,7 @@
 import { CompanyFilterHeader } from "../../features/company/ui/p_list/CompanyFilterHeader";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { Pagination } from "../../components/ui/Pagination";
-import {  CompanyGrid, useCompanyList } from "../../features/company";
+import { CompanyGrid, useCompanyList } from "../../features/company";
 
 export const CompanyListPage = () => {
   const {
