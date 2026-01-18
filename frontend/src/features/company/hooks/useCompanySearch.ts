@@ -8,7 +8,7 @@ import { getErrorMessage } from "../../../utils/errorHandler";
 import { companyKeys } from "../api/queryKeys";
 import { ApiErrorData } from "../../../types/api";
 
-export interface CompanySearchHookResult {
+interface CompanySearchHookResult {
   keyword: string;
   setKeyword: (keyword: string) => void;
   suggestions: CompanySummaryResponse[];

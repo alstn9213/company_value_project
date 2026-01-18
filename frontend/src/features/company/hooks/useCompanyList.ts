@@ -7,7 +7,7 @@ import { getErrorMessage } from "../../../utils/errorHandler";
 import { companyKeys } from "../api/queryKeys";
 import { ApiErrorData } from "../../../types/api";
 
-export interface CompanyListHookResult {
+interface CompanyListHookResult {
   companies: CompanySummaryResponse[];
   currentPage: number;
   totalPages: number;

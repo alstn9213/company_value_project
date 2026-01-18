@@ -6,7 +6,7 @@ import { AxiosError } from "axios";
 import { companyKeys } from "../api/queryKeys";
 import { ApiErrorData } from "../../../types/api";
 
-export interface TopRankingHookResult {
+interface TopRankingHookResult {
   rankings: CompanyScoreResponse[];
   isLoading: boolean;
   isError: boolean;

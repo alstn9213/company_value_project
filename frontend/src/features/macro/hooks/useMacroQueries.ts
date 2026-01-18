@@ -3,14 +3,9 @@ import { macroApi } from "../api/macroApi";
 import { AxiosError } from "axios";
 import { MacroDataResponse } from "../../../types/macro";
 import { ApiErrorData } from "../../../types/api";
+import { macroKeys } from "../api/queryKeys";
 
-const MACRO_KEYS = {
-  all: ["macro"] as const,
-  latest: () => [...MACRO_KEYS.all, "latest"] as const,
-  history: () => [...MACRO_KEYS.all, "history"] as const,
-};
-
-export interface MacroLatestHookResult {
+interface MacroLatestHookResult {
   macroData: MacroDataResponse | undefined;
   isLoading: boolean;
   isError: boolean;
@@ -20,7 +15,7 @@ export interface MacroLatestHookResult {
 
 export const useMacroLatest = (): MacroLatestHookResult => {
   const { data, isLoading, isError, error, refetch } = useQuery<MacroDataResponse, AxiosError<ApiErrorData>>({
-    queryKey: MACRO_KEYS.latest(),
+    queryKey: macroKeys.indicators(),
     queryFn: macroApi.getLatest,
     staleTime: 1000 * 60 * 60, // 1시간 동안 데이터를 신선한 상태로 유지 (캐싱)
     retry: 1,
@@ -35,7 +30,7 @@ export const useMacroLatest = (): MacroLatestHookResult => {
   };
 };
 
-export interface MacroHistoryHookResult {
+interface MacroHistoryHookResult {
   history: MacroDataResponse[];
   isLoading: boolean;
   isError: boolean;
@@ -45,7 +40,7 @@ export interface MacroHistoryHookResult {
 
 export const useMacroHistory = (): MacroHistoryHookResult => {
   const { data, isLoading, isError, error, refetch } = useQuery<MacroDataResponse[], AxiosError<ApiErrorData>>({
-    queryKey: MACRO_KEYS.history(),
+    queryKey: macroKeys.history(),
     queryFn: macroApi.getHistory,
     staleTime: 1000 * 60 * 60 * 24, // 24시간 (변동이 적은 과거 데이터)
   });

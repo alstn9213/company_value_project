@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { MacroDataResponse } from "../../../types/macro";
 
-export interface InversionInterval {
+interface InversionInterval {
   start: string;
   end: string;
 }

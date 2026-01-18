@@ -4,7 +4,7 @@ import { companyApi } from "../api/companyApi";
 import { AxiosError } from "axios";
 import { companyKeys } from "../api/queryKeys";
 
-export interface CompanyDetailHookResult {
+interface CompanyDetailHookResult {
   summary: CompanySummaryResponse | undefined;
   score: CompanyScoreResponse | undefined;
   financial: FinancialStatementResponse | undefined;

@@ -3,7 +3,7 @@ C:.
 │  index.css
 │  main.tsx
 │  vite-env.d.ts
-│  
+│
 ├─api
 │      axiosClient.ts
 │
@@ -17,7 +17,7 @@ C:.
 │  │      HeaderNav.tsx
 │  │      MainLayout.tsx
 │  │      ProtectedRoute.tsx
-│  │      
+│  │
 │  └─ui
 │          ChartCard.tsx
 │          EmptyState.tsx
@@ -30,10 +30,10 @@ C:.
 ├─features
 │  ├─auth
 │  │  │  index.ts
-│  │  │  
+│  │  │
 │  │  ├─api
 │  │  │      authApi.ts
-│  │  │      
+│  │  │
 │  │  ├─components
 │  │  │      AuthActions.tsx
 │  │  │      UserMenu.tsx
@@ -61,13 +61,20 @@ C:.
 │  │  │      queryKeys.ts
 │  │  │
 │  │  ├─components
-│  │  │  ├─p_detail
+│  │  │  ├─detail
 │  │  │  │      CompanyHeader.tsx
+│  │  │  │      FinancialSummary.tsx
+│  │  │  │      StockChartContainer.tsx
 │  │  │  │      StockChartHeader.tsx
 │  │  │  │      StockPriceChart.tsx
 │  │  │  │
-│  │  │  ├─p_list
+│  │  │  ├─list
 │  │  │  │      CompanyCard.tsx
+│  │  │  │      CompanyGrid.tsx
+│  │  │  │
+│  │  │  ├─rank
+│  │  │  │      RankingTableBody.tsx
+│  │  │  │      TopRankingListContainer.tsx
 │  │  │  │
 │  │  │  └─search
 │  │  │          SearchBar.tsx
@@ -79,12 +86,6 @@ C:.
 │  │  │      useCompanySearch.ts
 │  │  │      useStockHistory.ts
 │  │  │      useTopRankingCompanies.ts
-│  │  │
-│  │  ├─layouts
-│  │  │      CompanyGridSection.tsx
-│  │  │      FinancialSummary.tsx
-│  │  │      StockChartSection.tsx
-│  │  │      TopRankingListSection.tsx
 │  │  │
 │  │  └─ui
 │  │      ├─p_detail
@@ -106,8 +107,6 @@ C:.
 │  │      ├─p_ranking
 │  │      │      RankingHeader.tsx
 │  │      │      RankingItemRow.tsx
-│  │      │      RankingTableBody.tsx
-│  │      │      RankingTableHeader.tsx
 │  │      │
 │  │      ├─skeletons
 │  │      │      CompanyCardSkeleton.tsx
@@ -126,15 +125,13 @@ C:.
 │  │  │      CustomTooltip.tsx
 │  │  │      EconomicChart.tsx
 │  │  │      EconomicChartHeader.tsx
+│  │  │      EconomicChartSection.tsx
 │  │  │      EconomicLineChart.tsx
+│  │  │      MajorIndicatorContainer.tsx
 │  │  │
 │  │  ├─hooks
 │  │  │      useInversionIntervals.ts
 │  │  │      useMacroQueries.ts
-│  │  │
-│  │  ├─layouts
-│  │  │      EconomicChartSection.tsx
-│  │  │      MajorIndicatorSection.tsx
 │  │  │
 │  │  └─ui
 │  │      │  IndicatorItem.tsx
@@ -152,6 +149,7 @@ C:.
 │  │  │
 │  │  ├─components
 │  │  │      CustomTooltip.tsx
+│  │  │      ScoreAnalysisContainer.tsx
 │  │  │      ScoreRadarChart.tsx
 │  │  │      ScoreRow.tsx
 │  │  │
@@ -161,9 +159,6 @@ C:.
 │  │  │
 │  │  ├─hooks
 │  │  │      useScoreAnalytics.ts
-│  │  │
-│  │  ├─layouts
-│  │  │      ScoreAnalysisSection.tsx
 │  │  │
 │  │  ├─types
 │  │  │      chartDataPoint.ts
@@ -194,7 +189,7 @@ C:.
 │      useDebounce.ts
 │      useRequireAuth.ts
 │      useUserMenu.ts
-│
+│      
 ├─pages
 │  ├─Auth
 │  │      LoginPage.tsx
@@ -203,7 +198,7 @@ C:.
 │  ├─Company
 │  │      CompanyDetailPage.tsx
 │  │      CompanyListPage.tsx
-│  │
+│  │      
 │  ├─Home
 │  │      Homepage.tsx
 │  │

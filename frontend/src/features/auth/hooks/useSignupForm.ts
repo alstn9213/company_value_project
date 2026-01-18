@@ -19,7 +19,11 @@ export const useSignupForm = () => {
   // 클라이언트 측 유효성 검사 에러 (비밀번호 불일치 등)
   const [validationError, setValidationError] = useState("");
 
-  const { mutate, isPending, error: apiError } = useMutation<
+  const { 
+    mutate, 
+    isPending, 
+    error: apiError 
+  } = useMutation<
     string,
     AxiosError<ApiErrorData>,
     SignUpRequest
@@ -47,24 +51,24 @@ export const useSignupForm = () => {
     e.preventDefault();
     setValidationError("");
 
-    // 1. 유효성 검사
     if (formData.password !== formData.confirmPassword) {
       setValidationError("비밀번호가 일치하지 않습니다.");
       return;
     }
 
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
+    
     if (!passwordRegex.test(formData.password)) {
       setValidationError("비밀번호는 영문, 숫자를 포함한 8~20자입니다.");
       return;
     }
     
     if (!formData.email || !formData.nickname || !formData.password) {
-        setValidationError("모든 필드를 입력해주세요.");
-        return;
+      setValidationError("모든 필드를 입력해주세요.");
+      return;
     }
 
-    // 2. 회원가입 API 호출 (useMutation 사용)
+    // 회원가입 API 호출 (useMutation 사용)
     mutate({
       email: formData.email,
       password: formData.password,

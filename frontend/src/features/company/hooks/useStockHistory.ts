@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 import { companyKeys } from "../api/queryKeys";
 import { ApiErrorData } from "../../../types/api";
 
-export interface StockHistoryHookResult {
+interface StockHistoryHookResult {
   stockHistory: StockHistoryResponse[];
   latestPrice: number;
   isLoading: boolean;
