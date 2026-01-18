@@ -2,7 +2,7 @@ import { useMacroLatest } from "../hooks/useMacroQueries";
 import { Skeleton } from "../../../components/ui/Skeleton";
 
 export const EconomicChartHeader = () => {
-  const { data: latest, isLoading } = useMacroLatest();
+  const { macroData, isLoading } = useMacroLatest();
 
   if (isLoading) {
     return ( 
@@ -10,11 +10,15 @@ export const EconomicChartHeader = () => {
     );
   }
 
+  if (!macroData) {
+    return null;
+  }
+
   return (
     <div className="flex items-end justify-between">
       <h2 className="text-2xl font-bold text-slate-100">미국의 경제 상황</h2>     
         <span className="text-sm text-slate-400">
-          {latest?.date ? `기준일 ${latest.date}` : '-'}
+          {macroData.date ? `기준일 ${macroData.date}` : '-'}
         </span>
     </div>
   );

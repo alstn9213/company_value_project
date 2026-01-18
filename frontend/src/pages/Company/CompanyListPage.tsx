@@ -1,7 +1,7 @@
 import { CompanyFilterHeader } from "../../features/company/ui/p_list/CompanyFilterHeader";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { Pagination } from "../../components/ui/Pagination";
-import { CompanyGridSection, useCompanyList } from "../../features/company";
+import {  CompanyGrid, useCompanyList } from "../../features/company";
 
 const CompanyListPage = () => {
   const {
@@ -37,7 +37,7 @@ const CompanyListPage = () => {
         />
 
         {/* 기업 목록 그리드 */}
-        <CompanyGridSection 
+        <CompanyGrid 
           isLoading={isLoading} 
           companies={companies} 
         />

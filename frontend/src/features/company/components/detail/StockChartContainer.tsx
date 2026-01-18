@@ -1,18 +1,18 @@
 import { BarChart2 } from "lucide-react";
-import { StockPriceChart } from "../components/p_detail/StockPriceChart";
-import { ErrorState } from "../../../components/ui/ErrorState";
-import { EmptyState } from "../../../components/ui/EmptyState";
-import { LoadingState } from "../../../components/ui/LoadingState";
-import { StockChartHeader } from "../components/p_detail/StockChartHeader";
-import { ChartCard } from "../../../components/ui/ChartCard";
-import { useStockHistory } from "../hooks/useStockHistory";
+import { StockPriceChart } from "./StockPriceChart";
+import { ErrorState } from "../../../../components/ui/ErrorState";
+import { EmptyState } from "../../../../components/ui/EmptyState";
+import { LoadingState } from "../../../../components/ui/LoadingState";
+import { StockChartHeader } from "./StockChartHeader";
+import { ChartCard } from "../../../../components/ui/ChartCard";
+import { useStockHistory } from "../../hooks/useStockHistory";
 
 
 interface StockChartSectionProps {
   ticker: string;
 }
 
-export const StockChartSection = ({ ticker }: StockChartSectionProps) => {
+export const StockChartContainer = ({ ticker }: StockChartSectionProps) => {
   const { 
     stockHistory, 
     latestPrice, 

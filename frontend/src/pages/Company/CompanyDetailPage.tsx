@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
-import { ScoreAnalysisSection } from "../../features/valuation/layouts/ScoreAnalysisSection";
-import { CompanyHeader } from "../../features/company/components/p_detail/CompanyHeader";
+import { ScoreAnalysisContainer } from "../../features/valuation/components/ScoreAnalysisContainer";
+import { CompanyHeader } from "../../features/company/components/detail/CompanyHeader";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { 
   useCompanyDetail, 
-  StockChartSection, 
-  FinancialSummary 
+  FinancialSummary, 
+  StockChartContainer
 } from '../../features/company';
 
 const CompanyDetailPage = () => {
@@ -38,7 +38,7 @@ const CompanyDetailPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 좌측: 분석 점수 */}
         <div className="lg:col-span-1 space-y-6">
-          <ScoreAnalysisSection 
+          <ScoreAnalysisContainer
             score={score} 
             isLoading={isLoading}
             />
@@ -46,11 +46,13 @@ const CompanyDetailPage = () => {
         
         {/* 우측: 차트 및 재무제표 */}
         <div className="lg:col-span-2 space-y-12">
-          <StockChartSection ticker={ticker} />
+          <StockChartContainer 
+            ticker={ticker} 
+          />
           <FinancialSummary 
             financial={financial} 
             isLoading={isLoading}
-            />
+          />
         </div>
       </div>
     </div>

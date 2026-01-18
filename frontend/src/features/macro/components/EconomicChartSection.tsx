@@ -1,7 +1,7 @@
-import { EconomicChart } from "../components/EconomicChart";
+import { EconomicChart } from "./EconomicChart";
 import { MarketGuide } from "../ui/guides/MarketGuide";
 import { ChartGuide } from "../ui/guides/ChartGuide";
-import { EconomicChartHeader } from "../components/EconomicChartHeader";
+import { EconomicChartHeader } from "./EconomicChartHeader";
 
 export const EconomicChartSection = () => {
   return (

@@ -1,14 +1,14 @@
-import { CompanySummaryResponse } from "../../../types/company";
-import { CompanyCardSkeleton } from "../ui/skeletons/CompanyCardSkeleton";
-import { CompanyCard } from "../components/p_list/CompanyCard";
-import { EmptyState } from "../../../components/ui/EmptyState";
+import { CompanySummaryResponse } from "../../../../types/company";
+import { CompanyCardSkeleton } from "../../ui/skeletons/CompanyCardSkeleton";
+import { CompanyCard } from "./CompanyCard";
+import { EmptyState } from "../../../../components/ui/EmptyState";
 
-interface CompanyGridSectionProps {
+interface CompanyGridProps {
   companies?: CompanySummaryResponse[];
   isLoading: boolean;
 }
 
-export const CompanyGridSection = ({ isLoading, companies }: CompanyGridSectionProps) => {
+export const CompanyGrid = ({ companies, isLoading }: CompanyGridProps) => {
 
   if (isLoading) {
     return (

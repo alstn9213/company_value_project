@@ -6,11 +6,11 @@ export * from './hooks/useStockHistory';
 export * from './hooks/useTopRankingCompanies';
 
 // 2. Layouts
-export { CompanyGridSection } from './layouts/CompanyGridSection';
-export { FinancialSummary } from './layouts/FinancialSummary';
-export { StockChartSection } from './layouts/StockChartSection';
-export { TopRankingListSection } from './layouts/TopRankingListSection';
+export { CompanyGrid } from './components/list/CompanyGrid';
+export { FinancialSummary } from './components/detail/FinancialSummary';
+export { StockChartContainer } from './components/detail/StockChartContainer';
+export { TopRankingListContainer } from './components/rank/TopRankingListContainer';
 
 // 3. Components
 export { SearchBar } from './components/search/SearchBar';
-export { CompanyCard } from './components/p_list/CompanyCard';
+export { CompanyCard } from './components/list/CompanyCard';

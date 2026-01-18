@@ -1,18 +1,18 @@
 import { TrendingUp } from "lucide-react";
 import { DetailScoreSection } from "../ui/DetailScoreSection";
-import { ScoreRadarChart } from "../components/ScoreRadarChart";
+import { ScoreRadarChart } from "./ScoreRadarChart";
 import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
 import { TotalScoreDisplay } from "../ui/TotalScoreDisplay";
 import { CompanyScoreResponse } from "../../../types/company";
 import { Skeleton } from "../../../components/ui/Skeleton";
 import { useScoreAnalytics } from "../hooks/useScoreAnalytics";
 
-interface ScoreAnalysisSectionProps {
+interface ScoreAnalysisContainerProps {
   score: CompanyScoreResponse | undefined;
   isLoading: boolean;
 }
 
-export const ScoreAnalysisSection = ({ score, isLoading }: ScoreAnalysisSectionProps) => {
+export const ScoreAnalysisContainer = ({ score, isLoading }: ScoreAnalysisContainerProps) => {
   const analytics = useScoreAnalytics(score);
 
   if (isLoading) {

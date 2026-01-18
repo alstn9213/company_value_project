@@ -3,7 +3,7 @@ import { IndicatorItem } from "../ui/IndicatorItem";
 import { MajorIndicatorSkeleton } from "../ui/skeleton/MajorIndicatorSkeleton";
 import { useMacroLatest } from "../hooks/useMacroQueries";
 
-export const MajorIndicatorSection = () => {
+export const MajorIndicatorContainer = () => {
   const { macroData, isLoading } = useMacroLatest();
   if (isLoading) {
     return <MajorIndicatorSkeleton/>

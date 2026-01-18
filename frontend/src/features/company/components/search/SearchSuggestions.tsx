@@ -7,7 +7,9 @@ interface SearchSuggestionsProps {
 }
 
 export const SearchSuggestions = ({ suggestions, onSelect, isVisible }: SearchSuggestionsProps) => {
-  if (!isVisible || suggestions.length === 0) return null;
+  if (!isVisible || suggestions.length === 0) {
+    return null;
+  }
 
   return (
     <div className="absolute top-full left-0 right-0 mt-2 bg-slate-800 border border-slate-700 rounded-lg shadow-xl overflow-hidden max-h-80 overflow-y-auto z-50">

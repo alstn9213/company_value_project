@@ -3,7 +3,7 @@ C:.
 │  index.css
 │  main.tsx
 │  vite-env.d.ts
-│
+│  
 ├─api
 │      axiosClient.ts
 │
@@ -11,13 +11,13 @@ C:.
 │  ├─common
 │  │      Logo.tsx
 │  │      TermWithTooltip.tsx
-│  │
+│  │      
 │  ├─layouts
 │  │      Header.tsx
 │  │      HeaderNav.tsx
 │  │      MainLayout.tsx
 │  │      ProtectedRoute.tsx
-│  │
+│  │      
 │  └─ui
 │          ChartCard.tsx
 │          EmptyState.tsx
@@ -30,10 +30,10 @@ C:.
 ├─features
 │  ├─auth
 │  │  │  index.ts
-│  │  │
+│  │  │  
 │  │  ├─api
 │  │  │      authApi.ts
-│  │  │
+│  │  │      
 │  │  ├─components
 │  │  │      AuthActions.tsx
 │  │  │      UserMenu.tsx
@@ -214,6 +214,7 @@ C:.
 │      authStore.ts
 │
 ├─types
+│      api.ts
 │      auth.ts
 │      company.ts
 │      macro.ts
