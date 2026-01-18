@@ -2,11 +2,11 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 import { companyApi } from "../api/companyApi";
 import { CompanySummaryResponse } from "../../../types/company";
-import { ApiErrorData } from "../../../types/auth";
 import { useDebounce } from "../../../hooks/useDebounce";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getErrorMessage } from "../../../utils/errorHandler";
 import { companyKeys } from "../api/queryKeys";
+import { ApiErrorData } from "../../../types/api";
 
 export interface CompanySearchHookResult {
   keyword: string;

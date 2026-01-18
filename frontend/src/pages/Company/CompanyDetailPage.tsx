@@ -1,10 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useCompanyDetail } from "../../features/company/hooks/useCompanyDetail";
 import { ScoreAnalysisSection } from "../../features/valuation/layouts/ScoreAnalysisSection";
 import { CompanyHeader } from "../../features/company/components/p_detail/CompanyHeader";
 import { ErrorState } from "../../components/ui/ErrorState";
-import { StockChartSection } from "../../features/company/layouts/StockChartSection";
-import { FinancialSummary } from "../../features/company/layouts/FinancialSummary";
+import { 
+  useCompanyDetail, 
+  StockChartSection, 
+  FinancialSummary 
+} from '../../features/company';
 
 const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();

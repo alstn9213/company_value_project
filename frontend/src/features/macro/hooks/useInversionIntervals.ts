@@ -6,7 +6,6 @@ export interface InversionInterval {
   end: string;
 }
 
-
 //  금리 역전 구간 계산 로직
 const calculateInversionIntervals = (data: MacroDataResponse[]): InversionInterval[] => {
   const INVERSION_THRESHOLD = 0;

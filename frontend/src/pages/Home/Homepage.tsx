@@ -1,6 +1,5 @@
-import { MajorIndicatorSection } from "../../features/macro/layouts/MajorIndicatorSection";
-import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
-import { TopRankingListSection } from "../../features/company/layouts/TopRankingListSection";
+import { TopRankingListSection } from "../../features/company";
+import { EconomicChartSection, MajorIndicatorSection } from "../../features/macro";
 
 const HomePage = () => {
   return (

@@ -18,16 +18,10 @@ export const CompanyHeader = ({ info, score, isLoading }: CompanyHeaderProps) =>
     return <Skeleton/>;
   }
 
-  if (!info) {
+  if (!info || !score) {
     return null;
   }
 
-  if (!score) {
-    return null;
-  }
-
-
- 
  return (
     <div className="bg-card border border-slate-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-6">
       {/* 좌측: 기업 프로필 */}

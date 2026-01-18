@@ -3,8 +3,8 @@ import { companyApi } from "../api/companyApi";
 import { CompanyScoreResponse } from "../../../types/company";
 import { getErrorMessage } from "../../../utils/errorHandler";
 import { AxiosError } from "axios";
-import { ApiErrorData } from "../../../types/auth";
 import { companyKeys } from "../api/queryKeys";
+import { ApiErrorData } from "../../../types/api";
 
 export interface TopRankingHookResult {
   rankings: CompanyScoreResponse[];

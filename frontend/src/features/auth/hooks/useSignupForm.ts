@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { authApi } from "../api/authApi";
-import { ApiErrorData, SignUpRequest } from "../../../types/auth";
+import { SignUpRequest } from "../../../types/auth";
+import { ApiErrorData } from "../../../types/api";
 
 export const useSignupForm = () => {
   const navigate = useNavigate();

@@ -3,9 +3,9 @@ import { StockHistoryResponse } from "../../../types/company";
 import { companyApi } from "../api/companyApi";
 import { getErrorMessage } from "../../../utils/errorHandler";
 import { useMemo } from "react";
-import { ApiErrorData } from "../../../types/auth";
 import { AxiosError } from "axios";
 import { companyKeys } from "../api/queryKeys";
+import { ApiErrorData } from "../../../types/api";
 
 export interface StockHistoryHookResult {
   stockHistory: StockHistoryResponse[];

@@ -1,5 +1,5 @@
 import { isAxiosError } from "axios";
-import { ApiErrorResponse } from "../types/auth";
+import { ApiErrorResponse } from "../types/api";
 
 export const getErrorMessage = (error: unknown): string => {
   // Axios 에러인지 확인 (서버 요청 관련 에러)

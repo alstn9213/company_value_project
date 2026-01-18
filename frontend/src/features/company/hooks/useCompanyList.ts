@@ -2,10 +2,10 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { companyApi } from "../api/companyApi";
 import { useState } from "react";
 import { AxiosError } from "axios";
-import { ApiErrorData } from "../../../types/auth";
 import { PageResponse, CompanySummaryResponse } from "../../../types/company";
 import { getErrorMessage } from "../../../utils/errorHandler";
 import { companyKeys } from "../api/queryKeys";
+import { ApiErrorData } from "../../../types/api";
 
 export interface CompanyListHookResult {
   companies: CompanySummaryResponse[];
