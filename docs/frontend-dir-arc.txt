@@ -9,12 +9,9 @@ C:.
 │
 ├─components
 │  ├─common
-│  │      Logo.tsx
-│  │      TermWithTooltip.tsx
-│  │
-│  ├─layouts
 │  │      Header.tsx
 │  │      HeaderNav.tsx
+│  │      Logo.tsx
 │  │      MainLayout.tsx
 │  │      ProtectedRoute.tsx
 │  │
@@ -26,6 +23,7 @@ C:.
 │          NavItem.tsx
 │          Pagination.tsx
 │          Skeleton.tsx
+│          TermWithTooltip.tsx
 │
 ├─features
 │  ├─auth
@@ -115,14 +113,14 @@ C:.
 │  │  ├─api
 │  │  │      macroApi.ts
 │  │  │      queryKeys.ts
-│  │  │      
+│  │  │
 │  │  ├─components
 │  │  │      CustomTooltip.tsx
 │  │  │      EconomicChart.tsx
 │  │  │      EconomicChartContainer.tsx
 │  │  │      EconomicChartHeader.tsx
 │  │  │      MajorIndicatorContainer.tsx
-│  │  │
+│  │  │      
 │  │  ├─hooks
 │  │  │      useInversionIntervals.ts
 │  │  │      useMacroQueries.ts
@@ -143,7 +141,7 @@ C:.
 │  │  │
 │  │  ├─components
 │  │  │      CustomTooltip.tsx
-│  │  │      DetailScoreSection.tsx
+│  │  │      DetailScore.tsx
 │  │  │      RiskPenaltyAlert.tsx
 │  │  │      ScoreAnalysisContainer.tsx
 │  │  │      ScoreRadarChart.tsx
