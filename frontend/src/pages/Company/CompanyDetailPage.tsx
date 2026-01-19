@@ -1,10 +1,10 @@
 import { useParams } from "react-router-dom";
 import { 
   useCompanyDetail, 
-  FinancialSummary, 
   StockChartContainer,
-  CompanyHeader,
   ScoreAnalysisContainer,
+  CompanyHeaderContainer,
+  FinancialSummaryContainer,
 } from '../../features/company';
 
 export const CompanyDetailPage = () => {
@@ -18,7 +18,7 @@ export const CompanyDetailPage = () => {
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-10">
       {/* 헤더 */}
-      <CompanyHeader 
+      <CompanyHeaderContainer 
         info={summary} 
         score={score}
         isLoading={isLoading}
@@ -41,7 +41,7 @@ export const CompanyDetailPage = () => {
           <StockChartContainer 
             ticker={ticker} 
           />
-          <FinancialSummary 
+          <FinancialSummaryContainer 
             financial={financial} 
             isLoading={isLoading}
             isError={isError}

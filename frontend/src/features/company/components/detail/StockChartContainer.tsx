@@ -8,11 +8,11 @@ import { useStockHistory } from "../../hooks/useStockHistory";
 import { StockHistoryChart } from "../../ui/p_detail/StockHistoryChart";
 
 
-interface StockChartContainerProps {
+interface StockChartProps {
   ticker: string;
 }
 
-export const StockChartContainer = ({ ticker }: StockChartContainerProps) => {
+export const StockChartContainer = ({ ticker }: StockChartProps) => {
   const { 
     stockHistory, 
     latestPrice, 

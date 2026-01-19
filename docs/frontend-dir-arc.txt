@@ -3,7 +3,7 @@ C:.
 │  index.css
 │  main.tsx
 │  vite-env.d.ts
-│
+│  
 ├─api
 │      axiosClient.ts
 │
@@ -54,9 +54,9 @@ C:.
 │  │  │
 │  │  ├─components
 │  │  │  ├─detail
-│  │  │  │      CompanyHeader.tsx
+│  │  │  │      CompanyHeaderContainer.tsx
 │  │  │  │      DetailScore.tsx
-│  │  │  │      FinancialSummary.tsx
+│  │  │  │      FinancialSummaryContainer.tsx
 │  │  │  │      ScoreAnalysisContainer.tsx
 │  │  │  │      ScoreRadarChart.tsx
 │  │  │  │      StockChartContainer.tsx
@@ -85,6 +85,7 @@ C:.
 │  │  │      useCompanyList.ts
 │  │  │      useCompanySearch.ts
 │  │  │      useScoreAnalytics.ts
+│  │  │      useScoreRadarData.ts
 │  │  │      useSearchBarController.ts
 │  │  │      useStockHistory.ts
 │  │  │      useTopRankingCompanies.ts
@@ -145,7 +146,7 @@ C:.
 │  │      │  CustomTooltip.tsx
 │  │      │  EconomicLineChart.tsx
 │  │      │  IndicatorItem.tsx
-│  │      │  
+│  │      │
 │  │      ├─guides
 │  │      │      ChartGuide.tsx
 │  │      │      MarketGuide.tsx
@@ -175,7 +176,7 @@ C:.
 │
 ├─pages
 │  │  index.ts
-│  │
+│  │  
 │  ├─Auth
 │  │      LoginPage.tsx
 │  │      SignupPage.tsx
@@ -186,7 +187,7 @@ C:.
 │  │
 │  ├─Home
 │  │      Homepage.tsx
-│  │
+│  │      
 │  └─Watchlist
 │          WatchlistPage.tsx
 │

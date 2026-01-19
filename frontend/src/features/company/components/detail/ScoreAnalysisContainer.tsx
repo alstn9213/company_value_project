@@ -9,7 +9,7 @@ import { ScoreAnalysisSkeleton } from "../../ui/p_detail/ScoreAnalysisSkeleton";
 import { TotalScoreDisplay } from "./TotalScoreDisplay";
 import { ScoreRadarChart } from "./ScoreRadarChart";
 
-interface ScoreAnalysisContainerProps {
+interface ScoreAnalysisProps {
   score: CompanyScoreResponse | undefined;
   isLoading: boolean;
   isError?: boolean;
@@ -21,7 +21,7 @@ export const ScoreAnalysisContainer =({
   isLoading,
   isError,
   onRetry
-}: ScoreAnalysisContainerProps) => {
+}: ScoreAnalysisProps) => {
   const analytics = useScoreAnalytics(score);
 
   if (isLoading) {

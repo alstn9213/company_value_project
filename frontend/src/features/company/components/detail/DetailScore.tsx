@@ -3,13 +3,13 @@ import { MAX_SCORES } from "../../constants/maxScores";
 import { SCORE_TERMS } from "../../constants/scoreTerm";
 import { ScoreRow } from "../../ui/p_detail/ScoreRow";
 
-type DetailScoreSectionProps = Pick<
+type DetailScoreProps = Pick<
   CompanyScoreResponse, 
   'stabilityScore' | 'profitabilityScore' | 'valuationScore' | 'investmentScore'
 >;
 
 interface Props {
-  score: DetailScoreSectionProps;
+  score: DetailScoreProps;
 }
 
 export const DetailScore = ({ score }: Props) => {

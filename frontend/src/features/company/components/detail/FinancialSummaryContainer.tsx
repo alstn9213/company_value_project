@@ -14,7 +14,7 @@ interface FinancialSummaryProps {
   onRetry?: () => void;
 }
 
-export const FinancialSummary = ({ 
+export const FinancialSummaryContainer = ({ 
   financial, 
   isLoading, 
   isError, 

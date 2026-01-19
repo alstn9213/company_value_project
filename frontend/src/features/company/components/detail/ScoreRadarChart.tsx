@@ -9,6 +9,9 @@ import {
 } from "recharts";
 import { ChartDataPoint } from "../../types/chartDataPoint";
 import { CustomTooltip } from "../../ui/p_detail/CustomTooltip";
+import { useScoreRadarData } from "../../hooks/useScoreRadarData";
+import { EmptyState } from "../../../../components/ui/EmptyState";
+import { PieChart } from "lucide-react";
 
 
 interface ScoreRadarChartProps {
@@ -17,17 +20,20 @@ interface ScoreRadarChartProps {
 
 export const ScoreRadarChart: React.FC<ScoreRadarChartProps> = ({ data }) => {
 
-  if (!data) {
-    return null;
-  }
+  const { normalizedData, hasData } = useScoreRadarData(data);
 
-  // 모든 점수를 100점 만점 기준으로 환산
-  const normalizedData = data.map((item) => ({
-    ...item,
-    // 그래프용 환산 점수: (내점수 / 만점) * 100
-    normalizedScore: (item.score / (item.fullMark || 100)) * 100,
-  }));
-  // 각 항목별 만점 대비 비율로 환산 (시각적 균형을 위해 100점 만점으로 정규화 가능하나, 여기선 원본 점수 표기)
+  if (!hasData) {
+    return (
+      <div style={{ width: '100%', height: 300 }} className="flex items-center justify-center">
+        <EmptyState 
+          icon={<PieChart size={32} className="text-slate-600" />}
+          title="차트 데이터 없음"
+          description="표시할 점수 데이터가 부족합니다."
+          className="p-0" // 내부 패딩 최소화
+        />
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: '100%', height: 300 }}>

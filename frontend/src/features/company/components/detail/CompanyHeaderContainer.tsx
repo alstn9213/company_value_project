@@ -16,7 +16,7 @@ interface CompanyHeaderProps {
   onRetry?: () => void;
 }
 
-export const CompanyHeader = ({ 
+export const CompanyHeaderContainer = ({ 
   info, 
   score, 
   isLoading, 
