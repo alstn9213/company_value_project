@@ -1,26 +1,58 @@
-import { TrendingUp } from "lucide-react";
+import { AlertTriangle, TrendingUp } from "lucide-react";
 import { ScoreRadarChart } from "./ScoreRadarChart";
-import { RiskPenaltyAlert } from "./RiskPenaltyAlert";
+import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
 import { TotalScoreDisplay } from "./TotalScoreDisplay";
 import { CompanyScoreResponse } from "../../../types/company";
-import { Skeleton } from "../../../components/ui/Skeleton";
 import { useScoreAnalytics } from "../hooks/useScoreAnalytics";
 import { DetailScore } from "./DetailScore";
+import { ScoreAnalysisSkeleton } from "../ui/ScoreAnalysisSkeleton";
+import { ErrorState } from "../../../components/ui/ErrorState";
+import { EmptyState } from "../../../components/ui/EmptyState";
 
 interface ScoreAnalysisContainerProps {
   score: CompanyScoreResponse | undefined;
   isLoading: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
 }
 
-export const ScoreAnalysisContainer = ({ score, isLoading }: ScoreAnalysisContainerProps) => {
+export const ScoreAnalysisContainer =({ 
+  score, 
+  isLoading,
+  isError,
+  onRetry
+}: ScoreAnalysisContainerProps) => {
   const analytics = useScoreAnalytics(score);
 
   if (isLoading) {
-    return <Skeleton/>;
+    return <ScoreAnalysisSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <div className="h-full flex flex-col gap-4">
+         <div className="bg-card border border-slate-700/50 rounded-xl p-6 flex-1 flex items-center justify-center shadow-lg backdrop-blur-sm min-h-[400px]">
+            <ErrorState 
+                title="분석 데이터를 불러올 수 없습니다" 
+                onRetry={onRetry} 
+            />
+         </div>
+      </div>
+    );
   }
 
   if (!score || !analytics) {
-    return null;
+    return (
+      <div className="h-full flex flex-col gap-4">
+        <div className="bg-card border border-slate-700/50 rounded-xl p-6 flex-1 flex items-center justify-center shadow-lg backdrop-blur-sm min-h-[400px]">
+          <EmptyState 
+            icon={<AlertTriangle size={48} className="text-slate-600 mb-4" />}
+            title="분석 리포트 없음"
+            description="해당 기업의 분석 점수 데이터가 존재하지 않습니다."
+          />
+        </div>
+      </div>
+    );
   }
 
   const { penaltyPoints, chartData } = analytics;

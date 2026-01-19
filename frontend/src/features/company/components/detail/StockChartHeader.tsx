@@ -5,6 +5,11 @@ interface StockChartHeaderProps {
 }
 
 export const StockChartHeader = ({ latestPrice }: StockChartHeaderProps) => {
+
+  if (!latestPrice) {
+    return null;
+  }
+
   return (
     <div className="flex justify-between items-start mb-4 pl-2 shrink-0">
       <h3 className="text-lg font-bold text-slate-200 border-l-4 border-emerald-500 pl-2">

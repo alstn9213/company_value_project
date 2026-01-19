@@ -16,7 +16,9 @@ export const MajorIndicatorContainer = () => {
   return (
     <section className="space-y-4 xl:col-span-2">
       {/* 공통 헤더 영역 */}
-      <h2 className="text-lg font-bold text-slate-100 border-l-4 border-blue-500 pl-3">주요 지표</h2>
+      <h2 className="text-lg font-bold text-slate-100 border-l-4 border-blue-500 pl-3">
+        주요 지표
+      </h2>
 
       <div className="flex flex-col gap-3">
         <IndicatorItem

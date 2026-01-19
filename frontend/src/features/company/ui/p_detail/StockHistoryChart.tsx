@@ -1,20 +1,12 @@
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, } from "recharts";
 import dayjs from "dayjs";
 import { StockHistoryResponse } from "../../../../types/company";
 
-interface StockPriceChartProps {
+interface StockHistoryChartProps {
   data: StockHistoryResponse[];
 }
 
-export const StockPriceChart = ({ data }: StockPriceChartProps) => {
+export const StockHistoryChart = ({ data }: StockHistoryChartProps) => {
   return (
     <div className="w-full h-full min-h-0">
       <ResponsiveContainer 

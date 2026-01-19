@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
-import { ErrorState } from "../../components/ui/ErrorState";
 import { 
   useCompanyDetail, 
   FinancialSummary, 
   StockChartContainer,
-  CompanyHeader
+  CompanyHeader,
 } from '../../features/company';
 import { ScoreAnalysisContainer } from "../../features/valuation";
 
@@ -16,15 +15,6 @@ export const CompanyDetailPage = () => {
       return null;
   }
 
-  if (isError) {
-    return (
-      <ErrorState 
-        title="기업 정보를 찾을 수 없습니다"
-        onRetry={refetch}
-      />
-    );
-  }
-
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-10">
       {/* 헤더 */}
@@ -32,6 +22,8 @@ export const CompanyDetailPage = () => {
         info={summary} 
         score={score}
         isLoading={isLoading}
+        isError={isError}
+        onRetry={refetch}
         />
       {/* 기업 정보 대시 보드 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -40,6 +32,8 @@ export const CompanyDetailPage = () => {
           <ScoreAnalysisContainer
             score={score} 
             isLoading={isLoading}
+            isError={isError}
+            onRetry={refetch}
             />
         </div>
         {/* 우측: 차트 및 재무제표 */}
@@ -50,6 +44,8 @@ export const CompanyDetailPage = () => {
           <FinancialSummary 
             financial={financial} 
             isLoading={isLoading}
+            isError={isError}
+            onRetry={refetch}
           />
         </div>
       </div>

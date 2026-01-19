@@ -1,18 +1,18 @@
 import { BarChart2 } from "lucide-react";
-import { StockPriceChart } from "./StockPriceChart";
 import { ErrorState } from "../../../../components/ui/ErrorState";
 import { EmptyState } from "../../../../components/ui/EmptyState";
 import { LoadingState } from "../../../../components/ui/LoadingState";
 import { StockChartHeader } from "./StockChartHeader";
 import { ChartCard } from "../../../../components/ui/ChartCard";
 import { useStockHistory } from "../../hooks/useStockHistory";
+import { StockHistoryChart } from "../../ui/p_detail/StockHistoryChart";
 
 
-interface StockChartSectionProps {
+interface StockChartContainerProps {
   ticker: string;
 }
 
-export const StockChartContainer = ({ ticker }: StockChartSectionProps) => {
+export const StockChartContainer = ({ ticker }: StockChartContainerProps) => {
   const { 
     stockHistory, 
     latestPrice, 
@@ -53,7 +53,7 @@ export const StockChartContainer = ({ ticker }: StockChartSectionProps) => {
     <ChartCard>
       <StockChartHeader latestPrice={latestPrice} />
       <div className="flex-1 w-full min-h-0 mt-4">
-        <StockPriceChart data={stockHistory} />
+        <StockHistoryChart data={stockHistory} />
       </div>
     </ChartCard>
   );

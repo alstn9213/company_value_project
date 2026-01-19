@@ -4,18 +4,35 @@ import { FinancialStatementResponse } from "../../../../types/company";
 import { IncomeStatement } from "../../ui/p_detail/financial/IncomeStatement";
 import { BalanceSheet } from "../../ui/p_detail/financial/BalanceSheet";
 import { CashFlowStatement } from "../../ui/p_detail/financial/CashFlowStatement";
-import { Skeleton } from "../../../../components/ui/Skeleton";
+import { ErrorState } from "../../../../components/ui/ErrorState";
+import { FinancialSummarySkeleton } from "../../ui/skeletons/FinancialSummarySkeleton";
 
 interface FinancialSummaryProps {
   financial: FinancialStatementResponse | undefined;
   isLoading: boolean;
+  isError: boolean;
+  onRetry?: () => void;
 }
 
-export const FinancialSummary = ({ financial, isLoading }: FinancialSummaryProps) => {
+export const FinancialSummary = ({ 
+  financial, 
+  isLoading, 
+  isError, 
+  onRetry
+}: FinancialSummaryProps) => {
 
   if (isLoading) {
+    return <FinancialSummarySkeleton />;
+  }
+
+  if (isError) {
     return (
-      <Skeleton/>
+      <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full flex items-center justify-center min-h-[400px]">
+        <ErrorState 
+          title="재무 정보를 불러올 수 없습니다"
+          onRetry={onRetry}
+        />
+      </div>
     );
   }
  

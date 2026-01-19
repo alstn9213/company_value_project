@@ -3,7 +3,7 @@ C:.
 │  index.css
 │  main.tsx
 │  vite-env.d.ts
-│
+│  
 ├─api
 │      axiosClient.ts
 │
@@ -58,7 +58,6 @@ C:.
 │  │  │  │      FinancialSummary.tsx
 │  │  │  │      StockChartContainer.tsx
 │  │  │  │      StockChartHeader.tsx
-│  │  │  │      StockPriceChart.tsx
 │  │  │  │
 │  │  │  ├─list
 │  │  │  │      CompanyCard.tsx
@@ -83,6 +82,7 @@ C:.
 │  │      ├─p_detail
 │  │      │  │  CompanyProfile.tsx
 │  │      │  │  InvestmentGradeBadge.tsx
+│  │      │  │  StockHistoryChart.tsx
 │  │      │  │
 │  │      │  ├─constants
 │  │      │  │      financialTerms.ts
@@ -102,6 +102,8 @@ C:.
 │  │      │
 │  │      ├─skeletons
 │  │      │      CompanyCardSkeleton.tsx
+│  │      │      CompanyHeaderSkeleton.tsx
+│  │      │      FinancialSummarySkeleton.tsx
 │  │      │      RankingSkeleton.tsx
 │  │      │
 │  │      └─states
@@ -115,17 +117,17 @@ C:.
 │  │  │      queryKeys.ts
 │  │  │
 │  │  ├─components
-│  │  │      CustomTooltip.tsx
 │  │  │      EconomicChart.tsx
 │  │  │      EconomicChartContainer.tsx
-│  │  │      EconomicChartHeader.tsx
 │  │  │      MajorIndicatorContainer.tsx
-│  │  │      
+│  │  │
 │  │  ├─hooks
 │  │  │      useInversionIntervals.ts
 │  │  │      useMacroQueries.ts
 │  │  │
 │  │  └─ui
+│  │      │  CustomTooltip.tsx
+│  │      │  EconomicLineChart.tsx
 │  │      │  IndicatorItem.tsx
 │  │      │
 │  │      ├─guides
@@ -140,12 +142,9 @@ C:.
 │  │  │  index.ts
 │  │  │
 │  │  ├─components
-│  │  │      CustomTooltip.tsx
 │  │  │      DetailScore.tsx
-│  │  │      RiskPenaltyAlert.tsx
 │  │  │      ScoreAnalysisContainer.tsx
 │  │  │      ScoreRadarChart.tsx
-│  │  │      ScoreRow.tsx
 │  │  │      TotalScoreDisplay.tsx
 │  │  │
 │  │  ├─constants
@@ -155,8 +154,14 @@ C:.
 │  │  ├─hooks
 │  │  │      useScoreAnalytics.ts
 │  │  │
-│  │  └─types
-│  │          chartDataPoint.ts
+│  │  ├─types
+│  │  │      chartDataPoint.ts
+│  │  │
+│  │  └─ui
+│  │          CustomTooltip.tsx
+│  │          RiskPenaltyAlert.tsx
+│  │          ScoreAnalysisSkeleton.tsx
+│  │          ScoreRow.tsx
 │  │
 │  └─watchlist
 │      │  index.ts

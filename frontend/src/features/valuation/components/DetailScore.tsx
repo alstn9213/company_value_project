@@ -1,7 +1,7 @@
 import { CompanyScoreResponse } from "../../../types/company";
 import { MAX_SCORES } from "../constants/maxScores";
 import { SCORE_TERMS } from "../constants/scoreTerm";
-import { ScoreRow } from "./ScoreRow";
+import { ScoreRow } from "../ui/ScoreRow";
 
 type DetailScoreSectionProps = Pick<
   CompanyScoreResponse, 

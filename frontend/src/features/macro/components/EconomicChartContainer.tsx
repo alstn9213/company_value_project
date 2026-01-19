@@ -1,13 +1,10 @@
 import { EconomicChart } from "./EconomicChart";
 import { MarketGuide } from "../ui/guides/MarketGuide";
 import { ChartGuide } from "../ui/guides/ChartGuide";
-import { EconomicChartHeader } from "./EconomicChartHeader";
 
 export const EconomicChartContainer = () => {
   return (
     <section className="flex flex-col gap-6 xl:col-span-7">
-      {/* 헤더 영역 */}
-      <EconomicChartHeader />
 
       {/* 메인 차트 영역 */}
       <EconomicChart />
