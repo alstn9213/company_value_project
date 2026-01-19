@@ -4,8 +4,8 @@ import {
   FinancialSummary, 
   StockChartContainer,
   CompanyHeader,
+  ScoreAnalysisContainer,
 } from '../../features/company';
-import { ScoreAnalysisContainer } from "../../features/valuation";
 
 export const CompanyDetailPage = () => {
   const { ticker } = useParams<{ ticker: string }>();

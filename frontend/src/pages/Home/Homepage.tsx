@@ -1,5 +1,5 @@
 import { TopRankingListContainer } from "../../features/company";
-import { EconomicChartContainer, MajorIndicatorContainer,  } from "../../features/macro";
+import { EconomicChartContainer, MajorIndicatorContainer, } from "../../features/macro";
 
 export const HomePage = () => {
   return (

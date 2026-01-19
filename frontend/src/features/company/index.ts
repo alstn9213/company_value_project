@@ -11,3 +11,4 @@ export * from './components/rank/TopRankingListContainer';
 export * from './components/detail/CompanyHeader';
 export * from './components/search/SearchBar';
 export * from './ui/p_list/CompanyCard';
+export * from './components/detail/ScoreAnalysisContainer'

@@ -1,46 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Loader2, Search, X } from "lucide-react";
-import { useCompanySearch } from "../../hooks/useCompanySearch";
 import { SearchSuggestions } from "./SearchSuggestions";
+import { useSearchBarController } from "../../hooks/useSearchBarController";
 
 export const SearchBar = () => {
-  const navigate = useNavigate();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [showDropdown, setShowDropdown] = useState(false);  
-  const { keyword, setKeyword, suggestions, isLoading, clearSearch } = useCompanySearch();
-
-  // 드롭다운 노출 제어 (검색 결과가 있으면 노출)
-  useEffect(() => {
-    if (suggestions.length > 0) { 
-      setShowDropdown(true);
-    }
-  }, [suggestions]);
-
-  // 외부 클릭 시 드롭다운 닫기
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowDropdown(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (keyword.trim()) {
-      setShowDropdown(false);
-      navigate(`/companies?search=${keyword}`);
-    }
-  };
-
-  const handleSelectCompany = (ticker: string) => {
-    clearSearch();
-    setShowDropdown(false);
-    navigate(`/company/${ticker}`);
-  };
+  const {
+    keyword,
+    setKeyword,
+    suggestions,
+    isLoading,
+    showDropdown,
+    dropdownRef,
+    handleSearchSubmit,
+    handleSelectCompany,
+    handleClear,
+    handleFocus
+  } = useSearchBarController();
 
   return (
     <div className="relative w-full max-w-md hidden sm:block" ref={dropdownRef}>
@@ -58,19 +32,17 @@ export const SearchBar = () => {
           className="w-full bg-transparent border-none py-2.5 pl-2 pr-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-0"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          onFocus={() => {
-            if (suggestions.length > 0) setShowDropdown(true);
-          }}
+          onFocus={handleFocus}
         />
 
-        {/* 로딩, 삭제 버튼 */}
+        {/* 로딩 표시 및 초기화 버튼 */}
         <div className="flex items-center pr-2 space-x-1">
           {isLoading && <Loader2 className="h-4 w-4 animate-spin text-blue-500" />}
           
           {keyword && !isLoading && (
             <button
               type="button"
-              onClick={clearSearch}
+              onClick={handleClear}
               className="p-1 text-slate-500 hover:text-white"
             >
               <X size={14} />
@@ -86,6 +58,7 @@ export const SearchBar = () => {
         </button>
       </form>
 
+      {/* 검색어 추천 드롭다운 */}
       <SearchSuggestions 
         suggestions={suggestions} 
         onSelect={handleSelectCompany} 

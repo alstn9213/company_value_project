@@ -26,7 +26,7 @@ export const useCompanySearch = (initialKeyword = ""): CompanySearchHookResult =
     queryFn: () => companyApi.search(debouncedKeyword),    
     enabled: !!debouncedKeyword && debouncedKeyword.trim().length > 0,
     staleTime: 1000 * 60 * 1, // 1분간 캐시
-    placeholderData: keepPreviousData, // (선택사항) 타이핑 중 이전 검색결과 유지하여 깜빡임 방지
+    placeholderData: keepPreviousData, // 타이핑 중 이전 검색결과 유지하여 깜빡임 방지
   });
 
   const clearSearch = () => {

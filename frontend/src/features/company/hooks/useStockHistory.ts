@@ -29,8 +29,8 @@ export const useStockHistory = (ticker: string): StockHistoryHookResult => {
     staleTime: 1000 * 60 * 60, // 1시간 캐싱
     
     // [최적화 포인트] select 옵션을 사용해 데이터 변환 로직 내재화
-    // 서버에서 받은 데이터를 날짜순으로 정렬합니다. 
-    // 데이터가 변하지 않으면 이 함수는 재실행되지 않습니다 (Memoization).
+    // 서버에서 받은 데이터를 날짜순으로 정렬. 
+    // 데이터가 변하지 않으면 이 함수는 재실행되지 않는다 (Memoization).
     select: (data) => {
       return [...data].sort((a, b) => 
         new Date(a.date).getTime() - new Date(b.date).getTime()

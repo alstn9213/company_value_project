@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { CompanyScoreResponse } from "../../../types/company";
-import { MAX_SCORES } from "../constants/maxScores";
+import { MAX_SCORES } from "../../company/constants/maxScores";
 import { ChartDataPoint } from "../types/chartDataPoint";
 
 

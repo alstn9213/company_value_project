@@ -55,9 +55,13 @@ C:.
 │  │  ├─components
 │  │  │  ├─detail
 │  │  │  │      CompanyHeader.tsx
+│  │  │  │      DetailScore.tsx
 │  │  │  │      FinancialSummary.tsx
+│  │  │  │      ScoreAnalysisContainer.tsx
+│  │  │  │      ScoreRadarChart.tsx
 │  │  │  │      StockChartContainer.tsx
 │  │  │  │      StockChartHeader.tsx
+│  │  │  │      TotalScoreDisplay.tsx
 │  │  │  │
 │  │  │  ├─list
 │  │  │  │      CompanyGrid.tsx
@@ -70,21 +74,34 @@ C:.
 │  │  │          SearchBar.tsx
 │  │  │          SearchSuggestions.tsx
 │  │  │
+│  │  ├─constants
+│  │  │      financialTerms.ts
+│  │  │      maxScores.ts
+│  │  │      scoreTerm.ts
+│  │  │
 │  │  ├─hooks
+│  │  │      useAddWatchlist.ts
 │  │  │      useCompanyDetail.ts
 │  │  │      useCompanyList.ts
 │  │  │      useCompanySearch.ts
+│  │  │      useScoreAnalytics.ts
+│  │  │      useSearchBarController.ts
 │  │  │      useStockHistory.ts
 │  │  │      useTopRankingCompanies.ts
+│  │  │
+│  │  ├─types
+│  │  │      chartDataPoint.ts
 │  │  │
 │  │  └─ui
 │  │      ├─p_detail
 │  │      │  │  CompanyProfile.tsx
+│  │      │  │  CustomTooltip.tsx
 │  │      │  │  InvestmentGradeBadge.tsx
+│  │      │  │  RiskPenaltyAlert.tsx
+│  │      │  │  ScoreAnalysisSkeleton.tsx
+│  │      │  │  ScoreRow.tsx
 │  │      │  │  StockHistoryChart.tsx
-│  │      │  │
-│  │      │  ├─constants
-│  │      │  │      financialTerms.ts
+│  │      │  │  WatchlistButton.tsx
 │  │      │  │
 │  │      │  └─financial
 │  │      │          BalanceSheet.tsx
@@ -128,7 +145,7 @@ C:.
 │  │      │  CustomTooltip.tsx
 │  │      │  EconomicLineChart.tsx
 │  │      │  IndicatorItem.tsx
-│  │      │
+│  │      │  
 │  │      ├─guides
 │  │      │      ChartGuide.tsx
 │  │      │      MarketGuide.tsx
@@ -136,31 +153,6 @@ C:.
 │  │      └─skeleton
 │  │              EconomicChartSkeleton.tsx
 │  │              MajorIndicatorSkeleton.tsx
-│  │
-│  ├─valuation
-│  │  │  index.ts
-│  │  │
-│  │  ├─components
-│  │  │      DetailScore.tsx
-│  │  │      ScoreAnalysisContainer.tsx
-│  │  │      ScoreRadarChart.tsx
-│  │  │      TotalScoreDisplay.tsx
-│  │  │
-│  │  ├─constants
-│  │  │      maxScores.ts
-│  │  │      scoreTerm.ts
-│  │  │
-│  │  ├─hooks
-│  │  │      useScoreAnalytics.ts
-│  │  │
-│  │  ├─types
-│  │  │      chartDataPoint.ts
-│  │  │
-│  │  └─ui
-│  │          CustomTooltip.tsx
-│  │          RiskPenaltyAlert.tsx
-│  │          ScoreAnalysisSkeleton.tsx
-│  │          ScoreRow.tsx
 │  │
 │  └─watchlist
 │      │  index.ts
@@ -171,11 +163,9 @@ C:.
 │      │
 │      ├─components
 │      │      CompanyGridCard.tsx
-│      │      WatchlistButton.tsx
 │      │      WatchlistDeleteButton.tsx
 │      │
 │      └─hooks
-│              useAddWatchlist.ts
 │              useWatchlist.ts
 │
 ├─hooks
@@ -196,7 +186,7 @@ C:.
 │  │
 │  ├─Home
 │  │      Homepage.tsx
-│  │      
+│  │
 │  └─Watchlist
 │          WatchlistPage.tsx
 │

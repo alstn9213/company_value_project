@@ -34,7 +34,9 @@ export const TopRankingListContainer = () => {
           <tbody className="divide-y divide-slate-700/50">
             <RankingTableBody 
               companies={rankings} 
-              isLoading={isLoading} 
+              isLoading={isLoading}
+              isError={isError}
+              onRetry={refetch} 
             />
           </tbody>
         </table>

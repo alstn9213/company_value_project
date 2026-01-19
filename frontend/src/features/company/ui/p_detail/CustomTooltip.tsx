@@ -1,4 +1,4 @@
-import { ChartDataPoint } from "../types/chartDataPoint";
+import { ChartDataPoint } from "../../types/chartDataPoint";
 
 interface CustomTooltipProps {
   active?: boolean;

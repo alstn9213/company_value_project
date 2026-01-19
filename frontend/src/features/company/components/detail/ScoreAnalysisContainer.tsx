@@ -1,13 +1,13 @@
 import { AlertTriangle, TrendingUp } from "lucide-react";
-import { ScoreRadarChart } from "./ScoreRadarChart";
-import { RiskPenaltyAlert } from "../ui/RiskPenaltyAlert";
-import { TotalScoreDisplay } from "./TotalScoreDisplay";
-import { CompanyScoreResponse } from "../../../types/company";
-import { useScoreAnalytics } from "../hooks/useScoreAnalytics";
+import { RiskPenaltyAlert } from "../../ui/p_detail/RiskPenaltyAlert";
+import { CompanyScoreResponse } from "../../../../types/company";
 import { DetailScore } from "./DetailScore";
-import { ScoreAnalysisSkeleton } from "../ui/ScoreAnalysisSkeleton";
-import { ErrorState } from "../../../components/ui/ErrorState";
-import { EmptyState } from "../../../components/ui/EmptyState";
+import { ErrorState } from "../../../../components/ui/ErrorState";
+import { EmptyState } from "../../../../components/ui/EmptyState";
+import { useScoreAnalytics } from "../../hooks/useScoreAnalytics";
+import { ScoreAnalysisSkeleton } from "../../ui/p_detail/ScoreAnalysisSkeleton";
+import { TotalScoreDisplay } from "./TotalScoreDisplay";
+import { ScoreRadarChart } from "./ScoreRadarChart";
 
 interface ScoreAnalysisContainerProps {
   score: CompanyScoreResponse | undefined;

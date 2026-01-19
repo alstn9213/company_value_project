@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useRequireAuth } from "../../../hooks/useRequireAuth";
-import { watchlistApi } from "../api/watchlistApi";
-import { watchlistKeys } from "../api/queryKeys";
+import { watchlistApi } from "../../watchlist/api/watchlistApi";
+import { watchlistKeys } from "../../watchlist/api/queryKeys";
 
 export const useAddWatchlist = () => {
   const queryClient = useQueryClient();

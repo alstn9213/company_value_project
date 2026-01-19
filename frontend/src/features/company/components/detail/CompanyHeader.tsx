@@ -1,8 +1,8 @@
 import { Building2 } from "lucide-react";
 import { EmptyState } from "../../../../components/ui/EmptyState";
 import { CompanySummaryResponse, CompanyScoreResponse } from "../../../../types/company";
-import { WatchlistButton } from "../../../watchlist/components/WatchlistButton";
-import { useAddWatchlist } from "../../../watchlist/hooks/useAddWatchlist";
+import { WatchlistButton } from "../../ui/p_detail/WatchlistButton";
+import { useAddWatchlist } from "../../hooks/useAddWatchlist";
 import { CompanyProfile } from "../../ui/p_detail/CompanyProfile";
 import { InvestmentGradeBadge } from "../../ui/p_detail/InvestmentGradeBadge";
 import { CompanyHeaderSkeleton } from "../../ui/skeletons/CompanyHeaderSkeleton";

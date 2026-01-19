@@ -7,8 +7,8 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { ChartDataPoint } from "../types/chartDataPoint";
-import { CustomTooltip } from "../ui/CustomTooltip";
+import { ChartDataPoint } from "../../types/chartDataPoint";
+import { CustomTooltip } from "../../ui/p_detail/CustomTooltip";
 
 
 interface ScoreRadarChartProps {

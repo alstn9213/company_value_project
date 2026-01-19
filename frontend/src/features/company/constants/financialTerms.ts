@@ -1,4 +1,4 @@
-import { TermDefinition } from "../../../../../types/term";
+import { TermDefinition } from "../../../types/term";
 
 export const FINANCIAL_TERMS: Record<string, TermDefinition> = {
   revenue: {
