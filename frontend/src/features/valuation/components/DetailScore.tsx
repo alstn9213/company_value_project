@@ -13,7 +13,6 @@ interface Props {
 }
 
 export const DetailScore = ({ score }: Props) => {
-  // 렌더링을 위한 설정 배열 (매핑을 사용하여 중복 코드 제거)
   const scoreItems = [
     {
       label: "안정성 (부채/유동성)",

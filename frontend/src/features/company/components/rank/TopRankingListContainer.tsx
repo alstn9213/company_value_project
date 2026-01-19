@@ -1,30 +1,25 @@
-import { TopRankingHeader } from "../../ui/p_ranking/RankingHeader";
 import { RankingTableBody } from "./RankingTableBody";
 import { useTopRankingCompanies } from "../../hooks/useTopRankingCompanies";
-import { ErrorState } from "../../../../components/ui/ErrorState";
+import { Link } from "react-router-dom";
 
 
 export const TopRankingListContainer = () => {
   const { rankings, isLoading, isError, refetch } = useTopRankingCompanies();
 
-  if (isError) {
-    return (
-      <section className="space-y-4 xl:col-span-3">
-        <TopRankingHeader />
-        <div className="rounded-lg border border-slate-700 bg-slate-800 p-6">
-           <ErrorState 
-             title="랭킹 정보를 불러올 수 없습니다" 
-             onRetry={refetch} 
-           />
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section className="space-y-4 xl:col-span-3">
       {/* 헤더 */}
-      <TopRankingHeader />
+      <div className="flex items-center justify-between border-b border-slate-700 pb-2">
+        <h2 className="text-lg font-bold text-slate-100">
+          Top Ranking
+        </h2>
+        <Link
+          to="/companies"
+          className="text-xs text-blue-400 hover:underline"
+        >
+          전체보기
+        </Link>
+      </div>
       {/* 테이블 영역 */}
       <div className="overflow-hidden rounded-lg border border-slate-700 bg-slate-800">
         <table className="w-full text-left text-sm">
@@ -44,6 +39,6 @@ export const TopRankingListContainer = () => {
           </tbody>
         </table>
       </div>
-      </section>
+    </section>
   );
 };

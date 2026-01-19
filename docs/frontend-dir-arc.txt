@@ -3,7 +3,7 @@ C:.
 │  index.css
 │  main.tsx
 │  vite-env.d.ts
-│  
+│
 ├─api
 │      axiosClient.ts
 │
@@ -60,7 +60,6 @@ C:.
 │  │  │  │      StockChartHeader.tsx
 │  │  │  │
 │  │  │  ├─list
-│  │  │  │      CompanyCard.tsx
 │  │  │  │      CompanyGrid.tsx
 │  │  │  │
 │  │  │  ├─rank
@@ -94,10 +93,10 @@ C:.
 │  │      │          IncomeStatement.tsx
 │  │      │
 │  │      ├─p_list
+│  │      │      CompanyCard.tsx
 │  │      │      CompanyFilterHeader.tsx
 │  │      │
 │  │      ├─p_ranking
-│  │      │      RankingHeader.tsx
 │  │      │      RankingItemRow.tsx
 │  │      │
 │  │      ├─skeletons
@@ -197,7 +196,7 @@ C:.
 │  │
 │  ├─Home
 │  │      Homepage.tsx
-│  │
+│  │      
 │  └─Watchlist
 │          WatchlistPage.tsx
 │

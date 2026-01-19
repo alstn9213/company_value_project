@@ -10,4 +10,4 @@ export * from './components/detail/StockChartContainer';
 export * from './components/rank/TopRankingListContainer';
 export * from './components/detail/CompanyHeader';
 export * from './components/search/SearchBar';
-export * from './components/list/CompanyCard';
+export * from './ui/p_list/CompanyCard';

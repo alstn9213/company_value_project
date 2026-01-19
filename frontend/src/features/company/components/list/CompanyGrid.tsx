@@ -1,6 +1,6 @@
 import { CompanySummaryResponse } from "../../../../types/company";
 import { CompanyCardSkeleton } from "../../ui/skeletons/CompanyCardSkeleton";
-import { CompanyCard } from "./CompanyCard";
+import { CompanyCard } from "../../ui/p_list/CompanyCard";
 import { EmptyState } from "../../../../components/ui/EmptyState";
 
 interface CompanyGridProps {
