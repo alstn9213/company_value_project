@@ -19,19 +19,19 @@ public class WatchlistController {
 
     @GetMapping
     public ResponseEntity<List<WatchlistResponse>> getMyWatchlist(@CurrentMemberId Long memberId) {
-        return ResponseEntity.ok(watchlistService.getWatchlist(memberId));
+      return ResponseEntity.ok(watchlistService.getWatchlist(memberId));
     }
 
     @PostMapping("/{ticker}")
-    public ResponseEntity<String> addWatchlist(@CurrentMemberId Long memberId, @PathVariable String ticker) {
-        watchlistService.addWatchlist(memberId, ticker);
-        return ResponseEntity.ok("관심 종목 추가 완료");
+    public ResponseEntity<Void> addWatchlist(@CurrentMemberId Long memberId, @PathVariable String ticker) {
+      watchlistService.addWatchlist(memberId, ticker);
+      return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{watchlistId}")
     public ResponseEntity<String> deleteWatchlist(@CurrentMemberId Long memberId, @PathVariable Long watchlistId) {
-        watchlistService.deleteWatchlist(memberId, watchlistId);
-        return ResponseEntity.ok("삭제 완료");
+      watchlistService.deleteWatchlist(memberId, watchlistId);
+      return ResponseEntity.ok().build();
     }
 
 }

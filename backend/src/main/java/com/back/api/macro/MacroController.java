@@ -20,16 +20,13 @@ public class MacroController {
     // 대시보드용 최신 지표
     @GetMapping("/latest")
     public ResponseEntity<MacroDataResponse> getLatestMacroData() {
-        MacroDataResponse data = macroReadService.getLatestData();
-        if(data == null) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(data);
+        return ResponseEntity.ok(macroReadService.getLatestData());
     }
 
     // 차트용 10년치 과거 데이터
     @GetMapping("/history")
     public ResponseEntity<List<MacroDataResponse>> getMacroHistory() {
-        List<MacroDataResponse> history = macroReadService.getHistoryData();
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(macroReadService.getHistoryData());
     }
 
 }
