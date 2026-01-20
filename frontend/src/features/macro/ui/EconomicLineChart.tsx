@@ -86,9 +86,7 @@ export const EconomicLineChart = ({ data, inversionIntervals }: EconomicLineChar
           </LineChart>
         </ResponsiveContainer>
       </div>
-      <div className="mt-2 text-right text-xs text-slate-500">
-        * 붉은색 영역: 장단기 금리차 역전 구간
-      </div>
+      
     </div>
   );
 };

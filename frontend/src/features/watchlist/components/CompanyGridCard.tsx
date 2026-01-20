@@ -18,7 +18,7 @@ export const CompanyGridCard = ({ item, action }: CompanyGridCardProps) => {
       className="group relative bg-card border border-slate-700/50 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg block"
     >
       <div className="flex justify-between items-start mb-4">
-        <div>
+        <div className="min-w-0">
           <span className="inline-block px-2 py-0.5 rounded text-xs font-bold bg-slate-800 text-slate-400 mb-2">
             {company.ticker}
           </span>
@@ -29,7 +29,7 @@ export const CompanyGridCard = ({ item, action }: CompanyGridCardProps) => {
 
         {/* 등급 뱃지 */}
         <div
-          className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center text-lg font-bold ${getGradeColor(
+          className={`w-10 h-10 flex-shrink-0 rounded-full border-2 flex items-center justify-center text-lg font-bold ${getGradeColor(
             company.grade
           )}`}
         >
