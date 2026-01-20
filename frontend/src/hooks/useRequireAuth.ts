@@ -13,7 +13,6 @@ export const useRequireAuth = () => {
   const withAuth = useCallback((callback: () => void) => {
     if (!isAuthenticated) {
       if (confirm("로그인이 필요한 기능입니다. 로그인 페이지로 이동하시겠습니까?")) {
-        // 추후 UX 개선: 로그인 후 다시 현재 페이지로 돌아오도록 state에 현재 경로(location.pathname)를 넘길 수도 있습니다.
         navigate("/login");
       }
       return; // 로그인 페이지로 이동하거나 취소했으므로 원래 액션은 실행하지 않음

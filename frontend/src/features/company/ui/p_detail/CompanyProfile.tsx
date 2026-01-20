@@ -1,11 +1,11 @@
-interface Props {
+interface CompanyHeaderProps {
   ticker: string;
   name: string;
   exchange: string;
   sector: string;
 }
 
-export const CompanyProfile = ({ ticker, name, exchange, sector }: Props) => {
+export const CompanyProfile = ({ ticker, name, exchange, sector }: CompanyHeaderProps) => {
   return (
     <div className="flex items-center gap-6">
       {/* 로고 (티커 앞글자) */}

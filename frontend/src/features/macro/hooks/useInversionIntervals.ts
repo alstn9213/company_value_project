@@ -1,48 +1,42 @@
 import { useMemo } from "react";
 import { MacroDataResponse } from "../../../types/macro";
 
-interface Interval {
-  start: string;
-  end: string;
-}
-
-/**
- * 거시경제 데이터 기록에서 장단기 금리차 역전 구간을 계산하는 훅
- * @param history MacroData 배열
- * @returns 역전 구간(start, end date) 배열
- */
-
-export const useInversionIntervals = (history?: MacroDataResponse[]): Interval[] => {
+export const useInversionIntervals = (history: MacroDataResponse[] | undefined) => {
   return useMemo(() => {
-    if (!history || history.length === 0) return [];
+    const data = history || [];
 
-    const intervals: Interval[] = [];
-    let startTime: string | null = null;
+    if (data.length === 0) {
+      return [];
+    }
 
-    history.forEach((d, index) => {
-      // spread(장단기 금리차)가 0보다 작으면 역전 상태
-      const isInverted = d.spread < 0;
+    const INVERSION_THRESHOLD = 0;
+    const intervals: { start: string; end: string }[] = [];
+    let currentStart: string | null = null;
 
-      if (isInverted && !startTime) {
-        // 역전 시작
-        startTime = d.date;
-      } else if (!isInverted && startTime) {
-        // 역전 종료 (이전 데이터까지가 역전 구간)
+    for (let i = 0; i < data.length; i++) {
+      const { spread, date } = data[i];
+      // 장단기 금리 차이(spread = us10 - us2)가 0보다 작다면, 장단기 금리 역전 상황임
+      const isInverted = spread < INVERSION_THRESHOLD;
+
+      if (isInverted && !currentStart) {
+        currentStart = date;
+      } else if (!isInverted && currentStart) {
         intervals.push({
-          start: startTime,
-          end: history[index - 1].date,
+          start: currentStart,
+          end: data[i - 1].date, // 직전 데이터가 역전 구간의 끝
         });
-        startTime = null;
+        currentStart = null; // 구간 초기화
       }
-    });
+    }
 
-    // 마지막 데이터까지 역전 상태가 지속된 경우 처리
-    if (startTime) {
+    // 마지막 데이터까지 역전이 지속된 경우 처리
+    if (currentStart) {
       intervals.push({
-        start: startTime,
-        end: history[history.length - 1].date,
+        start: currentStart,
+        end: data[data.length - 1].date,
       });
     }
+
     return intervals;
   }, [history]);
 };

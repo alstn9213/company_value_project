@@ -1,5 +1,5 @@
 import { FinancialStatementResponse } from "../../../../../types/company";
-import { FINANCIAL_TERMS } from "../constants/financialTerms";
+import { FINANCIAL_TERMS } from "../../../constants/financialTerms";
 import { FinancialRow } from "./FinancialRow";
 
 interface CashFlowStatementProps {

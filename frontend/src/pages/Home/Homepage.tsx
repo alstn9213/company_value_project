@@ -1,18 +1,15 @@
-import { MajorIndicatorSection } from "../../features/macro/layouts/MajorIndicatorSection";
-import { EconomicChartSection } from "../../features/macro/layouts/EconomicChartSection";
-import { TopRankingListSection } from "../../features/company/layouts/TopRankingListSection";
+import { TopRankingListContainer } from "../../features/company";
+import { EconomicChartContainer, MajorIndicatorContainer, } from "../../features/macro";
 
-const HomePage = () => {
+export const HomePage = () => {
   return (
     <div className="w-full space-y-6">
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
-        <MajorIndicatorSection />
-        <EconomicChartSection />
-        <TopRankingListSection />
+        <MajorIndicatorContainer />
+        <EconomicChartContainer />
+        <TopRankingListContainer />
       </div>
     </div>
   );
 };
 
-
-export default HomePage;

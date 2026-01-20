@@ -1,9 +1,8 @@
-import { useWatchlist } from "../../features/watchlist/hooks/useWatchlist"; 
-import { WatchlistCard } from "../../features/watchlist/layouts/WatchlistCard";
 import { EmptyState } from "../../components/ui/EmptyState";
 import { LoadingState } from "../../components/ui/LoadingState";
+import { CompanyGridCard, useWatchlist, WatchlistDeleteButton } from "../../features/watchlist";
 
-const WatchlistPage = () => {
+export const WatchlistPage = () => {
   const { watchlist, isLoading, handleDelete } = useWatchlist();
 
   if (isLoading) {
@@ -34,15 +33,13 @@ const WatchlistPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {watchlist.map((item) => (
-          <WatchlistCard
+          <CompanyGridCard
             key={item.watchlistId}
             item={item}
-            onDelete={handleDelete}
+            action={<WatchlistDeleteButton onClick={() => handleDelete(item.watchlistId)}/>}
           />
         ))}
       </div>
     </div>
   );
 };
-
-export default WatchlistPage;

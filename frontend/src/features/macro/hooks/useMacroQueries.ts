@@ -1,0 +1,55 @@
+import { useQuery } from "@tanstack/react-query";
+import { macroApi } from "../api/macroApi";
+import { AxiosError } from "axios";
+import { MacroDataResponse } from "../../../types/macro";
+import { ApiErrorData } from "../../../types/api";
+import { macroKeys } from "../api/queryKeys";
+
+interface MacroLatestHookResult {
+  macroData: MacroDataResponse | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  error: AxiosError<ApiErrorData> | null;
+  refetch: () => void;
+}
+
+export const useMacroLatest = (): MacroLatestHookResult => {
+  const { data, isLoading, isError, error, refetch } = useQuery<MacroDataResponse, AxiosError<ApiErrorData>>({
+    queryKey: macroKeys.indicators(),
+    queryFn: macroApi.getLatest,
+    staleTime: 1000 * 60 * 60, // 1시간 동안 데이터를 신선한 상태로 유지 (캐싱)
+    retry: 1,
+  });
+
+  return {
+    macroData: data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  };
+};
+
+interface MacroHistoryHookResult {
+  history: MacroDataResponse[];
+  isLoading: boolean;
+  isError: boolean;
+  error: AxiosError<ApiErrorData> | null;
+  refetch: () => void;
+}
+
+export const useMacroHistory = (): MacroHistoryHookResult => {
+  const { data, isLoading, isError, error, refetch } = useQuery<MacroDataResponse[], AxiosError<ApiErrorData>>({
+    queryKey: macroKeys.history(),
+    queryFn: macroApi.getHistory,
+    staleTime: 1000 * 60 * 60 * 24, // 24시간 (변동이 적은 과거 데이터)
+  });
+
+  return {
+    history: data || [], // 데이터가 없을 경우 빈 배열 반환하여 안전성 확보
+    isLoading,
+    isError,
+    error,
+    refetch,
+  };
+};

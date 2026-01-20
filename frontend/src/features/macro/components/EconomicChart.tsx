@@ -1,12 +1,14 @@
 import { EmptyState } from "../../../components/ui/EmptyState";
 import { ErrorState } from "../../../components/ui/ErrorState";
 import { useInversionIntervals } from "../hooks/useInversionIntervals";
+import { useMacroHistory } from "../hooks/useMacroQueries";
 import { EconomicChartSkeleton } from "../ui/skeleton/EconomicChartSkeleton";
-import { EconomicLineChart } from "./EconomicLineChart";
-import { useMacroHistory } from "../hooks/useMacroHistory";
+import { ChartCard } from "../../../components/ui/ChartCard";
+import { EconomicLineChart } from "../ui/EconomicLineChart";
+import { Globe2 } from "lucide-react";
 
 export const EconomicChart = () => {
-  const { data: history, error, isLoading } = useMacroHistory();
+  const { history, error, isLoading } = useMacroHistory();
   const inversionIntervals = useInversionIntervals(history);
 
   if (isLoading) {
@@ -15,34 +17,46 @@ export const EconomicChart = () => {
 
   if (error) {
     return (
-      <ErrorState
-        title="데이터를 불러올 수 없습니다"
-        message="잠시 후 다시 시도해주세요."
-        onRetry={() => window.location.reload()}
-      />
+      <ChartCard centerContent>
+        <ErrorState
+          title="데이터를 불러올 수 없습니다"
+          message="잠시 후 다시 시도해주세요."
+          onRetry={() => window.location.reload()}
+        />
+      </ChartCard>
     );
   }
 
   if (!history || history.length === 0) {
     return (
-      <EmptyState
-        title="데이터가 없습니다"
-        description="현재 표시할 경제 지표 데이터가 없습니다."
-      />
+      <ChartCard centerContent>
+        <EmptyState
+          title="데이터가 없습니다"
+          description="현재 표시할 경제 지표 데이터가 없습니다."
+        />
+      </ChartCard>
     );
   }
 
   return (
-  <div className="min-h-[400px] flex-1 rounded-xl border border-slate-700 bg-slate-800/50 p-5 shadow-sm backdrop-blur-sm">
-    <h3 className="mb-6 text-lg font-bold text-slate-200">
-      미국의 주요 금리 및 인플레이션 추이 (최근 10년)
-    </h3>
-
-    <EconomicLineChart data={history} inversionIntervals={inversionIntervals} />
-
-    <div className="mt-2 text-right text-xs text-slate-500">
-      * 붉은색 영역: 장단기 금리차 역전 구간
-    </div>
-  </div>
-);
+    <ChartCard className="h-auto min-h-[400px] p-5 bg-slate-800/50 backdrop-blur-sm">
+      {/* 제목 영역 */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+        <div>
+          <h3 className="text-lg font-bold text-slate-200 flex items-center gap-2">
+            <Globe2 className="w-5 h-5 text-blue-400" />
+            미국 주요 금리 및 인플레이션
+          </h3>
+            <p className="text-xs text-slate-500 mt-1">
+              최근 10년간의 국채 금리와 소비자 물가 지수 추이
+            </p>
+        </div>
+      </div>
+      {/* 차트 영역 */}
+      <EconomicLineChart 
+        data={history} 
+        inversionIntervals={inversionIntervals} 
+      />
+    </ChartCard>
+  );
 };

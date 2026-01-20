@@ -1,0 +1,208 @@
+C:.
+│  App.tsx
+│  index.css
+│  main.tsx
+│  vite-env.d.ts
+│  
+├─api
+│      axiosClient.ts
+│
+├─components
+│  ├─common
+│  │      Header.tsx
+│  │      HeaderNav.tsx
+│  │      Logo.tsx
+│  │      MainLayout.tsx
+│  │      ProtectedRoute.tsx
+│  │
+│  └─ui
+│          ChartCard.tsx
+│          EmptyState.tsx
+│          ErrorState.tsx
+│          LoadingState.tsx
+│          NavItem.tsx
+│          Pagination.tsx
+│          Skeleton.tsx
+│          TermWithTooltip.tsx
+│
+├─features
+│  ├─auth
+│  │  │  index.ts
+│  │  │
+│  │  ├─api
+│  │  │      authApi.ts
+│  │  │
+│  │  ├─components
+│  │  │      AuthActions.tsx
+│  │  │      AuthInput.tsx
+│  │  │      LoginForm.tsx
+│  │  │      SignupForm.tsx
+│  │  │      UserMenu.tsx
+│  │  │      UserMenuDropdown.tsx
+│  │  │      UserMenuTrigger.tsx
+│  │  │
+│  │  └─hooks
+│  │          useLoginForm.ts
+│  │          useSignupForm.ts
+│  │
+│  ├─company
+│  │  │  index.ts
+│  │  │
+│  │  ├─api
+│  │  │      companyApi.ts
+│  │  │      queryKeys.ts
+│  │  │
+│  │  ├─components
+│  │  │  ├─detail
+│  │  │  │      CompanyHeaderContainer.tsx
+│  │  │  │      DetailScore.tsx
+│  │  │  │      FinancialSummaryContainer.tsx
+│  │  │  │      ScoreAnalysisContainer.tsx
+│  │  │  │      ScoreRadarChart.tsx
+│  │  │  │      StockChartContainer.tsx
+│  │  │  │      StockChartHeader.tsx
+│  │  │  │      TotalScoreDisplay.tsx
+│  │  │  │
+│  │  │  ├─list
+│  │  │  │      CompanyGrid.tsx
+│  │  │  │
+│  │  │  ├─rank
+│  │  │  │      RankingTableBody.tsx
+│  │  │  │      TopRankingListContainer.tsx
+│  │  │  │
+│  │  │  └─search
+│  │  │          SearchBar.tsx
+│  │  │          SearchSuggestions.tsx
+│  │  │
+│  │  ├─constants
+│  │  │      financialTerms.ts
+│  │  │      maxScores.ts
+│  │  │      scoreTerm.ts
+│  │  │
+│  │  ├─hooks
+│  │  │      useAddWatchlist.ts
+│  │  │      useCompanyDetail.ts
+│  │  │      useCompanyList.ts
+│  │  │      useCompanySearch.ts
+│  │  │      useScoreAnalytics.ts
+│  │  │      useScoreRadarData.ts
+│  │  │      useSearchBarController.ts
+│  │  │      useStockHistory.ts
+│  │  │      useTopRankingCompanies.ts
+│  │  │
+│  │  ├─types
+│  │  │      chartDataPoint.ts
+│  │  │
+│  │  └─ui
+│  │      ├─p_detail
+│  │      │  │  CompanyProfile.tsx
+│  │      │  │  CustomTooltip.tsx
+│  │      │  │  InvestmentGradeBadge.tsx
+│  │      │  │  RiskPenaltyAlert.tsx
+│  │      │  │  ScoreAnalysisSkeleton.tsx
+│  │      │  │  ScoreRow.tsx
+│  │      │  │  StockHistoryChart.tsx
+│  │      │  │  WatchlistButton.tsx
+│  │      │  │
+│  │      │  └─financial
+│  │      │          BalanceSheet.tsx
+│  │      │          CashFlowStatement.tsx
+│  │      │          FinancialRow.tsx
+│  │      │          IncomeStatement.tsx
+│  │      │
+│  │      ├─p_list
+│  │      │      CompanyCard.tsx
+│  │      │      CompanyFilterHeader.tsx
+│  │      │
+│  │      ├─p_ranking
+│  │      │      RankingItemRow.tsx
+│  │      │
+│  │      ├─skeletons
+│  │      │      CompanyCardSkeleton.tsx
+│  │      │      CompanyHeaderSkeleton.tsx
+│  │      │      FinancialSummarySkeleton.tsx
+│  │      │      RankingSkeleton.tsx
+│  │      │
+│  │      └─states
+│  │              TopRankingEmptyState.tsx
+│  │
+│  ├─macro
+│  │  │  index.ts
+│  │  │
+│  │  ├─api
+│  │  │      macroApi.ts
+│  │  │      queryKeys.ts
+│  │  │
+│  │  ├─components
+│  │  │      EconomicChart.tsx
+│  │  │      EconomicChartContainer.tsx
+│  │  │      MajorIndicatorContainer.tsx
+│  │  │
+│  │  ├─hooks
+│  │  │      useInversionIntervals.ts
+│  │  │      useMacroQueries.ts
+│  │  │
+│  │  └─ui
+│  │      │  CustomTooltip.tsx
+│  │      │  EconomicLineChart.tsx
+│  │      │  IndicatorItem.tsx
+│  │      │
+│  │      ├─guides
+│  │      │      ChartGuide.tsx
+│  │      │      MarketGuide.tsx
+│  │      │
+│  │      └─skeleton
+│  │              EconomicChartSkeleton.tsx
+│  │              MajorIndicatorSkeleton.tsx
+│  │
+│  └─watchlist
+│      │  index.ts
+│      │
+│      ├─api
+│      │      queryKeys.ts
+│      │      watchlistApi.ts
+│      │
+│      ├─components
+│      │      CompanyGridCard.tsx
+│      │      WatchlistDeleteButton.tsx
+│      │
+│      └─hooks
+│              useWatchlist.ts
+│
+├─hooks
+│      useDebounce.ts
+│      useRequireAuth.ts
+│      useUserMenu.ts
+│
+├─pages
+│  │  index.ts
+│  │  
+│  ├─Auth
+│  │      LoginPage.tsx
+│  │      SignupPage.tsx
+│  │
+│  ├─Company
+│  │      CompanyDetailPage.tsx
+│  │      CompanyListPage.tsx
+│  │
+│  ├─Home
+│  │      Homepage.tsx
+│  │      
+│  └─Watchlist
+│          WatchlistPage.tsx
+│
+├─stores
+│      authStore.ts
+│
+├─types
+│      api.ts
+│      auth.ts
+│      company.ts
+│      macro.ts
+│      term.ts
+│      watchlist.ts
+│
+└─utils
+        cn.ts
+        errorHandler.ts
+        formatters.ts

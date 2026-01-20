@@ -1,9 +1,9 @@
 import axiosClient from "../../../api/axiosClient";
-import { WatchlistItem } from "../../../types/watchlist";
+import { WatchlistResponse } from "../../../types/watchlist";
 
 export const watchlistApi = {
-  getMyWatchlist: async (): Promise<WatchlistItem[]> => {
-    const response = await axiosClient.get<WatchlistItem[]>("/api/watchlist");
+  getMyWatchlist: async (): Promise<WatchlistResponse[]> => {
+    const response = await axiosClient.get<WatchlistResponse[]>("/api/watchlist");
     return response.data;
   },
   
