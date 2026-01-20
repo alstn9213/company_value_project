@@ -13,23 +13,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/macro")
 @RequiredArgsConstructor
-public class MacroController {
+public class MacroController implements MacroControllerDocs {
 
-    private final MacroReadService macroReadService;
+  private final MacroReadService macroReadService;
 
-    // 대시보드용 최신 지표
-    @GetMapping("/latest")
-    public ResponseEntity<MacroDataResponse> getLatestMacroData() {
-        MacroDataResponse data = macroReadService.getLatestData();
-        if(data == null) return ResponseEntity.noContent().build();
-        return ResponseEntity.ok(data);
-    }
+  @Override
+  @GetMapping("/latest")
+  public ResponseEntity<MacroDataResponse> getLatestMacroData() {
+      return ResponseEntity.ok(macroReadService.getLatestData());
+  }
 
-    // 차트용 10년치 과거 데이터
-    @GetMapping("/history")
-    public ResponseEntity<List<MacroDataResponse>> getMacroHistory() {
-        List<MacroDataResponse> history = macroReadService.getHistoryData();
-        return ResponseEntity.ok(history);
-    }
+  @Override
+  @GetMapping("/history")
+  public ResponseEntity<List<MacroDataResponse>> getMacroHistory() {
+      return ResponseEntity.ok(macroReadService.getHistoryData());
+  }
 
 }

@@ -2,6 +2,8 @@ package com.back.domain.macro.service;
 
 import com.back.domain.macro.dto.MacroDataResponse;
 import com.back.domain.macro.repository.MacroRepository;
+import com.back.global.error.ErrorCode;
+import com.back.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,11 +20,11 @@ public class MacroReadService {
     private final MacroRepository macroRepository;
 
     // 최신 지표 조회
-    @Cacheable(value = "macro_latest", key = "'latest'", unless = "#result == null")
+    @Cacheable(value = "macro_latest", key = "'latest'")
     public MacroDataResponse getLatestData() {
         return macroRepository.findTopByOrderByRecordedDateDesc()
                 .map(MacroDataResponse::from)
-                .orElse(null);
+                .orElseThrow(() -> new BusinessException(ErrorCode.MACRO_DATA_NOT_FOUND));
     }
 
     // 과거 데이터 조회

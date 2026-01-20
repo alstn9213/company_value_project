@@ -14,16 +14,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/scores")
 @RequiredArgsConstructor
-public class ScoreController {
+public class ScoreController implements ScoreControllerDocs {
 
   private final ScoringService scoringService;
 
-  // 상위 10개 우량 기업 조회
+  @Override
   @GetMapping("/top")
   public ResponseEntity<List<CompanyScoreResponse>> getTopRankedCompanies() {
     return ResponseEntity.ok(scoringService.getTopRankedCompanies());
   }
 
+  @Override
   @GetMapping("/{ticker}")
   public ResponseEntity<CompanyScoreResponse> getCompanyScore(@PathVariable String ticker) {
     return ResponseEntity.ok(scoringService.getScoreByTicker(ticker));

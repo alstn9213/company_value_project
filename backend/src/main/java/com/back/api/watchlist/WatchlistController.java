@@ -13,25 +13,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/watchlist")
 @RequiredArgsConstructor
-public class WatchlistController {
+public class WatchlistController implements WatchlistControllerDocs {
 
-    private final WatchlistService watchlistService;
+  private final WatchlistService watchlistService;
 
-    @GetMapping
-    public ResponseEntity<List<WatchlistResponse>> getMyWatchlist(@CurrentMemberId Long memberId) {
-        return ResponseEntity.ok(watchlistService.getWatchlist(memberId));
-    }
+  @Override
+  @GetMapping
+  public ResponseEntity<List<WatchlistResponse>> getMyWatchlist(@CurrentMemberId Long memberId) {
+    return ResponseEntity.ok(watchlistService.getWatchlist(memberId));
+  }
 
-    @PostMapping("/{ticker}")
-    public ResponseEntity<String> addWatchlist(@CurrentMemberId Long memberId, @PathVariable String ticker) {
-        watchlistService.addWatchlist(memberId, ticker);
-        return ResponseEntity.ok("관심 종목 추가 완료");
-    }
+  @Override
+  @PostMapping("/{ticker}")
+  public ResponseEntity<Void> addWatchlist(@CurrentMemberId Long memberId, @PathVariable String ticker) {
+    watchlistService.addWatchlist(memberId, ticker);
+    return ResponseEntity.ok().build();
+  }
 
-    @DeleteMapping("/{watchlistId}")
-    public ResponseEntity<String> deleteWatchlist(@CurrentMemberId Long memberId, @PathVariable Long watchlistId) {
-        watchlistService.deleteWatchlist(memberId, watchlistId);
-        return ResponseEntity.ok("삭제 완료");
-    }
+  @Override
+  @DeleteMapping("/{watchlistId}")
+  public ResponseEntity<String> deleteWatchlist(@CurrentMemberId Long memberId, @PathVariable Long watchlistId) {
+    watchlistService.deleteWatchlist(memberId, watchlistId);
+    return ResponseEntity.ok().build();
+  }
 
 }
