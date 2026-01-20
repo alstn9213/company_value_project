@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class MemberController implements MemberControllerDocs{
 
-    private final MemberService memberService;
+  private final MemberService memberService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@Valid @RequestBody SignUpRequest request) {
-        memberService.registerMember(request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+  @Override
+  @PostMapping("/signup")
+  public ResponseEntity<Void> signup(@Valid @RequestBody SignUpRequest request) {
+      memberService.registerMember(request);
+      return ResponseEntity.status(HttpStatus.CREATED).build();
+  }
+
 }

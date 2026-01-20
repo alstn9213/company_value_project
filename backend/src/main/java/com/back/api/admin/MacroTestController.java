@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/test/macro")
 @RequiredArgsConstructor
-public class MacroTestController {
+public class MacroTestController implements MacroTestControllerDocs {
 
   private final MacroDataService macroDataService;
 
   /**
-   * DB를 구성할 때 딱 한번만 사용하는 거시 경제 최신 데이터 일괄 초기화 메서드
    * URL: http://localhost:8080/test/macro/init
    */
+  @Override
   @GetMapping("/init")
   public String initMacroHistory() {
     macroDataService.initHistoricalMacroData();
@@ -26,9 +26,9 @@ public class MacroTestController {
   }
 
   /**
-   * 거시 경제 최신 데이터 수동 업데이트 메서드
    * URL: http://localhost:8080/test/macro/update-daily
    */
+  @Override
   @GetMapping("/update-daily")
   public String updateDailyMacro() {
     log.info(">>> [Test] 거시 경제 데이터 일일 업데이트 요청");

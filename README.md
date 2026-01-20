@@ -84,8 +84,8 @@
 - 캔들 차트 및 거래량 분석.
 
 ## API Reference
-![alt text](image.png)
-![alt text](image-1.png)
+![alt text](images/image.png)
+![alt text](images/image-1.png)
 ## 👨‍💻 Developer
 
 **alstn9213**
