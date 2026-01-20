@@ -1,3 +1,4 @@
+import { useWatchlist } from "../../../watchlist/hooks/useWatchlist";
 import { Building2 } from "lucide-react";
 import { EmptyState } from "../../../../components/ui/EmptyState";
 import { CompanySummaryResponse, CompanyScoreResponse } from "../../../../types/company";
@@ -23,7 +24,8 @@ export const CompanyHeaderContainer = ({
   isError, 
   onRetry 
 }: CompanyHeaderProps) => {
-  const { addWatchlist, isPending } = useAddWatchlist();
+  const { addWatchlist, isPending: isAddPending } = useAddWatchlist();
+  const { watchlist, handleDelete, isDeleting } = useWatchlist();
 
    if (isLoading) {
     return <CompanyHeaderSkeleton />;
@@ -51,7 +53,20 @@ export const CompanyHeaderContainer = ({
       </div>
     );
   }
+
+  const isWatchlisted = watchlist?.some(item => item.company.ticker === info.ticker) ?? false;
   
+  const handleWatchlistClick = () => {
+    if (isWatchlisted) {
+      const watchlistItem = watchlist?.find(item => item.company.ticker === info.ticker);
+      if (watchlistItem) {
+        handleDelete(watchlistItem.watchlistId);
+      }
+    } else {
+      addWatchlist(info.ticker);
+    }
+  };
+
  return (
     <div className="bg-card border border-slate-700/50 rounded-2xl p-8 shadow-lg backdrop-blur-sm flex flex-col md:flex-row justify-between items-center gap-6">
       {/* 좌측: 기업 프로필 */}
@@ -65,8 +80,9 @@ export const CompanyHeaderContainer = ({
       {/* 우측: 관심 목록 등록 버튼 및 등급 */}
       <div className="flex items-center gap-6">
         <WatchlistButton
-          onClick={() => addWatchlist(info.ticker)}
-          isPending={isPending}
+          onClick={handleWatchlistClick}
+          isPending={isAddPending || isDeleting}
+          isWatchlisted={isWatchlisted}
         />
         <InvestmentGradeBadge
           grade={score.grade}

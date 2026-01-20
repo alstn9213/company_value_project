@@ -31,5 +31,6 @@ export const useWatchlist = () => {
     watchlist,
     isLoading,
     handleDelete,
+    isDeleting: deleteMutation.isPending,
   };
 };
