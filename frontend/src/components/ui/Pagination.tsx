@@ -4,38 +4,49 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  isPlaceholderData?: boolean; // 데이터 패칭 중 버튼 비활성화용
-  isLastPage?: boolean;
 }
 
-export const Pagination = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-  isLastPage = false,
-}: PaginationProps) => {
+export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
-    <div className="flex justify-center items-center gap-4 mt-8 pt-8 border-t border-slate-800/50">
+    <div className="flex items-center justify-center gap-2">
       <button
-        onClick={() => onPageChange(Math.max(currentPage - 1, 0))}
-        className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="p-2 rounded-lg text-slate-400 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        aria-label="이전 페이지"
       >
-        <ChevronLeft size={14} /> Prev
+        <ChevronLeft size={20} />
       </button>
 
-      <span className="text-slate-400 text-sm font-mono">
-        {currentPage + 1} / {totalPages}
-      </span>
+      <div className="flex items-center gap-1">
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+              currentPage === page
+                ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+                : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
 
       <button
-        onClick={() => {
-          if (!isLastPage) {
-            onPageChange(currentPage + 1);
-          }
-        }}
-        className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-slate-300 bg-slate-800 border border-slate-600 rounded hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="p-2 rounded-lg text-slate-400 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        aria-label="다음 페이지"
       >
-        Next <ChevronRight size={14} />
+        <ChevronRight size={20} />
       </button>
     </div>
   );

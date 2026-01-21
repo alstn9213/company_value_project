@@ -14,6 +14,13 @@ interface FinancialSummaryProps {
   onRetry?: () => void;
 }
 
+// 공통 스타일이 적용된 래퍼 컴포넌트
+const SummaryCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={`bg-card border border-slate-700/50 rounded-xl p-6 shadow-lg backdrop-blur-sm ${className}`}>
+    {children}
+  </div>
+);
+
 export const FinancialSummaryContainer = ({ 
   financial, 
   isLoading, 
@@ -27,29 +34,29 @@ export const FinancialSummaryContainer = ({
 
   if (isError) {
     return (
-      <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full flex items-center justify-center min-h-[400px]">
+      <SummaryCard className="h-full flex items-center justify-center min-h-[400px]">
         <ErrorState 
           title="재무 정보를 불러올 수 없습니다"
           onRetry={onRetry}
         />
-      </div>
+      </SummaryCard>
     );
   }
  
   if (!financial) {
     return (
-      <div className="bg-card border border-slate-700/50 rounded-xl p-6 h-full flex items-center justify-center">
+      <SummaryCard className="h-full flex items-center justify-center">
         <EmptyState 
           icon={<FileBarChart2 size={48} className="text-slate-600 mb-4" />}
           title="재무 데이터 없음"
           description="해당 기업의 재무 정보를 불러올 수 없습니다."
         />
-      </div>
+      </SummaryCard>
     );
   }
 
   return (
-    <div className="bg-card border border-slate-700/50 rounded-xl p-6 shadow-lg backdrop-blur-sm">
+    <SummaryCard>
       {/* 헤더 */}
       <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
         <TrendingUp size={20} className="text-blue-400" />
@@ -62,7 +69,6 @@ export const FinancialSummaryContainer = ({
         <BalanceSheet data={financial} />
         <CashFlowStatement data={financial} />
       </div>
-    </div>
+    </SummaryCard>
   );
 };
-

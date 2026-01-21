@@ -103,7 +103,7 @@ C:.
 │  │      │  │  ScoreRow.tsx
 │  │      │  │  StockHistoryChart.tsx
 │  │      │  │  WatchlistButton.tsx
-│  │      │  │
+│  │      │  │  
 │  │      │  └─financial
 │  │      │          BalanceSheet.tsx
 │  │      │          CashFlowStatement.tsx
@@ -113,7 +113,7 @@ C:.
 │  │      ├─p_list
 │  │      │      CompanyCard.tsx
 │  │      │      CompanyFilterHeader.tsx
-│  │      │      
+│  │      │
 │  │      ├─p_ranking
 │  │      │      RankingItemRow.tsx
 │  │      │
@@ -137,7 +137,7 @@ C:.
 │  │  │      EconomicChart.tsx
 │  │  │      EconomicChartContainer.tsx
 │  │  │      MajorIndicatorContainer.tsx
-│  │  │
+│  │  │      
 │  │  ├─hooks
 │  │  │      useInversionIntervals.ts
 │  │  │      useMacroQueries.ts
@@ -157,20 +157,22 @@ C:.
 │  │
 │  └─watchlist
 │      │  index.ts
-│      │  
+│      │
 │      ├─api
 │      │      queryKeys.ts
 │      │      watchlistApi.ts
 │      │
 │      ├─components
 │      │      CompanyGridCard.tsx
+│      │      WatchlistContent.tsx
 │      │      WatchlistDeleteButton.tsx
-│      │
+│      │      
 │      └─hooks
 │              useWatchlist.ts
 │
 ├─hooks
 │      useDebounce.ts
+│      usePagination.ts
 │      useRequireAuth.ts
 │      useUserMenu.ts
 │
@@ -180,7 +182,7 @@ C:.
 │  ├─Auth
 │  │      LoginPage.tsx
 │  │      SignupPage.tsx
-│  │      
+│  │
 │  ├─Company
 │  │      CompanyDetailPage.tsx
 │  │      CompanyListPage.tsx

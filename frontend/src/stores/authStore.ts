@@ -9,31 +9,38 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  // 초기화 시 로컬 스토리지 확인
-  token: localStorage.getItem("accessToken"),
-  user: localStorage.getItem("nickname")
-    ? { nickname: localStorage.getItem("nickname")!, email: "" } // 이메일은 토큰 디코딩 필요하나 여기선 닉네임 위주로 저장
-    : null,
-  isAuthenticated: !!localStorage.getItem("accessToken"),
+export const useAuthStore = create<AuthState>((set) => {
+  const token = localStorage.getItem("accessToken");
+  const nickname = localStorage.getItem("nickname");
+  const email = localStorage.getItem("email");
 
-  login: (token, nickname, email) => {
+  return {
+    // 초기화 시 로컬 스토리지 확인
+    token,
+    user: nickname ? { nickname, email: email || "" } : null,
+    isAuthenticated: !!token,
+
+    login: (token, nickname, email) => {
     localStorage.setItem("accessToken", token);
     localStorage.setItem("nickname", nickname);
+    localStorage.setItem("email", email);
     set({
       token,
       user: { nickname, email },
       isAuthenticated: true
-    });
-  },
+      });
+    },
 
-  logout: () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("nickname");
-    set({
-      token: null,
-      user: null,
-      isAuthenticated: false
-    });
-  },
-}));
+    logout: () => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("email");
+      set({
+        token: null,
+        user: null,
+        isAuthenticated: false
+      });
+    },
+  
+  };
+});

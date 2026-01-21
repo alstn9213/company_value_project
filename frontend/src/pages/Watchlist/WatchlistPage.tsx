@@ -1,24 +1,22 @@
-import { EmptyState } from "../../components/ui/EmptyState";
-import { LoadingState } from "../../components/ui/LoadingState";
-import { CompanyGridCard, useWatchlist, WatchlistDeleteButton } from "../../features/watchlist";
+import { useWatchlist, WatchlistContent } from "../../features/watchlist";
+import { Pagination } from "../../components/ui/Pagination";
+import { usePagination } from "../../hooks/usePagination";
+
+const ITEMS_PER_PAGE = 8; // 한 페이지당 보여줄 아이템 개수
 
 export const WatchlistPage = () => {
-  const { watchlist, isLoading, handleDelete } = useWatchlist();
-
-  if (isLoading) {
-    return <LoadingState message="관심 종목을 불러오는 중..." />;
-  }
-
-  if (!watchlist || watchlist.length === 0) {
-    return (
-      <div className="max-w-7xl mx-auto py-20 px-4">
-        <EmptyState
-          title="관심 종목이 비어있습니다."
-          description="기업 목록에서 마음에 드는 기업을 추가해보세요."
-        />
-      </div>
-    );
-  }
+  const { watchlist, isLoading, handleDelete, isError, refetch } = useWatchlist();
+  
+  const { 
+    currentPage, 
+    totalPages, 
+    paginatedData, 
+    setCurrentPage, 
+    totalItems 
+  } = usePagination({
+    data: watchlist,
+    itemsPerPage: ITEMS_PER_PAGE
+  });
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -31,15 +29,23 @@ export const WatchlistPage = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {watchlist.map((item) => (
-          <CompanyGridCard
-            key={item.watchlistId}
-            item={item}
-            action={<WatchlistDeleteButton onClick={() => handleDelete(item.watchlistId)}/>}
+      <WatchlistContent 
+        watchlist={paginatedData}
+        isLoading={isLoading}
+        isError={isError}
+        refetch={refetch}
+        handleDelete={handleDelete}
+      />
+
+      {!isLoading && !isError && totalItems > 0 && (
+        <div className="mt-8">
+          <Pagination 
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
           />
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

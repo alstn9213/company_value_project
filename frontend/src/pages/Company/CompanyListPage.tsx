@@ -11,9 +11,7 @@ export const CompanyListPage = () => {
     isLoading,
     isError,
     errorMessage,
-    isPlaceholderData,
     showPagination,
-    isLastPage,
     sortOption,
     setPage,
     setSortOption,
@@ -48,12 +46,9 @@ export const CompanyListPage = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setPage}
-            isPlaceholderData={isPlaceholderData}
-            isLastPage={isLastPage}
           />
         )}
       </div>
     </div>
   );
 };
-

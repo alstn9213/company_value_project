@@ -23,7 +23,7 @@ interface CompanyListHookResult {
 }
 
 export const useCompanyList = (pageSize: number = 12): CompanyListHookResult => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(0); // API 요청용 (0-based index)
   const [sortOption, setSortOption] = useState("score");
 
   const {
@@ -41,10 +41,17 @@ export const useCompanyList = (pageSize: number = 12): CompanyListHookResult => 
   const errorMessage = getErrorMessage(error);
 
   const companies = pageData?.content || [];
-  const currentPage = pageData?.page.number ?? 0;
+  
+  // UI용 페이지 번호 (1-based index로 변환)
+  const currentPage = (pageData?.page.number ?? 0) + 1;
   const totalPages = pageData?.page.totalPages ?? 0;
-  const isLastPage = totalPages === 0 || currentPage >= totalPages - 1;
+  
+  // 마지막 페이지 여부 계산 (API 기준 page 사용)
+  const isLastPage = totalPages === 0 || (pageData?.page.number ?? 0) >= totalPages - 1;
   const showPagination = !!pageData && !isError; // 에러가 아닐 때만 페이지네이션 표시
+
+  // UI에서 페이지 변경 시 호출될 함수 (1-based -> 0-based 변환)
+  const handlePageChange = (newPage: number) => setPage(newPage - 1);
 
   return {
     companies,
@@ -57,7 +64,7 @@ export const useCompanyList = (pageSize: number = 12): CompanyListHookResult => 
     isError,
     errorMessage,
     sortOption,
-    setPage,
+    setPage: handlePageChange,
     setSortOption,
   };
 };

@@ -1,11 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { watchlistApi } from "../api/watchlistApi";
 import { watchlistKeys } from "../api/queryKeys";
+import { WatchlistResponse } from "../../../types/watchlist";
+import { ApiErrorData } from "../../../types/api";
 
 export const useWatchlist = () => {
   const queryClient = useQueryClient();
 
-  const { data: watchlist, isLoading } = useQuery({
+  const { data: watchlist, isLoading, isError, refetch } = useQuery<WatchlistResponse[], AxiosError<ApiErrorData>>({
     queryKey: watchlistKeys.lists(),
     queryFn: watchlistApi.getMyWatchlist,
   });
@@ -30,6 +33,8 @@ export const useWatchlist = () => {
   return {
     watchlist,
     isLoading,
+    isError,
+    refetch,
     handleDelete,
     isDeleting: deleteMutation.isPending,
   };
