@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { User } from '../types/auth';
+import { create } from "zustand";
+import { User } from "../types/auth";
 
 interface AuthState {
   token: string | null;
@@ -18,8 +18,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: !!localStorage.getItem("accessToken"),
 
   login: (token, nickname, email) => {
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('nickname', nickname);
+    localStorage.setItem("accessToken", token);
+    localStorage.setItem("nickname", nickname);
     set({
       token,
       user: { nickname, email },
@@ -28,8 +28,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('nickname');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("nickname");
     set({
       token: null,
       user: null,

@@ -3,7 +3,7 @@ C:.
 │  index.css
 │  main.tsx
 │  vite-env.d.ts
-│  
+│
 ├─api
 │      axiosClient.ts
 │
@@ -113,7 +113,7 @@ C:.
 │  │      ├─p_list
 │  │      │      CompanyCard.tsx
 │  │      │      CompanyFilterHeader.tsx
-│  │      │
+│  │      │      
 │  │      ├─p_ranking
 │  │      │      RankingItemRow.tsx
 │  │      │
@@ -157,7 +157,7 @@ C:.
 │  │
 │  └─watchlist
 │      │  index.ts
-│      │
+│      │  
 │      ├─api
 │      │      queryKeys.ts
 │      │      watchlistApi.ts
@@ -176,18 +176,18 @@ C:.
 │
 ├─pages
 │  │  index.ts
-│  │  
+│  │
 │  ├─Auth
 │  │      LoginPage.tsx
 │  │      SignupPage.tsx
-│  │
+│  │      
 │  ├─Company
 │  │      CompanyDetailPage.tsx
 │  │      CompanyListPage.tsx
 │  │
 │  ├─Home
 │  │      Homepage.tsx
-│  │      
+│  │
 │  └─Watchlist
 │          WatchlistPage.tsx
 │

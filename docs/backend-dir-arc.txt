@@ -8,32 +8,40 @@ C:.
 │  │          ├─api
 │  │          │  ├─admin
 │  │          │  │      CompanyTestController.java
+│  │          │  │      CompanyTestControllerDocs.java
 │  │          │  │      MacroTestController.java
+│  │          │  │      MacroTestControllerDocs.java
 │  │          │  │
 │  │          │  ├─auth
 │  │          │  │      AuthController.java
+│  │          │  │      AuthControllerDocs.java
 │  │          │  │
 │  │          │  ├─company
 │  │          │  │      CompanyController.java
+│  │          │  │      CompanyControllerDocs.java
 │  │          │  │
 │  │          │  ├─macro
 │  │          │  │      MacroController.java
+│  │          │  │      MacroControllerDocs.java
 │  │          │  │
 │  │          │  ├─member
 │  │          │  │      MemberController.java
+│  │          │  │      MemberControllerDocs.java
 │  │          │  │
 │  │          │  ├─valuation
 │  │          │  │      ScoreController.java
+│  │          │  │      ScoreControllerDocs.java
 │  │          │  │
 │  │          │  └─watchlist
 │  │          │          WatchlistController.java
+│  │          │          WatchlistControllerDocs.java
 │  │          │
 │  │          ├─domain
 │  │          │  ├─auth
 │  │          │  │  ├─dto
 │  │          │  │  │  ├─request
 │  │          │  │  │  │      LoginRequest.java
-│  │          │  │  │  │
+│  │          │  │  │  │      
 │  │          │  │  │  └─response
 │  │          │  │  │          TokenResponse.java
 │  │          │  │  │
@@ -60,7 +68,7 @@ C:.
 │  │          │  │  │      CompanyScoreRepository.java
 │  │          │  │  │      FinancialStatementRepository.java
 │  │          │  │  │      StockPriceHistoryRepository.java
-│  │          │  │  │
+│  │          │  │  │      
 │  │          │  │  └─service
 │  │          │  │          CompanyCommandService.java
 │  │          │  │          CompanyReadService.java
@@ -70,7 +78,7 @@ C:.
 │  │          │  │  ├─dto
 │  │          │  │  │      FredApiResponse.java
 │  │          │  │  │      MacroDataResponse.java
-│  │          │  │  │
+│  │          │  │  │      
 │  │          │  │  ├─entity
 │  │          │  │  │      MacroEconomicData.java
 │  │          │  │  │      MacroIndicator.java
@@ -104,7 +112,7 @@ C:.
 │  │          │  ├─valuation
 │  │          │  │  ├─calculator
 │  │          │  │  │      MarketMetricCalculator.java
-│  │          │  │  │      
+│  │          │  │  │
 │  │          │  │  ├─constant
 │  │          │  │  │      ScoreCategory.java
 │  │          │  │  │      ScoringConstants.java
@@ -121,7 +129,7 @@ C:.
 │  │          │  │  ├─policy
 │  │          │  │  │  │  CompositePenaltyPolicy.java
 │  │          │  │  │  │  PenaltyPolicy.java
-│  │          │  │  │  │
+│  │          │  │  │  │  
 │  │          │  │  │  ├─rules
 │  │          │  │  │  │      FinancialStructureRule.java
 │  │          │  │  │  │      MacroConditionRule.java
@@ -154,28 +162,28 @@ C:.
 │  │          │      │
 │  │          │      ├─repository
 │  │          │      │      WatchlistRepository.java
-│  │          │      │
+│  │          │      │      
 │  │          │      └─service
 │  │          │              WatchlistService.java
 │  │          │
 │  │          ├─global
 │  │          │  ├─annotation
 │  │          │  │      CurrentMemberId.java
-│  │          │  │
+│  │          │  │      
 │  │          │  ├─aspect
 │  │          │  │      LogAspect.java
-│  │          │  │
+│  │          │  │      
 │  │          │  ├─config
 │  │          │  │  │  InitDataConfig.java
 │  │          │  │  │  RedisConfig.java
 │  │          │  │  │  SwaggerConfig.java
 │  │          │  │  │  WebClientConfig.java
 │  │          │  │  │  WebMvcConfig.java
-│  │          │  │  │
+│  │          │  │  │  
 │  │          │  │  ├─init
 │  │          │  │  │  │  CompanyDataInitializer.java
 │  │          │  │  │  │  SeedDataLoader.java
-│  │          │  │  │  │
+│  │          │  │  │  │  
 │  │          │  │  │  └─dto
 │  │          │  │  │          CompanySeedDto.java
 │  │          │  │  │          FinancialSeedDto.java
@@ -187,7 +195,7 @@ C:.
 │  │          │  ├─controller
 │  │          │  │      CustomErrorController.java
 │  │          │  │      WebController.java
-│  │          │  │
+│  │          │  │      
 │  │          │  ├─error
 │  │          │  │  │  ErrorCode.java
 │  │          │  │  │  ErrorResponse.java
@@ -202,7 +210,7 @@ C:.
 │  │          │  │      JwtAuthenticationFilter.java
 │  │          │  │      JwtTokenProvider.java
 │  │          │  │      SecurityConfig.java
-│  │          │  │
+│  │          │  │      
 │  │          │  └─util
 │  │          │          DecimalUtil.java
 │  │          │
@@ -216,7 +224,7 @@ C:.
 │  │
 │  └─resources
 │      │  application.properties
-│      │
+│      │  
 │      └─data
 │              seed_data.json
 │
